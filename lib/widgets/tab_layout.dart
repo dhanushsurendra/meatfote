@@ -45,12 +45,7 @@ class _TabLayoutState extends State<TabLayout>
                     type: 'chicken',
                     isFavorite: true,
                   )
-                : widget.type == 'Profile'
-                    ? PersonalDetails()
-                    : OrderItems(
-                        status: 'PENDING',
-                        typeExists: false,
-                      );
+                : PersonalDetails();
           });
           break;
         case 1:
@@ -60,12 +55,7 @@ class _TabLayoutState extends State<TabLayout>
                     type: 'mutton',
                     isFavorite: true,
                   )
-                : widget.type == 'Profile'
-                    ? BusinessDetails()
-                    : OrderItems(
-                        status: 'SHIPPED',
-                        typeExists: false,
-                      );
+                : BusinessDetails();
           });
           break;
         case 2:
@@ -76,12 +66,7 @@ class _TabLayoutState extends State<TabLayout>
                       type: 'sea food',
                       isFavorite: true,
                     )
-                  : widget.type == 'Profile'
-                      ? SettingsDetails()
-                      : OrderItems(
-                          status: 'DELIVERED',
-                          typeExists: false,
-                        );
+                  : SettingsDetails();
             },
           );
           break;

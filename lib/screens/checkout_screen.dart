@@ -7,7 +7,7 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/auth.dart';
-import 'package:meatforte/screens/order_details_screen.dart';
+import 'package:meatforte/screens/manage_address_screen.dart';
 import 'package:meatforte/widgets/button.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +69,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
-    Map<String, dynamic> address = {
+    Map<String, dynamic> _address = {
       'userId': Provider.of<Auth>(context, listen: false).userId,
       'businessName': _businessNameController.text,
       'phoneNumber': _phoneNumberController.text,
@@ -81,46 +81,75 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'timeOfDelivery': _selectedDropDownValue,
     };
 
+    FocusScope.of(context).unfocus();
+
     try {
       if (widget.title == 'Add Address') {
         await Provider.of<Addresses>(context, listen: false)
-            .addAddress(address);
+            .addOrUpdateAddress(_address, 'ADD');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Address added successfully'),
-            duration: const Duration(seconds: 1),
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Successful!',
+          desc: 'Address added successfully.',
+          showCloseIcon: false,
+          btnOkOnPress: () => Navigator.of(context).push(
+            FadePageRoute(
+              childWidget: ManageAddressScreen(
+                type: 'SELECT',
+                title: 'Select Address',
+              ),
+            ),
           ),
+          btnOkColor: Theme.of(context).primaryColor,
+          dismissOnBackKeyPress: false,
+          dismissOnTouchOutside: false,
+        )..show();
+      } else if (widget.title == 'Edit Address') {
+        await Provider.of<Addresses>(context, listen: false).addOrUpdateAddress(
+          {
+            'addressId': widget.address.id,
+            ..._address,
+          },
+          'UPDATE',
         );
 
-        Navigator.of(context).push(
-          FadePageRoute(
-            childWidget: OrderDetailsScreen(),
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Successful',
+          desc: 'Address updated successfully.',
+          showCloseIcon: false,
+          btnOkOnPress: () => Navigator.of(context).push(
+            FadePageRoute(
+              childWidget: ManageAddressScreen(
+                type: 'SELECT',
+                title: 'Select Address',
+              ),
+            ),
           ),
-        );
+          btnOkColor: Theme.of(context).primaryColor,
+          dismissOnBackKeyPress: false,
+          dismissOnTouchOutside: false,
+        )..show();
       }
     } on HttpException catch (error) {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.ERROR,
-        animType: AnimType.BOTTOMSLIDE,
-        title: 'Error!',
-        desc: error.message,
-        showCloseIcon: true,
-        btnOkOnPress: () {},
-        btnOkColor: Theme.of(context).primaryColor,
-      )..show();
+      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something went wrong.'),
+        ),
+      );
     } catch (error) {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.ERROR,
-        animType: AnimType.BOTTOMSLIDE,
-        title: 'Error!',
-        desc: 'Somethign went wrong!',
-        showCloseIcon: true,
-        btnOkOnPress: () {},
-        btnOkColor: Theme.of(context).primaryColor,
-      )..show();
+      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something went wrong.'),
+        ),
+      );
     }
   }
 
@@ -148,14 +177,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.address);
+
     void _unfocusFields() {
-      _businessNameFocusNode.unfocus();
-      _phoneNumberFocusNode.unfocus();
-      _streetAddressFocusNode.unfocus();
-      _localityFocusNode.unfocus();
-      _landmarkFocusNode.unfocus();
-      _cityFocusNode.unfocus();
-      _pincodeFocusNode.unfocus();
+      FocusScope.of(context).unfocus();
     }
 
     return SafeArea(

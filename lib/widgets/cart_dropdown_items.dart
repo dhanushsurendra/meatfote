@@ -11,9 +11,11 @@ class CartDropDownItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    print(cartItems[0]);
     return Container(
       width: double.infinity,
-      height: cartItems.length * 65.0,
+      height: cartItems.length * 80.0,
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         itemCount: cartItems.length,
@@ -22,10 +24,27 @@ class CartDropDownItems extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: ListTile(
-              title: Text(cartItem.name),
+              title: Text(
+                cartItem.name,
+                maxLines: 2,
+                style: TextStyle(
+                  fontSize: 14.0,
+                ),
+              ),
+              subtitle: Row(
+                children: [
+                  cartItem.pieces > 0
+                      ? Text('Pieces: ${cartItem.pieces} ')
+                      : SizedBox.shrink(),
+                  Text('Gross: ${cartItem.gross.toString()} '),
+                  cartItem.birds > 0
+                      ? Text('Birds: ${cartItem.birds}')
+                      : SizedBox.shrink(),
+                ],
+              ),
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(
-                  cartItem.imageUrl,
+                  'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
                 ),
               ),
               trailing: Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/providers/orders.dart' as OrderItemClass;
 import 'package:meatforte/providers/orders.dart';
@@ -45,11 +46,15 @@ class OrderItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Order Id: ${orderItem.id}',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Text(
+                      'Order Id: ${orderItem.id.substring(0, 13)}...',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Row(
@@ -71,19 +76,11 @@ class OrderItem extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                'Quantity: ${orderItem.quantity}',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    orderItem.date,
+                    '${DateFormat.yMMMEd().format(DateTime.parse(orderItem.createdAt))}',
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
@@ -119,9 +116,7 @@ class OrderItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5.0),
                         color: orderItem.paymentStatus == 'PAID'
                             ? Colors.green[200].withOpacity(0.5)
-                            : orderItem.paymentStatus == 'COD'
-                                ? Colors.orangeAccent[200].withOpacity(0.5)
-                                : Colors.red[200].withOpacity(0.5),
+                            : Colors.red[200].withOpacity(0.5),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -154,6 +149,8 @@ class OrderItem extends StatelessWidget {
                               FadePageRoute(
                                 childWidget: OrderDetailsScreen(
                                   orderId: orderItem.id,
+                                  title: 'Order Summary',
+                                  isOrderSummary: false,
                                 ),
                               ),
                             ),

@@ -29,7 +29,7 @@ class OrdersNotification extends StatelessWidget {
                   splashColor: Colors.transparent,
                   onTap: () => Navigator.of(context).push(
                     FadePageRoute(
-                      childWidget: OrderDetailsScreen(),
+                      childWidget: OrderDetailsScreen(title: 'Order Details', isOrderSummary: false,),
                     ),
                   ),
                   child: Container(

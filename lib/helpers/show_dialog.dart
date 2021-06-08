@@ -9,8 +9,10 @@ class ShowDialog {
     String desc,
     Function onTap,
     bool containsButtonCancel,
-    Function onDismissCallback,
-  ) {
+    Function onDismissCallback, {
+    bool dismissOnTouchOutside = true,
+    bool dismissOnBackKeyPress = true,
+  }) {
     AwesomeDialog(
         context: context,
         dialogType: type,
@@ -18,6 +20,8 @@ class ShowDialog {
         title: title,
         desc: desc,
         showCloseIcon: true,
+        dismissOnTouchOutside: dismissOnTouchOutside,
+        dismissOnBackKeyPress: dismissOnBackKeyPress,
         btnCancelOnPress: containsButtonCancel ? () {} : null,
         btnOkOnPress: onTap,
         onDissmissCallback: onDismissCallback,

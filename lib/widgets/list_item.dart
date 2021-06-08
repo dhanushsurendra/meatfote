@@ -219,8 +219,8 @@ class _ListItemState extends State<ListItem> {
           )
         : Container(
             margin: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.only(bottom: 8.0),
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.32,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: Colors.white,

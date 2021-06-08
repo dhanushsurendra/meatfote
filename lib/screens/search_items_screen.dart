@@ -236,6 +236,7 @@ class _SearchItemsScreenState extends State<SearchItemsScreen> {
                         ? EmptyImage(
                             message: 'No results found!',
                             imageUrl: 'assets/images/empty.png',
+                            heightPercent: 0.7,
                           )
                         : SingleChildScrollView(
                             physics: BouncingScrollPhysics(),

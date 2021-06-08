@@ -91,6 +91,7 @@ class _CartScreenState extends State<CartScreen> {
                                   message:
                                       'No items in cart. Start adding some!',
                                   imageUrl: 'assets/images/empty_cart.png',
+                                  heightPercent: 0.7,
                                 )
                               : ListView.builder(
                                   physics: BouncingScrollPhysics(),

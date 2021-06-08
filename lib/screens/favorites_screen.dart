@@ -92,6 +92,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         ? EmptyImage(
                             message: 'No favorites yet. Start adding some!',
                             imageUrl: 'assets/images/empty.png',
+                            heightPercent: 0.7,
                           )
                         : ListView.builder(
                             physics: BouncingScrollPhysics(),

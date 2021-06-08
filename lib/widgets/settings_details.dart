@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/screens/add_team_member_screen.dart';
@@ -17,16 +16,18 @@ class SettingsDetails extends StatelessWidget {
         FontHeading(text: 'Manage Address'),
         SizedBox(height: 10.0),
         ListTileContainer(
-          title:
-              '#57 / 57, 10th cross, Ramachandrappa Layout, Kariyanapalya, Near Chandrikasoap Factory, Bangalore - 560088',
+          title: 'Edit or delete address',
           letterSpacing: 0.0,
           fontWeight: FontWeight.w400,
           onTap: () => Navigator.of(context).push(
             FadePageRoute(
-              childWidget: ManageAddressScreen(type: 'MANAGE', title: 'Manage Address',),
+              childWidget: ManageAddressScreen(
+                type: 'MANAGE',
+                title: 'Manage Address',
+              ),
             ),
           ),
-          icon: Icon(Icons.business_center_outlined),
+          icon: Icon(Icons.map_outlined),
           fontSize: 12.0,
         ),
         SizedBox(height: 10.0),

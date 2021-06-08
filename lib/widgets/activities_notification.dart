@@ -30,6 +30,8 @@ class ActivitiesNotification extends StatelessWidget {
                   onTap: () => Navigator.of(context).push(
                     FadePageRoute(
                       childWidget: OrderDetailsScreen(
+                        isOrderSummary: false,
+                        title: 'Order Details',
                         orderId:
                             Provider.of<Notifications>(context, listen: false)
                                 .activities[index]
