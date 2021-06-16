@@ -7,7 +7,6 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -44,9 +43,10 @@ class OrdersScreen extends StatelessWidget {
             ),
           ),
           body: TabBarView(
+            physics: BouncingScrollPhysics(),
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+                padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
                 child: OrderItems(
                   typeExists: false,
                   type: 'PENDING',

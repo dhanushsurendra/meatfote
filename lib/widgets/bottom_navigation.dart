@@ -94,6 +94,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         selectedFontSize: 10.0,
         unselectedFontSize: 10.0,
         currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: (value) {
           setState(() {
             _selectedIndex = value;

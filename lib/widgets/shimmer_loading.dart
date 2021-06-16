@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meatforte/providers/product.dart';
-import 'package:meatforte/providers/products.dart';
-import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'list_item.dart';
 
@@ -28,6 +26,35 @@ class ShimmerLoading extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class OrdersShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300],
+      highlightColor: Colors.grey[100],
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2.0),
+                color: Colors.grey[300],
+              ),
+              width: double.infinity,
+              height: 150.0,
+            ),
+          );
+        },
       ),
     );
   }

@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meatforte/screens/intro_screen.dart';
-import 'package:meatforte/widgets/bottom_navigation.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
@@ -15,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   Timer _timer;
 
   @override
@@ -51,13 +48,12 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  height: MediaQuery.of(context).size.height - 120,
+                  height: MediaQuery.of(context).size.height - 48.0,
                   width: MediaQuery.of(context).size.width * 0.6,
                   child: Image(
                     image: AssetImage(
@@ -66,14 +62,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 48.0),
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.white),
-                    ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 48.0),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
                   ),
                 ),
               ),

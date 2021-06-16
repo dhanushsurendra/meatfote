@@ -356,9 +356,17 @@ class _ListItemState extends State<ListItem> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'Pieces',
-                                  labelStyle: TextStyle(fontSize: 12.0),
+                                  labelStyle: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                   isDense: true,
                                   border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Theme.of(context).primaryColor,
                                     ),
@@ -384,11 +392,24 @@ class _ListItemState extends State<ListItem> {
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Gross',
-                                labelStyle: TextStyle(fontSize: 12.0),
+                                labelStyle: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Theme.of(context).accentColor,
+                                ),
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).accentColor,
                                   ),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(

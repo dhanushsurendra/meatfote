@@ -102,7 +102,7 @@ class OrderDetailsScreen extends StatelessWidget {
             address.city,
             address.pincode.toString(),
             address.timeOfDelivery,
-        ]
+          ]
         : [
             orderItem.address.businessName,
             orderItem.address.streetAddress,
@@ -112,6 +112,8 @@ class OrderDetailsScreen extends StatelessWidget {
             orderItem.address.pincode.toString(),
             orderItem.address.timeOfDelivery,
           ];
+
+    print(_values);
 
     return SafeArea(
       child: Scaffold(
@@ -146,11 +148,13 @@ class OrderDetailsScreen extends StatelessWidget {
                         : Text(
                             'Order Id: ${orderItem.id}',
                             style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                    SizedBox(height: 10.0),
+                    !isOrderSummary
+                        ? SizedBox(height: 30.0)
+                        : SizedBox(height: 0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -220,7 +224,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               ? DateFormat.yMMMEd().format(
                                   DateTime.now(),
                                 )
-                              : orderItem.createdAt,
+                              : '${DateFormat.yMMMEd().format(DateTime.parse(orderItem.createdAt))}',
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.w500,

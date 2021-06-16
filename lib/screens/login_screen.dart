@@ -292,6 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             horizontal: 10.0,
                           ),
                           suffixIcon: IconButton(
+                            color: Theme.of(context).primaryColor,
                             icon: _obscurePasswordText
                                 ? Icon(Icons.visibility_off)
                                 : Icon(Icons.visibility),

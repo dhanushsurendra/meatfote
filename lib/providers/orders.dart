@@ -7,7 +7,7 @@ import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.5:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class OrderItem {
   final String id;
@@ -33,6 +33,8 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orderItems = [];
+
+  bool _fetchedData = false;
 
   List<OrderItem> get orderItems {
     return [..._orderItems];
@@ -88,7 +90,7 @@ class Orders with ChangeNotifier {
         }
         _orderedProducts.add(_orderedProduct);
       }
-      
+
       List<OrderItem> _loadedOrderItems = [];
 
       for (int i = 0; i < responseData['orders'].length; i++) {
@@ -99,6 +101,7 @@ class Orders with ChangeNotifier {
           totalPrice: responseData['orders'][i]['total_price'].toDouble(),
           createdAt: responseData['orders'][i]['createdAt'],
           address: new Address(
+            id: responseData['orders'][i]['address']['_id'],
             businessName: responseData['orders'][i]['address']['business_name'],
             streetAddress: responseData['orders'][i]['address']
                 ['street_address'],
@@ -106,7 +109,7 @@ class Orders with ChangeNotifier {
             landmark: responseData['orders'][i]['address']['landmark'],
             locality: responseData['orders'][i]['address']['locality'],
             timeOfDelivery: responseData['orders'][i]['address']
-                ['timeOfDelivery'],
+                ['time_of_delivery'],
             phoneNumber: responseData['orders'][i]['address']['phoneNumber'],
             pincode: responseData['orders'][i]['address']['pincode'],
           ),
@@ -117,6 +120,8 @@ class Orders with ChangeNotifier {
       }
 
       _orderItems = _loadedOrderItems;
+
+      _fetchedData = true;
 
       notifyListeners();
     } catch (error) {
@@ -131,6 +136,7 @@ class Orders with ChangeNotifier {
     double totalPrice,
   ) async {
     try {
+      print(products[0].id);
       final response = await http.post(
         Uri.parse('$BASE_URL/createOrder/'),
         headers: {

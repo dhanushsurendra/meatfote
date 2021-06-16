@@ -151,6 +151,7 @@ class OrderItem extends StatelessWidget {
                                   orderId: orderItem.id,
                                   title: 'Order Summary',
                                   isOrderSummary: false,
+                                  addressId: orderItem.address.id,
                                 ),
                               ),
                             ),

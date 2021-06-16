@@ -9,6 +9,7 @@ class ModalBottomSheet {
     String title, [
     bool saveButton = false,
     bool containsRadio = false,
+    Function onTap,
   ]) {
     return showModalBottomSheet<dynamic>(
       context: context,
@@ -85,7 +86,7 @@ class ModalBottomSheet {
                               ),
                             ),
                             onTap: () {
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                               Navigator.of(context).push(
                                 FadePageRoute(
                                   childWidget: PersonalVerificationScreen(

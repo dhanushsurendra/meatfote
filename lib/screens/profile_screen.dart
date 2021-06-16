@@ -24,12 +24,13 @@ class ProfileScreen extends StatelessWidget {
     BuildContext context,
   ) {
     return ListTileContainer(
-        icon: icon,
-        onTap: onTap,
-        title: title,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 1.0);
+      icon: icon,
+      onTap: onTap,
+      title: title,
+      fontSize: 14.0,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 1.0,
+    );
   }
 
   Widget _buildAsyncListTile(
@@ -139,15 +140,8 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
       () => {},
-      () => ShowDialog.showDialog(
-            context,
-            DialogType.INFO,
-            'Contact Support',
-            '+91 9880533192',
-            () {},
-            false,
-            () {}
-          ),
+      () => ShowDialog.showDialog(context, DialogType.INFO, 'Contact Support',
+          '+91 9880533192', () {}, false, () {}),
       () => Navigator.of(context).push(
             FadePageRoute(
               childWidget: WebViewScreen(

@@ -43,7 +43,6 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
         .listen((ConnectivityResult result) {
       setState(() {});
     });
-    Provider.of<Addresses>(context, listen: false).getAddresses(userId);
   }
 
   @override
@@ -80,6 +79,7 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasError) {
               return RefreshIndicator(
+                color: Theme.of(context).primaryColor,
                 onRefresh: () => _getAddresses(userId),
                 child: ErrorHandler(
                   message: 'Something went wrong. Please try again.',

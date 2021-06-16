@@ -1,3 +1,5 @@
+// IMPLEMENT Product  - isInStock for all the products.
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,7 +8,7 @@ import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.5:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Product with ChangeNotifier {
   final String id;
@@ -18,6 +20,7 @@ class Product with ChangeNotifier {
   final double gross;
   final double pieces;
   final int birds;
+  final bool isInStock;
   bool isFavorite;
 
   Product({
@@ -27,6 +30,7 @@ class Product with ChangeNotifier {
     @required this.imageUrl,
     @required this.layout,
     @required this.productType,
+    this.isInStock,
     this.gross = 0.0,
     this.pieces = 0.0,
     this.birds = 0,

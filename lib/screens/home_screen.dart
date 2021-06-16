@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
-import 'package:meatforte/providers/products.dart';
 import 'package:meatforte/screens/notification_screen.dart';
 import 'package:meatforte/screens/search_input_screen.dart';
 import 'package:meatforte/widgets/products_list.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -17,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-
   TabController _tabController;
 
   @override
@@ -68,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
           body: TabBarView(
+            physics: BouncingScrollPhysics(),
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0, left: 16.0),

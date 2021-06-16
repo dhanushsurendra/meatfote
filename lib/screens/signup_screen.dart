@@ -246,6 +246,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             horizontal: 10.0,
                           ),
                           suffixIcon: IconButton(
+                            color: Theme.of(context).primaryColor,
                             icon: _obscurePasswordText
                                 ? Icon(Icons.visibility_off)
                                 : Icon(Icons.visibility),
@@ -287,6 +288,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             horizontal: 10.0,
                           ),
                           suffixIcon: IconButton(
+                            color: Theme.of(context).primaryColor,
                             icon: _obscureConfirmPasswordText
                                 ? Icon(Icons.visibility_off)
                                 : Icon(Icons.visibility),

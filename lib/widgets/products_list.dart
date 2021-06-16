@@ -63,6 +63,7 @@ class _ProductsListState extends State<ProductsList> {
 
           if (snapshot.hasError) {
             return RefreshIndicator(
+              color: Theme.of(context).primaryColor,
               onRefresh: () => _getProducts(userId),
               child: ErrorHandler(
                 message: 'Something went wrong!',
@@ -80,8 +81,6 @@ class _ProductsListState extends State<ProductsList> {
                 final Product product =
                     Provider.of<Products>(context, listen: false)
                         .products[index];
-
-                print(product);
 
                 if (product.productType == widget.type) {
                   return ChangeNotifierProvider.value(

@@ -76,6 +76,7 @@ class _CartScreenState extends State<CartScreen> {
 
                           if (snapshot.hasError) {
                             return RefreshIndicator(
+                              color: Theme.of(context).primaryColor,
                               onRefresh: () => _getCartItems(userId),
                               child: ErrorHandler(
                                 message:

@@ -80,6 +80,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
                     if (snapshot.hasError) {
                       return RefreshIndicator(
+                        color: Theme.of(context).primaryColor,
                         onRefresh: () => _getFavorites(userId),
                         child: ErrorHandler(
                           message: 'Something went wrong. Please try again.',

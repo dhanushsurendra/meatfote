@@ -6,7 +6,7 @@ import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.5:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Address {
   String id;
@@ -38,7 +38,6 @@ class Addresses with ChangeNotifier {
   List<Address> _addresses = [];
 
   Address getAddress(String addressId) {
-    print(_addresses.firstWhere((element) => element.id == addressId));
     return _addresses.firstWhere((element) => element.id == addressId);
   }
 
@@ -67,8 +66,6 @@ class Addresses with ChangeNotifier {
       if (responseData['statusCode'] != 201) {
         throw HttpException(responseData['error']);
       }
-
-      print(responseData);
 
       if (type == 'ADD') {
         if (responseData['address'] != null) {
@@ -124,34 +121,6 @@ class Addresses with ChangeNotifier {
       throw error;
     }
   }
-
-  // Future<void> updateAdderss(Map<String, dynamic> address) async {
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse('$BASE_URL/updateAddress/'),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: json.encode(address),
-  //     );
-
-  //     final responseData = json.decode(response.body);
-
-  //     if (responseData['statusCode'] != 201) {
-  //       throw HttpException(responseData['error']);
-  //     }
-
-  //     print(responseData);
-
-  //     notifyListeners();
-  //   } on HttpException catch (error) {
-  //     throw error;
-  //   } on SocketException catch (error) {
-  //     throw error;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 
   Future<void> getAddresses(String userId) async {
     try {
