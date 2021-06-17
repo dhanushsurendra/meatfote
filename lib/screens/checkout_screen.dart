@@ -124,10 +124,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           desc: 'Address updated successfully.',
           showCloseIcon: false,
           btnOkOnPress: () => Navigator.of(context).push(
-            FadePageRoute(
+             FadePageRoute(
               childWidget: ManageAddressScreen(
-                type: 'SELECT',
-                title: 'Select Address',
+                type: 'MANAGE',
+                title: 'Edit Address',
               ),
             ),
           ),

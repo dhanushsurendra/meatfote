@@ -38,6 +38,8 @@ dependencies:
     like_button: ^2.0.2
     connectivity: ^3.0.6
     pin_code_text_field: ^1.8.0
+    flutter_spinkit: '^4.1.2'
+    flutter_launcher_icons: ^0.9.0
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -46,6 +48,11 @@ dependencies:
 dev_dependencies:
     flutter_test:
         sdk: flutter
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,6 +83,7 @@ flutter:
         - assets/images/login.png
         - assets/images/waiting.png
         - assets/images/server_error.png
+        - assets/images/app_icon.png
     #   - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see

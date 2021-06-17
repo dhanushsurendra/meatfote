@@ -36,7 +36,6 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
 
   @override
   void initState() {
-    String userId = Provider.of<Auth>(context, listen: false).userId;
     super.initState();
     subscription = Connectivity()
         .onConnectivityChanged
