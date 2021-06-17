@@ -138,12 +138,15 @@ class _OTPScreenState extends State<OTPScreen> {
                               FadePageRoute(
                                 childWidget: ResetPasswordScreen(
                                   email: widget.email,
+                                  isInApp: false,
                                 ),
                               ),
                             );
+
                             setState(() {
                               _isLoading = false;
                             });
+                            
                           } on HttpException catch (error) {
                             AwesomeDialog(
                               context: context,

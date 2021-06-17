@@ -15,6 +15,7 @@ class OrdersScreen extends StatelessWidget {
             preferredSize: Size.fromHeight(108.0),
             child: AppBar(
               elevation: 0.0,
+              automaticallyImplyLeading: false,
               flexibleSpace: Column(
                 children: [
                   CustomAppBar(
@@ -46,7 +47,8 @@ class OrdersScreen extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+                padding:
+                    const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
                 child: OrderItems(
                   typeExists: false,
                   type: 'PENDING',

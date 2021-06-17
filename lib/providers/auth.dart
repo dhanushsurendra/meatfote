@@ -172,23 +172,38 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future<void> resetPassword(String password, String email) async {
+  Future<void> resetPassword(
+    String newPassword,
+    String email,
+    bool isInApp, {
+    String currentPassword = '',
+    String userId = '',
+  }) async {
+
+    final url =
+        !isInApp ? '$BASE_URL/resetPassword' : '$BASE_URL/changePassword';
+
+    final data = !isInApp
+        ? {
+            'email': email,
+            'newPassword': newPassword,
+          }
+        : {
+            'newPassword': newPassword,
+            'currentPassword': currentPassword,
+            'userId': userId,
+          };
 
     try {
       final response = await http.post(
-        Uri.parse('$BASE_URL/resetPassword'),
+        Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'email': email,
-            'newPassword': password,
-          },
-        ),
+        body: json.encode(data),
       );
 
       final responseData = json.decode(response.body);
 
-      if (responseData['statusCode'] != 201) {
+      if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
 

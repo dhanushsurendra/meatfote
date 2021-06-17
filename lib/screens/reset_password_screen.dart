@@ -10,10 +10,12 @@ import 'package:provider/provider.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
+  final bool isInApp;
 
   const ResetPasswordScreen({
     Key key,
-    @required this.email,
+    @required this.isInApp,
+    this.email,
   }) : super(key: key);
 
   @override
@@ -23,9 +25,11 @@ class ResetPasswordScreen extends StatefulWidget {
 class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmNewPasswordController = TextEditingController();
 
+  final FocusNode _oldPasswordFocusNode = FocusNode();
   final FocusNode _newPasswordFocusNode = FocusNode();
   final FocusNode _confirmNewPasswordFocusNode = FocusNode();
 
@@ -35,7 +39,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void dispose() {
     super.dispose();
 
-    _newPasswordController.dispose();
     _confirmNewPasswordController.dispose();
     _newPasswordFocusNode.dispose();
     _confirmNewPasswordFocusNode.dispose();
@@ -55,10 +58,21 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
 
     try {
-      await Provider.of<Auth>(context, listen: false).resetPassword(
-        _newPasswordController.text,
-        widget.email,
-      );
+      if (!widget.isInApp) {
+        await Provider.of<Auth>(context, listen: false).resetPassword(
+          _newPasswordController.text,
+          widget.email,
+          false,
+        );
+      } else {
+        await Provider.of<Auth>(context, listen: false).resetPassword(
+          _newPasswordController.text,
+          null,
+          true,
+          currentPassword: _oldPasswordController.text,
+          userId: Provider.of<Auth>(context, listen: false).userId,
+        );
+      }
 
       AwesomeDialog(
           context: context,
@@ -73,18 +87,22 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
           btnOkOnPress: () {},
           btnOkColor: Theme.of(context).primaryColor,
           onDissmissCallback: () {
-            Navigator.of(context).pushReplacement(
-              FadePageRoute(
-                childWidget: LoginScreen(),
-              ),
-            );
+            widget.isInApp
+                ? Navigator.of(context).pop()
+                : Navigator.of(context).pushReplacement(
+                    FadePageRoute(
+                      childWidget: LoginScreen(),
+                    ),
+                  );
           })
         ..show();
 
       setState(() {
         _isLoading = false;
       });
+      
     } on HttpException catch (error) {
+      print(error);
       AwesomeDialog(
         context: context,
         dialogType: DialogType.ERROR,
@@ -95,9 +113,11 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
         btnOkColor: Theme.of(context).primaryColor,
         btnOkOnPress: () {},
       )..show();
+
       setState(() {
         _isLoading = false;
       });
+
     } catch (error) {
       AwesomeDialog(
         context: context,
@@ -142,6 +162,42 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      widget.isInApp
+                          ? FontHeading(text: 'Old Password')
+                          : Container(),
+                      widget.isInApp ? SizedBox(height: 10.0) : Container(),
+                      widget.isInApp
+                          ? TextFormField(
+                              cursorColor: Theme.of(context).primaryColor,
+                              controller: _oldPasswordController,
+                              focusNode: _oldPasswordFocusNode,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                errorMaxLines: 2,
+                                fillColor: Color(0xFFCAD1DB).withOpacity(.45),
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0.0,
+                                  horizontal: 10.0,
+                                ),
+                              ),
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_newPasswordFocusNode);
+                              },
+                              validator: (value) {
+                                if (value.length < 6) {
+                                  return 'Invalid password.';
+                                }
+                                return null;
+                              },
+                            )
+                          : Container(),
+                      SizedBox(height: 10.0),
                       FontHeading(text: 'New Password'),
                       SizedBox(height: 10.0),
                       TextFormField(
