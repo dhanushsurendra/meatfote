@@ -159,25 +159,25 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
       () => AwesomeDialog(
-          context: context,
-          dialogType: DialogType.WARNING,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Confirm logout',
-          desc: 'Are you sure you want to logout?',
-          btnCancelOnPress: () {},
-          btnOkOnPress: () {
-            Provider.of<Auth>(context, listen: false).logout();
-          },
-          onDissmissCallback: () {
-            Navigator.of(context).pushReplacement(
-              FadePageRoute(
-                childWidget: LoginScreen(),
-              ),
-            );
-          },
-          btnOkColor: Color(0xFF00CA71),
-          btnCancelColor: Theme.of(context).primaryColor)
-        ..show()
+            context: context,
+            dialogType: DialogType.WARNING,
+            animType: AnimType.BOTTOMSLIDE,
+            title: 'Confirm logout',
+            desc: 'Are you sure you want to logout?',
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Provider.of<Auth>(context, listen: false).logout();
+            },
+            onDissmissCallback: () {
+              Navigator.of(context).pushReplacement(
+                FadePageRoute(
+                  childWidget: LoginScreen(),
+                ),
+              );
+            },
+            btnOkColor: Color(0xFF00CA71),
+            btnCancelColor: Theme.of(context).primaryColor,
+          )..show()
     ];
 
     return Scaffold(

@@ -6,6 +6,7 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
+import 'package:meatforte/screens/send_otp_screen.dart';
 import 'package:meatforte/screens/signup_screen.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
 import 'package:provider/provider.dart';
@@ -312,7 +313,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                              FadePageRoute(
+                                childWidget: SendOTPScreen(),
+                              ),
+                            ),
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(fontSize: 14.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.0),
                       Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -131,5 +130,71 @@ class Auth extends ChangeNotifier {
     notifyListeners();
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     sharedPrefs.clear();
+  }
+
+  Future<void> sendOTP(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/sendOTP/$email'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> verifyOTP(String email, String otp) async {
+    try {
+      final response = await http.post(Uri.parse('$BASE_URL/verifyOTP'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'email': email,
+            'otp': otp,
+          }));
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> resetPassword(String password, String email) async {
+
+    try {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/resetPassword'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(
+          {
+            'email': email,
+            'newPassword': password,
+          },
+        ),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 201) {
+        throw HttpException(responseData['error']);
+      }
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }
