@@ -42,6 +42,8 @@ class Auth extends ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
+      print(responseData);
+
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }

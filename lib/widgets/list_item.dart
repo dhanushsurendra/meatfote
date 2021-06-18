@@ -358,17 +358,17 @@ class _ListItemState extends State<ListItem> {
                                   labelText: 'Pieces',
                                   labelStyle: TextStyle(
                                     fontSize: 12.0,
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme.of(context).accentColor,
                                   ),
                                   isDense: true,
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Theme.of(context).accentColor,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Theme.of(context).accentColor,
                                     ),
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(
@@ -398,11 +398,6 @@ class _ListItemState extends State<ListItem> {
                                 ),
                                 isDense: true,
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).accentColor,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Theme.of(context).accentColor,
                                   ),

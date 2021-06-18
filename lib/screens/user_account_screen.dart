@@ -36,23 +36,6 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                     title: 'Profile',
                     containsBackButton: true,
                     containsTrailingButton: true,
-                    trailingButtonIcon: Icon(
-                      Icons.delete_outline_rounded,
-                      color: Colors.white,
-                    ),
-                    trailingButtonOnTap: () => ShowDialog.showDialog(
-                      context,
-                      DialogType.WARNING,
-                      'Delete Account',
-                      'Are you sure you want to delete your accout? All your data will be deleted permanently.',
-                      () => Navigator.of(context).push(
-                        FadePageRoute(
-                          childWidget: LoginScreen(),
-                        ),
-                      ),
-                      true,
-                      () {},
-                    ),
                   ),
                   Material(
                     color: Colors.white,
@@ -78,7 +61,8 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
           body: TabBarView(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+                padding:
+                    const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
                 child: PersonalDetails(),
               ),
               Padding(

@@ -6,6 +6,7 @@ import 'package:meatforte/providers/cart.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/providers/products.dart';
 import 'package:meatforte/providers/search.dart';
+import 'package:meatforte/providers/team_members.dart';
 import 'package:meatforte/screens/all_orders_screen.dart';
 import 'package:meatforte/screens/home_screen.dart';
 import 'package:meatforte/screens/intro_screen.dart';
@@ -63,6 +64,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Notifications>(
           create: (ctx) => Notifications(),
         ),
+        ChangeNotifierProvider<TeamMembers>(
+          create: (ctx) => TeamMembers(),
+        )
       ],
       child: Consumer<Auth>(
         builder: (context, auth, widget) => MaterialApp(

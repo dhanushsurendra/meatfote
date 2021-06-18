@@ -47,15 +47,16 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Future<void> _onFormSubmitted() async {
     FocusScope.of(context).unfocus();
 
-    setState(() {
-      _isLoading = true;
-    });
-
     bool isValid = _formKey.currentState.validate();
 
     if (!isValid) {
       return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
+
 
     try {
       if (!widget.isInApp) {
