@@ -6,6 +6,8 @@ import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:meatforte/providers/search.dart';
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -45,10 +47,17 @@ class Orders with ChangeNotifier {
         orElse: () => null);
   }
 
-  Future<void> getOrders(String userId) async {
+  Future<void> getOrders(
+    String userId,
+    String type,
+    BuildContext context,
+  ) async {
     try {
+      final url = type == 'PRODUCTS'
+          ? '$BASE_URL/getOrders/$userId'
+          : '$BASE_URL/searchOrders?userId=$userId&query=${Provider.of<Search>(context, listen: false).searchInput}';
       final response = await http.get(
-        Uri.parse('$BASE_URL/getOrders/$userId'),
+        Uri.parse(url),
       );
 
       final responseData = json.decode(response.body);
@@ -110,7 +119,7 @@ class Orders with ChangeNotifier {
             locality: responseData['orders'][i]['address']['locality'],
             timeOfDelivery: responseData['orders'][i]['address']
                 ['time_of_delivery'],
-            phoneNumber: responseData['orders'][i]['address']['phoneNumber'],
+            phoneNumber: responseData['orders'][i]['address']['phone_number'],
             pincode: responseData['orders'][i]['address']['pincode'],
           ),
           orderedProducts: _orderedProducts[i],
@@ -172,6 +181,40 @@ class Orders with ChangeNotifier {
       throw error;
     } on SocketException catch (error) {
       throw error;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> cancelOrder(String userId, String orderId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/cancelOrder/'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'userId': userId,
+            'orderId': orderId,
+          },
+        ),
+      );
+
+      final responseData = json.decode(response.body);
+
+      print(responseData);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      final orderItemIndex = _orderItems
+          .indexWhere((OrderItem orderItem) => orderItem.id == orderId);
+
+      _orderItems.removeAt(orderItemIndex);
+
+      notifyListeners();
     } catch (error) {
       throw error;
     }

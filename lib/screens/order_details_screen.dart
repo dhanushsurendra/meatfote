@@ -19,6 +19,7 @@ class OrderDetailsScreen extends StatelessWidget {
   final String addressId;
   final String title;
   final bool isOrderSummary;
+  final bool hasCancelOrder;
 
   const OrderDetailsScreen({
     Key key,
@@ -27,6 +28,7 @@ class OrderDetailsScreen extends StatelessWidget {
     this.addressId,
     @required this.title,
     @required this.isOrderSummary,
+    @required this.hasCancelOrder,
   }) : super(key: key);
 
   @override
@@ -90,7 +92,8 @@ class OrderDetailsScreen extends StatelessWidget {
       'Landmark',
       'City',
       'Pincode',
-      'Time of Delivery'
+      'Time of Delivery',
+      'Phone Number'
     ];
 
     final List _values = isOrderSummary
@@ -102,6 +105,7 @@ class OrderDetailsScreen extends StatelessWidget {
             address.city,
             address.pincode.toString(),
             address.timeOfDelivery,
+            address.phoneNumber
           ]
         : [
             orderItem.address.businessName,
@@ -111,9 +115,8 @@ class OrderDetailsScreen extends StatelessWidget {
             orderItem.address.city,
             orderItem.address.pincode.toString(),
             orderItem.address.timeOfDelivery,
+            orderItem.address.phoneNumber,
           ];
-
-    print(_values);
 
     return SafeArea(
       child: Scaffold(
@@ -270,7 +273,7 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomSheet: isOrderSummary
+        bottomSheet: isOrderSummary || hasCancelOrder
             ? Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -279,26 +282,39 @@ class OrderDetailsScreen extends StatelessWidget {
                 child: Button(
                   onTap: () async {
                     try {
-                      await Provider.of<Orders>(context, listen: false)
-                          .createOrder(
-                        userId,
-                        addressId,
-                        cartItems,
-                        double.parse(_calcTotal()),
-                      );
+                      if (!hasCancelOrder) {
+                        await Provider.of<Orders>(context, listen: false)
+                            .createOrder(
+                          userId,
+                          addressId,
+                          cartItems,
+                          double.parse(
+                            _calcTotal(),
+                          ),
+                        );
+                      } else {
+                        await Provider.of<Orders>(context, listen: false)
+                            .cancelOrder(
+                          userId,
+                          orderItem.id,
+                        );
+                      }
 
                       AwesomeDialog(
                         context: context,
                         dialogType: DialogType.SUCCES,
                         animType: AnimType.BOTTOMSLIDE,
                         title: 'Successful!',
-                        desc: 'Order placed successfully.',
+                        desc:
+                            'Order ${hasCancelOrder ? 'deleted' : 'placed'} successfully.',
                         showCloseIcon: false,
-                        btnOkOnPress: () => Navigator.of(context).push(
-                          FadePageRoute(
-                            childWidget: BottomNavigation(),
-                          ),
-                        ),
+                        btnOkOnPress: () => hasCancelOrder
+                            ? Navigator.of(context).pop()
+                            : Navigator.of(context).push(
+                                FadePageRoute(
+                                  childWidget: BottomNavigation(),
+                                ),
+                              ),
                         btnOkColor: Theme.of(context).primaryColor,
                         dismissOnBackKeyPress: false,
                         dismissOnTouchOutside: false,
@@ -312,7 +328,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       );
                     }
                   },
-                  buttonText: 'Confirm',
+                  buttonText: hasCancelOrder ? 'Cancel Order' : 'Confirm',
                 ),
               )
             : SizedBox.shrink(),

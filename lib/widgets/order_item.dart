@@ -13,12 +13,16 @@ class OrderItem extends StatelessWidget {
   final OrderItemClass.OrderItem orderItem;
   final int index;
   final bool isAllOrders;
+  final bool hasCancelOrder;
+  final bool isSearchResult;
 
   const OrderItem({
     Key key,
     @required this.orderItem,
     @required this.index,
     @required this.isAllOrders,
+    @required this.hasCancelOrder,
+    this.isSearchResult = false,
   }) : super(key: key);
 
   @override
@@ -135,7 +139,7 @@ class OrderItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    isAllOrders
+                    isAllOrders && !isSearchResult
                         ? ButtonDetails(
                             title: 'Re-order',
                             onTap: () => Navigator.of(context).push(
@@ -149,9 +153,10 @@ class OrderItem extends StatelessWidget {
                               FadePageRoute(
                                 childWidget: OrderDetailsScreen(
                                   orderId: orderItem.id,
-                                  title: 'Order Summary',
+                                  title: 'Order Details',
                                   isOrderSummary: false,
                                   addressId: orderItem.address.id,
+                                  hasCancelOrder: hasCancelOrder,
                                 ),
                               ),
                             ),

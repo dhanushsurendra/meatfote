@@ -123,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
           ),
       () => Navigator.of(context).push(
             FadePageRoute(
-              childWidget: AllOrdersScreen(),
+              childWidget: AllOrdersScreen(isSearchResult: false,),
             ),
           ),
       () => Navigator.of(context).push(

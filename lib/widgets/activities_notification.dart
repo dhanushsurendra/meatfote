@@ -36,6 +36,7 @@ class ActivitiesNotification extends StatelessWidget {
                             Provider.of<Notifications>(context, listen: false)
                                 .activities[index]
                                 .orderId,
+                        hasCancelOrder: false,
                       ),
                     ),
                   ),

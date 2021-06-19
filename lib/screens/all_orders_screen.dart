@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
+import 'package:meatforte/widgets/empty_image.dart';
 import 'package:meatforte/widgets/shimmer_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:meatforte/widgets/order_item.dart' as WidgetOrderItem;
 
 class AllOrdersScreen extends StatelessWidget {
-  const AllOrdersScreen({Key key}) : super(key: key);
+  final String type;
+  final bool isSearchResult;
+
+  const AllOrdersScreen({
+    Key key,
+    this.isSearchResult = false,
+    this.type = 'PRODUCTS',
+  }) : super(key: key);
 
   static const routeName = '/all-orders-screen';
 
@@ -26,7 +34,7 @@ class AllOrdersScreen extends StatelessWidget {
             Expanded(
               child: FutureBuilder(
                 future: Provider.of<Orders>(context, listen: false)
-                    .getOrders(userId),
+                    .getOrders(userId, type, context),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Padding(
@@ -39,29 +47,39 @@ class AllOrdersScreen extends StatelessWidget {
                     );
                   }
 
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 16.0,
-                    ),
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: Provider.of<Orders>(context, listen: false)
-                          .orderItems
-                          .length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final OrderItem orderItem =
-                            Provider.of<Orders>(context, listen: false)
-                                .orderItems[index];
-                        return WidgetOrderItem.OrderItem(
-                          orderItem: orderItem,
-                          isAllOrders: true,
-                          index: index,
+                  return Provider.of<Orders>(context).orderItems.length == 0
+                      ? EmptyImage(
+                          message: 'No orders yet. Start ordering some!',
+                          imageUrl: 'assets/images/empty.png',
+                          heightPercent: 0.7,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                            top: 16.0,
+                          ),
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount:
+                                Provider.of<Orders>(context, listen: false)
+                                    .orderItems
+                                    .length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final OrderItem orderItem =
+                                  Provider.of<Orders>(context, listen: false)
+                                      .orderItems[index];
+                              return WidgetOrderItem.OrderItem(
+                                orderItem: orderItem,
+                                isAllOrders: true,
+                                index: index,
+                                isSearchResult: isSearchResult,
+                                hasCancelOrder:
+                                    orderItem.orderStatus == 'PENDING',
+                              );
+                            },
+                          ),
                         );
-                      },
-                    ),
-                  );
                 },
               ),
             ),

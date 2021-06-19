@@ -10,7 +10,7 @@ class SearchFieldContainer extends StatelessWidget {
       splashColor: Colors.transparent,
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => SearchInputScreen(),
+          builder: (_) => SearchInputScreen(type: 'ORDERS'),
         ),
       ),
       child: Container(

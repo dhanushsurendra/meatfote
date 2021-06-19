@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/providers/search.dart';
+import 'package:meatforte/screens/all_orders_screen.dart';
 import 'package:meatforte/screens/search_items_screen.dart';
 import 'package:provider/provider.dart';
 
 class SearchInputScreen extends StatefulWidget {
-  const SearchInputScreen({Key key}) : super(key: key);
+  final String type;
+
+  const SearchInputScreen({
+    Key key,
+    this.type = 'SEARCH_PRODUCTS',
+  }) : super(key: key);
 
   @override
   _SearchInputScreenState createState() => _SearchInputScreenState();
@@ -73,11 +79,23 @@ class _SearchInputScreenState extends State<SearchInputScreen> {
                 if (value.isEmpty) {
                   return;
                 }
-                Navigator.of(context).push(
-                  FadePageRoute(
-                    childWidget: SearchItemsScreen(),
-                  ),
-                );
+
+                if (widget.type == 'SEARCH_PRODUCTS') {
+                  Navigator.of(context).push(
+                    FadePageRoute(
+                      childWidget: SearchItemsScreen(),
+                    ),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    FadePageRoute(
+                      childWidget: AllOrdersScreen(
+                        type: 'SEARCH_ORDERS',
+                        isSearchResult: true,
+                      ),
+                    ),
+                  );
+                }
               },
             ),
           ),

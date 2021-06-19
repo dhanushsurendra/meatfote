@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/screens/search_input_screen.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/order_items.dart';
 
@@ -21,6 +23,19 @@ class OrdersScreen extends StatelessWidget {
                   CustomAppBar(
                     title: 'Orders',
                     containsBackButton: false,
+                    containsTrailingButton: true,
+                    trailingButtonIcon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 25.0,
+                    ),
+                    trailingButtonOnTap: () {
+                      Navigator.of(context).push(
+                        FadePageRoute(
+                          childWidget: SearchInputScreen(type: 'SEARCH_ORDERS'),
+                        ),
+                      );
+                    },
                   ),
                   Material(
                     color: Colors.white,
@@ -78,32 +93,3 @@ class OrdersScreen extends StatelessWidget {
   }
 }
 
-// FutureBuilder(
-//           future: Provider.of<Orders>(context, listen: false).getOrders(userId),
-//           builder: (BuildContext context, AsyncSnapshot snapshot) {
-//             return Container(
-//               child: SingleChildScrollView(
-//                 physics: BouncingScrollPhysics(),
-//                 child: Column(
-//                   children: [
-//                     Padding(
-//                       padding: const EdgeInsets.all(16.0),
-//                       child: SearchFieldContainer(),
-//                     ),
-//                     Padding(
-//                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//                       child: TabLayout(
-//                         type: 'ORDERS',
-//                         categories: ['Pending', 'Shipped', 'Delivered'],
-//                         initialValue: OrderItems(
-//                           status: 'PENDING',
-//                           typeExists: false,
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             );
-//           },
-//         ),

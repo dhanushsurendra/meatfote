@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
+import 'package:meatforte/widgets/empty_image.dart';
 import 'package:meatforte/widgets/shimmer_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:meatforte/widgets/order_item.dart' as WidgetOrderItem;
@@ -44,7 +45,8 @@ class _OrderItemsState extends State<OrderItems> {
   }
 
   Future<void> _getOrders(String userId) async {
-    await Provider.of<Orders>(context, listen: false).getOrders(userId);
+    await Provider.of<Orders>(context, listen: false)
+        .getOrders(userId, 'PRODUCTS', context);
     setState(() {});
   }
 
@@ -52,7 +54,8 @@ class _OrderItemsState extends State<OrderItems> {
   Widget build(BuildContext context) {
     String userId = Provider.of<Auth>(context, listen: false).userId;
     return FutureBuilder(
-      future: Provider.of<Orders>(context, listen: false).getOrders(userId),
+      future: Provider.of<Orders>(context, listen: false)
+          .getOrders(userId, 'PRODUCTS', context),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return OrdersShimmer();
@@ -69,48 +72,42 @@ class _OrderItemsState extends State<OrderItems> {
           );
         }
 
-        return ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: Provider.of<Orders>(context).orderItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            final OrderItem orderItem =
-                Provider.of<Orders>(context, listen: false).orderItems[index];
+        return Provider.of<Orders>(context).orderItems.length == 0
+            ? EmptyImage(
+                message: 'No orders yet. Start ordering some!',
+                imageUrl: 'assets/images/empty.png',
+                heightPercent: 0.7,
+              )
+            : ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: Provider.of<Orders>(context).orderItems.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final OrderItem orderItem =
+                      Provider.of<Orders>(context, listen: false)
+                          .orderItems[index];
 
-            if (orderItem.orderStatus == widget.type) {
-              return WidgetOrderItem.OrderItem(
-                isAllOrders: false,
-                index: index,
-                orderItem: orderItem,
-              );
-            }
+                  if (orderItem.orderStatus == widget.type) {
+                    return WidgetOrderItem.OrderItem(
+                      isAllOrders: false,
+                      index: index,
+                      orderItem: orderItem,
+                      hasCancelOrder: orderItem.orderStatus == 'PENDING',
+                    );
+                  }
 
-            if (orderItem.orderStatus == widget.type) {
-              return WidgetOrderItem.OrderItem(
-                isAllOrders: false,
-                index: index,
-                orderItem: orderItem,
+                  if (widget.typeExists &&
+                      orderItem.paymentStatus == widget.type) {
+                    return WidgetOrderItem.OrderItem(
+                      isAllOrders: false,
+                      index: index,
+                      orderItem: orderItem,
+                      hasCancelOrder: false,
+                    );
+                  }
+                  return Container();
+                },
               );
-            }
-
-            if (orderItem.orderStatus == widget.type) {
-              return WidgetOrderItem.OrderItem(
-                isAllOrders: false,
-                index: index,
-                orderItem: orderItem,
-              );
-            }
-
-            if (widget.typeExists && orderItem.paymentStatus == widget.type) {
-              return WidgetOrderItem.OrderItem(
-                isAllOrders: false,
-                index: index,
-                orderItem: orderItem,
-              );
-            }
-            return Container();
-          },
-        );
       },
     );
   }

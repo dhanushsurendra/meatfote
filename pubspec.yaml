@@ -40,6 +40,8 @@ dependencies:
     pin_code_text_field: ^1.8.0
     flutter_spinkit: '^4.1.2'
     flutter_launcher_icons: ^0.9.0
+    image_picker: ^0.8.0+3
+    image_cropper: ^1.4.0
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -50,9 +52,9 @@ dev_dependencies:
         sdk: flutter
 
 flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/images/app_icon.png"
+    android: 'launcher_icon'
+    ios: true
+    image_path: 'assets/images/app_icon.png'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

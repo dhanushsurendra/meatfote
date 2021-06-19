@@ -29,6 +29,7 @@ class RadioAddress extends StatelessWidget {
             childWidget: OrderDetailsScreen(
               title: 'Order Summary',
               isOrderSummary: true,
+              hasCancelOrder: false,
               addressId: address.id,
               cartItems: Provider.of<Cart>(context, listen: false).cartItems,
             ),
@@ -59,6 +60,7 @@ class RadioAddress extends StatelessWidget {
                     title: 'Order Summary',
                     isOrderSummary: true,
                     addressId: address.id,
+                    hasCancelOrder: false,
                     cartItems:
                         Provider.of<Cart>(context, listen: false).cartItems,
                   ),
