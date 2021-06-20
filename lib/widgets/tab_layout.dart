@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meatforte/widgets/order_items.dart';
 import 'package:meatforte/widgets/personal_details.dart';
 import 'package:meatforte/widgets/products_list.dart';
 import 'package:meatforte/widgets/settings_details.dart';

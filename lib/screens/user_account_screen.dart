@@ -59,6 +59,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
             ),
           ),
           body: TabBarView(
+            physics: BouncingScrollPhysics(),
             children: [
               Padding(
                 padding:

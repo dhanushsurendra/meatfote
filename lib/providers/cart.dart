@@ -6,7 +6,7 @@ import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.8:3000';
+const BASE_URL = 'http://192.168.0.8:8080';
 
 class Cart with ChangeNotifier {
   List<Product> _cartItems = [];
