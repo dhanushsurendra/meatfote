@@ -78,35 +78,38 @@ class _OrderItemsState extends State<OrderItems> {
                 imageUrl: 'assets/images/empty.png',
                 heightPercent: 0.7,
               )
-            : ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: Provider.of<Orders>(context).orderItems.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final OrderItem orderItem =
-                      Provider.of<Orders>(context, listen: false)
-                          .orderItems[index];
+            : SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: Provider.of<Orders>(context).orderItems.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final OrderItem orderItem =
+                        Provider.of<Orders>(context, listen: false)
+                            .orderItems[index];
 
-                  if (orderItem.orderStatus == widget.type) {
-                    return WidgetOrderItem.OrderItem(
-                      isAllOrders: false,
-                      index: index,
-                      orderItem: orderItem,
-                      hasCancelOrder: orderItem.orderStatus == 'PENDING',
-                    );
-                  }
+                    if (orderItem.orderStatus == widget.type) {
+                      return WidgetOrderItem.OrderItem(
+                        isAllOrders: false,
+                        index: index,
+                        orderItem: orderItem,
+                        hasCancelOrder: orderItem.orderStatus == 'PENDING',
+                      );
+                    }
 
-                  if (widget.typeExists &&
-                      orderItem.paymentStatus == widget.type) {
-                    return WidgetOrderItem.OrderItem(
-                      isAllOrders: false,
-                      index: index,
-                      orderItem: orderItem,
-                      hasCancelOrder: false,
-                    );
-                  }
-                  return Container();
-                },
+                    if (widget.typeExists &&
+                        orderItem.paymentStatus == widget.type) {
+                      return WidgetOrderItem.OrderItem(
+                        isAllOrders: false,
+                        index: index,
+                        orderItem: orderItem,
+                        hasCancelOrder: false,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               );
       },
     );

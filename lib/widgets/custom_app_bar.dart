@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/widgets/bottom_navigation.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
@@ -7,12 +9,14 @@ class CustomAppBar extends StatelessWidget {
   final bool containsTrailingButton;
   final Icon trailingButtonIcon;
   final Function trailingButtonOnTap;
+  final bool isNotificationScreen;
 
   CustomAppBar({
     Key key,
     @required this.title,
     this.containsBackButton = false,
     this.containsTrailingButton = false,
+    this.isNotificationScreen = false,
     this.trailingButtonIcon = const Icon(
       Icons.delete,
       color: Colors.transparent,
@@ -28,11 +32,10 @@ class CustomAppBar extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         boxShadow: [
           BoxShadow(
-                  offset: Offset(0.0, 2.0),
-                  blurRadius: 6.0,
-                  color: Colors.black26,
-                )
-           
+            offset: Offset(0.0, 2.0),
+            blurRadius: 6.0,
+            color: Colors.black26,
+          )
         ],
       ),
       child: Padding(
@@ -45,19 +48,24 @@ class CustomAppBar extends StatelessWidget {
               icon: FaIcon(
                 FontAwesomeIcons.chevronLeft,
                 size: 20,
-                color: containsBackButton
-                    ? Colors.white
-                    : Colors.transparent,
+                color: containsBackButton ? Colors.white : Colors.transparent,
               ),
-              onPressed: () =>
-                  containsBackButton ? Navigator.of(context).pop() : null,
+              onPressed: () => containsBackButton && isNotificationScreen
+                  ? Navigator.of(context).pushReplacement(
+                      FadePageRoute(
+                        childWidget: BottomNavigation(),
+                      ),
+                    )
+                  : containsBackButton
+                      ? Navigator.of(context).pop()
+                      : null,
             ),
             Text(
               title,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w300,
-                fontSize:20.0,
+                fontSize: 20.0,
               ),
             ),
             IconButton(

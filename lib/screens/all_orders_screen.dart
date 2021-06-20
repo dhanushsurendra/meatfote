@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
+import 'package:meatforte/screens/search_input_screen.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/empty_image.dart';
 import 'package:meatforte/widgets/shimmer_loading.dart';
@@ -30,6 +32,19 @@ class AllOrdersScreen extends StatelessWidget {
             CustomAppBar(
               title: 'Orders',
               containsBackButton: true,
+              containsTrailingButton: true,
+              trailingButtonIcon: Icon(
+                Icons.search,
+                color: Colors.white,
+                size: 25.0,
+              ),
+              trailingButtonOnTap: () {
+                Navigator.of(context).push(
+                  FadePageRoute(
+                    childWidget: SearchInputScreen(type: 'SEARCH_ORDERS'),
+                  ),
+                );
+              },
             ),
             Expanded(
               child: FutureBuilder(

@@ -1,28 +1,71 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationItem {
   final String id;
   final String orderId;
-  final String subTitle;
-  final String type;
+  final String title;
+  final String subtitle;
   final bool read;
+  final DateTime createdAt;
 
   NotificationItem({
     @required this.id,
     @required this.orderId,
-    @required this.subTitle,
+    @required this.title,
+    @required this.subtitle,
     @required this.read,
-    @required this.type,
+    @required this.createdAt,
   });
 }
 
-class Notifications with ChangeNotifier {
-  final List<NotificationItem> _activities = [
-    
-  ];
+const BASE_URL = 'http://192.168.0.8:8080';
 
-  List<NotificationItem> get activities {
-    return [..._activities];
+class Notifications with ChangeNotifier {
+  List<NotificationItem> _notifications = [];
+
+  List<NotificationItem> get notifications {
+    return [..._notifications];
+  }
+
+  Future<void> fetchNotifications(String userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$BASE_URL/getNotifications/$userId'),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      print(responseData);
+
+      List<NotificationItem> _loadedNotifications = [];
+
+      for (var i = 0; i < responseData['notifications'].length; i++) {
+        final notification = new NotificationItem(
+          id: responseData['notifications'][i]['_id'],
+          orderId: responseData['notifications'][i]['order_id'],
+          title: responseData['notifications'][i]['title'],
+          subtitle: responseData['notifications'][i]['subtitle'],
+          read: responseData['notifications'][i]['read'],
+          createdAt: DateTime.parse(responseData['notifications'][i]['createdAt'])
+        );
+
+        _loadedNotifications.add(notification);
+      }
+
+      _notifications = _loadedNotifications;
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

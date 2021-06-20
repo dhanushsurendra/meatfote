@@ -144,7 +144,7 @@ class OrderItem extends StatelessWidget {
                             title: 'Re-order',
                             onTap: () => Navigator.of(context).push(
                               FadePageRoute(
-                                childWidget: CartScreen(),
+                                childWidget: CartScreen(isAllOrders: true),
                               ),
                             ),
                           )

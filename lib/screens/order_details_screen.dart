@@ -7,6 +7,7 @@ import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/providers/product.dart';
+import 'package:meatforte/screens/notification_screen.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
 import 'package:meatforte/widgets/button.dart';
 import 'package:meatforte/widgets/cart_dropdown_items.dart';
@@ -312,7 +313,7 @@ class OrderDetailsScreen extends StatelessWidget {
                             ? Navigator.of(context).pop()
                             : Navigator.of(context).push(
                                 FadePageRoute(
-                                  childWidget: BottomNavigation(),
+                                  childWidget: NotificationScreen(),
                                 ),
                               ),
                         btnOkColor: Theme.of(context).primaryColor,

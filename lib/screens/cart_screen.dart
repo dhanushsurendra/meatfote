@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/cart.dart';
 import 'package:meatforte/providers/product.dart';
-import 'package:meatforte/providers/products.dart';
 import 'package:meatforte/widgets/bottom_bar.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/empty_image.dart';
@@ -15,7 +14,12 @@ import 'package:meatforte/widgets/shimmer_loading.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key key}) : super(key: key);
+  final bool isAllOrders;
+
+  const CartScreen({
+    Key key,
+    @required this.isAllOrders,
+  }) : super(key: key);
 
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -161,9 +165,9 @@ class _CartScreenState extends State<CartScreen> {
                 ],
               ),
               Positioned(
-                bottom: 10.0,
-                left: 16.0,
-                right: 16.0,
+                bottom: !widget.isAllOrders ? 10.0 : 0.0,
+                left: !widget.isAllOrders ? 16.0 : 0.0,
+                right: !widget.isAllOrders ? 16.0 : 0.0,
                 child: BottomBar(),
               ),
             ],

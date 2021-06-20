@@ -25,7 +25,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     final List<Widget> _bottomNavigationItems = [
       HomeScreen(),
       FavoritesScreen(),
-      CartScreen(),
+      CartScreen(isAllOrders: false,),
       OrdersScreen(),
       ProfileScreen(),
     ];

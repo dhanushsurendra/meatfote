@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/screens/search_input_screen.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/order_items.dart';
 
 class PaymentsScreen extends StatelessWidget {
-
   const PaymentsScreen({Key key}) : super(key: key);
 
   static const routeName = '/payments-screen';
@@ -25,6 +26,19 @@ class PaymentsScreen extends StatelessWidget {
                   CustomAppBar(
                     title: 'Payments',
                     containsBackButton: true,
+                    containsTrailingButton: true,
+                    trailingButtonIcon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 25.0,
+                    ),
+                    trailingButtonOnTap: () {
+                      Navigator.of(context).push(
+                        FadePageRoute(
+                          childWidget: SearchInputScreen(type: 'SEARCH_ORDERS'),
+                        ),
+                      );
+                    },
                   ),
                   Material(
                     color: Colors.white,

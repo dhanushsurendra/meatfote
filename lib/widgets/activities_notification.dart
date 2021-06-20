@@ -18,7 +18,7 @@ class ActivitiesNotification extends StatelessWidget {
           EmptyImage(
             message: 'No activity yet :)',
             imageUrl: 'assets/images/empty.png',
-            heightPercent: .7,
+            heightPercent: .75,
           )
         ],
       ),
