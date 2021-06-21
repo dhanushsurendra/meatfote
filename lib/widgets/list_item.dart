@@ -74,7 +74,7 @@ class _ListItemState extends State<ListItem> {
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      if (widget.isInStock) {
+      if (!widget.isInStock) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Product not in stock'),
@@ -379,7 +379,7 @@ class _ListItemState extends State<ListItem> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.22,
                               child: TextField(
-                                enabled: widget.textFieldEnabled || widget.product.isInStock,
+                                enabled: widget.textFieldEnabled,
                                 controller: _piecesController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
@@ -522,8 +522,8 @@ class _ListItemState extends State<ListItem> {
                     ],
                   ),
                 ),
-                !widget.product.isInStock && !widget.isCart ? Divider() : Container(),
-                !widget.product.isInStock && !widget.isCart
+                !widget.product.isInStock ? Divider() : Container(),
+                !widget.product.isInStock
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

@@ -34,7 +34,7 @@ class SettingsDetails extends StatelessWidget {
           icon: Icon(Icons.map_outlined),
           fontSize: 12.0,
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 20.0),
         FontHeading(text: 'Team Member'),
         SizedBox(height: 10.0),
         ListTileContainer(
@@ -49,7 +49,7 @@ class SettingsDetails extends StatelessWidget {
           icon: Icon(Icons.group_add_outlined),
           fontSize: 12.0,
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 20.0),
         FontHeading(text: 'Change Password'),
         SizedBox(height: 10.0),
         ListTileContainer(
@@ -64,7 +64,7 @@ class SettingsDetails extends StatelessWidget {
           icon: Icon(Icons.lock_outlined),
           fontSize: 12.0,
         ),
-        SizedBox(height: 10.0),
+        SizedBox(height: 20.0),
         FontHeading(text: 'Delete Account'),
         SizedBox(height: 10.0),
         ListTileContainer(

@@ -8,6 +8,7 @@ import 'package:meatforte/providers/products.dart';
 import 'package:meatforte/providers/search.dart';
 import 'package:meatforte/providers/team_members.dart';
 import 'package:meatforte/screens/all_orders_screen.dart';
+import 'package:meatforte/screens/detect_location_screen.dart';
 import 'package:meatforte/screens/home_screen.dart';
 import 'package:meatforte/screens/intro_screen.dart';
 import 'package:meatforte/screens/login_screen.dart';
@@ -79,16 +80,17 @@ class MyApp extends StatelessWidget {
             canvasColor: Colors.white,
           ),
           initialRoute: '/splash-screen',
-          home: auth.isAuth
-              ? BottomNavigation()
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoSignIn(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) =>
-                      snapshot.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
-                          : LoginScreen(),
-                ),
+          home: DetectLocationScreen(),
+          // auth.isAuth
+          //     ? BottomNavigation()
+          //     : FutureBuilder(
+          //         future:
+          //             Provider.of<Auth>(context, listen: false).tryAutoSignIn(),
+          //         builder: (BuildContext context, AsyncSnapshot snapshot) =>
+          //             snapshot.connectionState == ConnectionState.waiting
+          //                 ? SplashScreen()
+          //                 : LoginScreen(),
+          //       ),
           routes: {
             SplashScreen.routeName: (ctx) => SplashScreen(),
             BottomNavigation.routeName: (ctx) => BottomNavigation(),

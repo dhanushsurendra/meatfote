@@ -15,6 +15,18 @@ class Cart with ChangeNotifier {
     return [..._cartItems];
   }
 
+  bool get isCartItemsInStock {
+    bool _isInStock = true;
+
+    for (var i = 0; i < _cartItems.length; i++) {
+      if (!_cartItems[i].isInStock) {
+        _isInStock = false;
+      }
+    }
+
+    return _isInStock;
+  }
+
   double totalPrice = 0;
 
   double get total {

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
@@ -15,6 +16,20 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AwesomeDialog _showDialog() {
+      return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Out of Stock',
+        desc:
+            'One or more products are not in stock. Sorry for the inconvenience.',
+        showCloseIcon: false,
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Container(
@@ -77,8 +92,13 @@ class BottomBar extends StatelessWidget {
                   child: Material(
                     borderRadius: BorderRadius.circular(5.0),
                     child: InkWell(
-                      onTap: () =>
-                          Provider.of<Cart>(context, listen: false).cartItems.length == 0
+                      onTap: () => !Provider.of<Cart>(context, listen: false)
+                              .isCartItemsInStock
+                          ? _showDialog()
+                          : Provider.of<Cart>(context, listen: false)
+                                      .cartItems
+                                      .length ==
+                                  0
                               ? null
                               : Navigator.of(context).push(
                                   FadePageRoute(
