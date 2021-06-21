@@ -257,6 +257,7 @@ class _SearchItemsScreenState extends State<SearchItemsScreen> {
                                   return ChangeNotifierProvider.value(
                                     value: product,
                                     child: ListItem(
+                                      isInStock: product.isInStock,
                                       containsAddToCartButton: true,
                                       product: product,
                                       isCart: false,

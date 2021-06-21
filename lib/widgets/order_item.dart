@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart' as OrderItemClass;
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/screens/cart_screen.dart';
@@ -27,8 +28,10 @@ class OrderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userId = Provider.of<Auth>(context, listen: false).userId;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -141,12 +144,17 @@ class OrderItem extends StatelessWidget {
                     ),
                     isAllOrders && !isSearchResult
                         ? ButtonDetails(
-                            title: 'Re-order',
-                            onTap: () => Navigator.of(context).push(
-                              FadePageRoute(
-                                childWidget: CartScreen(isAllOrders: true),
-                              ),
-                            ),
+                            title: 'Reorder',
+                            onTap: () async {
+                              await Provider.of<Orders>(context, listen: false)
+                                  .reorder(userId, orderItem.id);
+
+                              Navigator.of(context).push(
+                                FadePageRoute(
+                                  childWidget: CartScreen(isAllOrders: true),
+                                ),
+                              );
+                            },
                           )
                         : ButtonDetails(
                             onTap: () => Navigator.of(context).push(

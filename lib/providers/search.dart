@@ -38,6 +38,7 @@ class Search with ChangeNotifier {
           imageUrl: responseData['products'][i]['image_url'],
           layout: responseData['products'][i]['layout'],
           productType: responseData['products'][i]['product_type'],
+          isInStock: responseData['products'][i]['is_in_stock'],
         );
 
         _loadedProduct.add(product);

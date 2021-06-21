@@ -121,6 +121,7 @@ class _CartScreenState extends State<CartScreen> {
                                         child: ListItem(
                                           product: product,
                                           isCart: true,
+                                          isInStock: product.isInStock,
                                           containsAddToCartButton: false,
                                           isFavorite: false,
                                           textFieldEnabled: false,
@@ -143,6 +144,7 @@ class _CartScreenState extends State<CartScreen> {
                                       product: product,
                                       isCart: true,
                                       isFavorite: false,
+                                      isInStock: product.isInStock,
                                       containsAddToCartButton: false,
                                       containsAddFavorite: false,
                                       deleteType: 'CART',

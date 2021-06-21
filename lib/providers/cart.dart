@@ -65,6 +65,7 @@ class Cart with ChangeNotifier {
           layout: responseData['products'][i]['product_id']['layout'],
           productType: responseData['products'][i]['product_id']
               ['product_type'],
+          isInStock: responseData['products'][i]['product_id']['is_in_stock'],
           gross: responseData['products'][i]['gross'].toDouble(),
           pieces: responseData['products'][i]['pieces'] == null
               ? 0.0
@@ -128,6 +129,7 @@ class Cart with ChangeNotifier {
         imageUrl: cartData['product']['product_id']['imageUrl'],
         productType: cartData['product']['product_id']['product_type'],
         layout: cartData['product']['product_id']['layout'],
+        isInStock: cartData['product']['product_id']['is_in_stock'],
         gross: cartData['product']['gross'].toDouble(),
         pieces: cartData['product']['pieces'] == null
             ? 0.0

@@ -72,6 +72,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             isCart: false,
                             isFavorite: false,
                             isLoading: true,
+                            isInStock: true,
                             textFieldEnabled: false,
                           );
                         },
@@ -112,7 +113,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                   containsAddToCartButton: true,
                                   isFavorite: false,
                                   deleteType: 'FAVORITES',
-                                  textFieldEnabled: true,
+                                  isInStock: product.isInStock,
+                                  textFieldEnabled: product.isInStock,
                                 ),
                               );
                             },

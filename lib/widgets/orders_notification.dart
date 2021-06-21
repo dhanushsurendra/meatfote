@@ -65,10 +65,12 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                   highlightColor: Colors.grey[100],
                   child: Padding(
                     padding: EdgeInsets.only(
-                        top: index != 0 ? 12.0 : 0.0, bottom: 12.0),
+                      top: index != 0 ? 6.0 : 0.0,
+                      bottom: 6.0,
+                    ),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 150.0,
+                      height: 120.0,
                       color: Colors.grey[300],
                     ),
                   ),
@@ -114,16 +116,22 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                       children: [
                         InkWell(
                           splashColor: Colors.transparent,
-                          onTap: () => Navigator.of(context).push(
-                            FadePageRoute(
-                              childWidget: OrderDetailsScreen(
-                                title: 'Order Details',
-                                isOrderSummary: false,
-                                hasCancelOrder: false,
-                                addressId: notification.id,
+                          onTap: () async {
+                            await Provider.of<Notifications>(context,
+                                    listen: false)
+                                .notificationRead(userId, notification.id);
+                            Navigator.of(context).push(
+                              FadePageRoute(
+                                childWidget: OrderDetailsScreen(
+                                  title: 'Order Details',
+                                  isOrderSummary: false,
+                                  hasCancelOrder: false,
+                                  orderId: notification.orderId,
+                                  // addressId: notification.id,
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                           child: Container(
                             width: double.infinity,
                             color: notification.read
@@ -164,13 +172,14 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                            DateTimeFormat.convertToAgo(
-                                              notification.createdAt,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 10.0,
-                                              color: Colors.grey,
-                                            )),
+                                          DateTimeFormat.convertToAgo(
+                                            notification.createdAt,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 10.0,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ],
                                     )
                                   ],

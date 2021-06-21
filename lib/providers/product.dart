@@ -30,7 +30,7 @@ class Product with ChangeNotifier {
     @required this.imageUrl,
     @required this.layout,
     @required this.productType,
-    this.isInStock,
+    @required this.isInStock,
     this.gross = 0.0,
     this.pieces = 0.0,
     this.birds = 0,

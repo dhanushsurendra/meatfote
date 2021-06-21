@@ -21,6 +21,7 @@ class ShimmerLoading extends StatelessWidget {
               product: null,
               isCart: false,
               isLoading: true,
+              isInStock: true,
               isFavorite: true,
               textFieldEnabled: true,
             );
@@ -51,7 +52,7 @@ class OrdersShimmer extends StatelessWidget {
                 color: Colors.grey[300],
               ),
               width: double.infinity,
-              height: 150.0,
+              height: 160.0,
             ),
           );
         },

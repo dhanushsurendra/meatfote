@@ -89,9 +89,10 @@ class _ProductsListState extends State<ProductsList> {
                       containsAddToCartButton: true,
                       product: product,
                       isCart: false,
+                      isInStock: product.isInStock,
                       isFavorite: widget.isFavorite,
                       containsAddFavorite: true,
-                      textFieldEnabled: true,
+                      textFieldEnabled: product.isInStock,
                       gross:
                           product.gross > 0.0 ? product.gross.toString() : '',
                       birds: product.birds > 0 ? product.birds : 0,

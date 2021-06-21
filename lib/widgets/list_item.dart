@@ -20,6 +20,7 @@ class ListItem extends StatefulWidget {
   final bool textFieldEnabled;
   final bool isLoading;
   final bool isFavorite;
+  final bool isInStock;
   final bool containsAddFavorite;
   final String gross;
   final String pieces;
@@ -32,6 +33,7 @@ class ListItem extends StatefulWidget {
     @required this.isCart,
     @required this.isFavorite,
     @required this.textFieldEnabled,
+    @required this.isInStock,
     this.isLoading = false,
     this.containsAddToCartButton = true,
     this.containsAddFavorite = false,
@@ -63,6 +65,7 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
+
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> _addProductToCart() async {
@@ -70,6 +73,17 @@ class _ListItemState extends State<ListItem> {
       final _pieces = _piecesController.text;
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (widget.isInStock) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Product not in stock'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 1),
+          ),
+        );
+        return;
+      }
 
       if (_gross.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -276,8 +290,22 @@ class _ListItemState extends State<ListItem> {
                                 builder: (BuildContext context,
                                     Products products, Widget child) {
                                   return GestureDetector(
-                                    onTap: () async =>
-                                        await _addProductToCart(),
+                                    onTap: () async {
+                                      if (!widget.product.isInStock) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text('Product is not in stock'),
+                                            behavior: SnackBarBehavior.floating,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                          ),
+                                        );
+                                        return;
+                                      }
+                                      await _addProductToCart();
+                                    },
                                     child: Container(
                                       width: 35.0,
                                       height: 35.0,
@@ -351,7 +379,7 @@ class _ListItemState extends State<ListItem> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.22,
                               child: TextField(
-                                enabled: widget.textFieldEnabled,
+                                enabled: widget.textFieldEnabled || widget.product.isInStock,
                                 controller: _piecesController,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
@@ -494,6 +522,20 @@ class _ListItemState extends State<ListItem> {
                     ],
                   ),
                 ),
+                !widget.product.isInStock && !widget.isCart ? Divider() : Container(),
+                !widget.product.isInStock && !widget.isCart
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Out of stock',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           );

@@ -58,7 +58,10 @@ class _OrderItemsState extends State<OrderItems> {
           .getOrders(userId, 'PRODUCTS', context),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return OrdersShimmer();
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: OrdersShimmer(),
+          );
         }
 
         if (snapshot.hasError) {

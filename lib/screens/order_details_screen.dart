@@ -8,13 +8,12 @@ import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/providers/product.dart';
 import 'package:meatforte/screens/notification_screen.dart';
-import 'package:meatforte/widgets/bottom_navigation.dart';
 import 'package:meatforte/widgets/button.dart';
 import 'package:meatforte/widgets/cart_dropdown_items.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   final String orderId;
   final List<Product> cartItems;
   final String addressId;
@@ -33,11 +32,27 @@ class OrderDetailsScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    String userId = Provider.of<Auth>(context, listen: false).userId;
+  _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
+}
 
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = Provider.of<Auth>(context, listen: false).userId;
+    Future.delayed(Duration.zero).then(
+      (_) async => await Provider.of<Orders>(context, listen: false)
+          .fetchOrder(userId, widget.orderId),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     String _calcTotal() {
-      double total = cartItems.fold(0.0, (init, accum) => init += accum.price);
+      double total =
+          widget.cartItems.fold(0.0, (init, accum) => init += accum.price);
       return total.toStringAsFixed(2);
     }
 
@@ -78,12 +93,12 @@ class OrderDetailsScreen extends StatelessWidget {
     OrderItem orderItem;
     Address address;
 
-    if (!isOrderSummary) {
-      orderItem = Provider.of<Orders>(context, listen: false).getOrder(orderId);
+    if (!widget.isOrderSummary) {
+      orderItem = Provider.of<Orders>(context, listen: false).orderItem;
+      print(orderItem);
     } else {
-      address =
-          Provider.of<Addresses>(context, listen: false).getAddress(addressId);
-      print(address);
+      address = Provider.of<Addresses>(context, listen: false)
+          .getAddress(widget.addressId);
     }
 
     final List<String> _address = [
@@ -97,7 +112,7 @@ class OrderDetailsScreen extends StatelessWidget {
       'Phone Number'
     ];
 
-    final List _values = isOrderSummary
+    final List _values = widget.isOrderSummary
         ? [
             address.businessName,
             address.streetAddress,
@@ -127,7 +142,7 @@ class OrderDetailsScreen extends StatelessWidget {
             elevation: 0.0,
             automaticallyImplyLeading: false,
             flexibleSpace: CustomAppBar(
-              title: title,
+              title: widget.title,
               containsBackButton: true,
             ),
           ),
@@ -147,7 +162,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    isOrderSummary
+                    widget.isOrderSummary
                         ? Container()
                         : Text(
                             'Order Id: ${orderItem.id}',
@@ -156,7 +171,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                    !isOrderSummary
+                    !widget.isOrderSummary
                         ? SizedBox(height: 30.0)
                         : SizedBox(height: 0),
                     Row(
@@ -172,7 +187,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            isOrderSummary
+                            widget.isOrderSummary
                                 ? Container()
                                 : Container(
                                     decoration: BoxDecoration(
@@ -206,7 +221,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               color: Theme.of(context).primaryColor,
                             ),
                             Text(
-                              isOrderSummary
+                              widget.isOrderSummary
                                   ? _calcTotal()
                                   : orderItem.totalPrice.toStringAsFixed(2),
                               style: TextStyle(
@@ -224,7 +239,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isOrderSummary
+                          widget.isOrderSummary
                               ? DateFormat.yMMMEd().format(
                                   DateTime.now(),
                                 )
@@ -237,8 +252,8 @@ class OrderDetailsScreen extends StatelessWidget {
                       ],
                     ),
                     CartDropDownItems(
-                      cartItems: isOrderSummary
-                          ? cartItems
+                      cartItems: widget.isOrderSummary
+                          ? widget.cartItems
                           : orderItem.orderedProducts,
                     ),
                     SizedBox(height: 10.0),
@@ -274,7 +289,7 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomSheet: isOrderSummary || hasCancelOrder
+        bottomSheet: widget.isOrderSummary || widget.hasCancelOrder
             ? Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -283,12 +298,12 @@ class OrderDetailsScreen extends StatelessWidget {
                 child: Button(
                   onTap: () async {
                     try {
-                      if (!hasCancelOrder) {
+                      if (!widget.hasCancelOrder) {
                         await Provider.of<Orders>(context, listen: false)
                             .createOrder(
                           userId,
-                          addressId,
-                          cartItems,
+                          widget.addressId,
+                          widget.cartItems,
                           double.parse(
                             _calcTotal(),
                           ),
@@ -307,9 +322,9 @@ class OrderDetailsScreen extends StatelessWidget {
                         animType: AnimType.BOTTOMSLIDE,
                         title: 'Successful!',
                         desc:
-                            'Order ${hasCancelOrder ? 'deleted' : 'placed'} successfully.',
+                            'Order ${widget.hasCancelOrder ? 'deleted' : 'placed'} successfully.',
                         showCloseIcon: false,
-                        btnOkOnPress: () => hasCancelOrder
+                        btnOkOnPress: () => widget.hasCancelOrder
                             ? Navigator.of(context).pop()
                             : Navigator.of(context).push(
                                 FadePageRoute(
@@ -329,7 +344,8 @@ class OrderDetailsScreen extends StatelessWidget {
                       );
                     }
                   },
-                  buttonText: hasCancelOrder ? 'Cancel Order' : 'Confirm',
+                  buttonText:
+                      widget.hasCancelOrder ? 'Cancel Order' : 'Confirm',
                 ),
               )
             : SizedBox.shrink(),

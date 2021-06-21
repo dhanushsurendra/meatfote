@@ -9,8 +9,8 @@ class NotificationItem {
   final String orderId;
   final String title;
   final String subtitle;
-  final bool read;
   final DateTime createdAt;
+  bool read;
 
   NotificationItem({
     @required this.id,
@@ -43,19 +43,17 @@ class Notifications with ChangeNotifier {
         throw HttpException(responseData['error']);
       }
 
-      print(responseData);
-
       List<NotificationItem> _loadedNotifications = [];
 
       for (var i = 0; i < responseData['notifications'].length; i++) {
         final notification = new NotificationItem(
-          id: responseData['notifications'][i]['_id'],
-          orderId: responseData['notifications'][i]['order_id'],
-          title: responseData['notifications'][i]['title'],
-          subtitle: responseData['notifications'][i]['subtitle'],
-          read: responseData['notifications'][i]['read'],
-          createdAt: DateTime.parse(responseData['notifications'][i]['createdAt'])
-        );
+            id: responseData['notifications'][i]['_id'],
+            orderId: responseData['notifications'][i]['order_id'],
+            title: responseData['notifications'][i]['title'],
+            subtitle: responseData['notifications'][i]['subtitle'],
+            read: responseData['notifications'][i]['read'],
+            createdAt:
+                DateTime.parse(responseData['notifications'][i]['createdAt']));
 
         _loadedNotifications.add(notification);
       }
@@ -67,65 +65,35 @@ class Notifications with ChangeNotifier {
       throw error;
     }
   }
-}
 
-// NotificationItem(
-//       id: '1',
-//       orderId: '2',
-//       subTitle:
-//           'Pay your due amount of Rs. 12000/- to avoid legal notice within 24 hours',
-//       read: false,
-//       type: 'ACTIVITY',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '2',
-//       subTitle: 'Pre-payment of Rs. 12000/- is successfully completed.',
-//       read: false,
-//       type: 'ACTIVITY',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '2',
-//       subTitle:
-//           'Pay your due amount of Rs. 12000/- to avoid legal notice within 24 hours',
-//       read: false,
-//       type: 'ORDERS',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '3',
-//       subTitle: 'Payment of Rs. 12000/- on COD is completed successfully.',
-//       read: false,
-//       type: 'ACTIVITY',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '1',
-//       subTitle: 'Pre-payment of Rs. 12000/- is successfully completed.',
-//       read: false,
-//       type: 'ORDERS',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '2',
-//       subTitle:
-//           'Outstanding amount of Rs. 19000/- has been cleared successfully.',
-//       read: true,
-//       type: 'ORDERS',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '1',
-//       subTitle:
-//           'Outstanding amount of Rs. 19000/- has been cleared successfully.',
-//       read: true,
-//       type: 'ACTIVITY',
-//     ),
-//     NotificationItem(
-//       id: '1',
-//       orderId: '2',
-//       subTitle: 'Payment of Rs. 12000/- on COD is completed successfully.',
-//       read: false,
-//       type: 'ORDERS',
-//     ),
+  Future<void> notificationRead(String userId, String notificationId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/updateNotification/'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(
+          {
+            'userId': userId,
+            'notificationId': notificationId,
+          },
+        ),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 201) {
+        throw HttpException(responseData['error']);
+      }
+
+      print(responseData);
+
+      final notificationIndex =
+          _notifications.indexWhere((element) => element.id == notificationId);
+      _notifications[notificationIndex].read = true;
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+}

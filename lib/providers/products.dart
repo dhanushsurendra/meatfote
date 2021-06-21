@@ -51,6 +51,7 @@ class Products with ChangeNotifier {
           imageUrl: favoriteItem[i]['imageUrl'],
           layout: favoriteItem[i]['layout'],
           productType: favoriteItem[i]['product_type'],
+          isInStock: favoriteItem[i]['is_in_stock'],
         );
 
         favoriteItems.add(product);
@@ -78,6 +79,7 @@ class Products with ChangeNotifier {
           throw HttpException(responseData['error']);
         }
 
+        print(responseData['products'][0]['is_in_stock']);
         List<String> favoriteArr = await getFavorites(userId);
 
         List<Product> _loadedProducts = [];
@@ -90,6 +92,7 @@ class Products with ChangeNotifier {
             imageUrl: responseData['products'][i]['imageUrl'],
             layout: responseData['products'][i]['layout'],
             productType: responseData['products'][i]['product_type'],
+            isInStock: responseData['products'][i]['is_in_stock'],
             isFavorite: favoriteArr.contains(
               responseData['products'][i]['_id'],
             )
