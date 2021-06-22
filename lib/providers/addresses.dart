@@ -36,9 +36,50 @@ class Address {
 
 class Addresses with ChangeNotifier {
   List<Address> _addresses = [];
+  Address _address;
 
   Address getAddress(String addressId) {
     return _addresses.firstWhere((element) => element.id == addressId);
+  }
+
+  Future<void> fetchAddress(String userId, String addressId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$BASE_URL/getAddress/$userId'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(
+          {
+            'userId': userId,
+            'addressId': addressId,
+          },
+        ),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      final Address address = new Address(
+        id: responseData['addresses']['_id'],
+        userId: responseData['addresses']['use_id'],
+        businessName: responseData['addresses']['business_name'],
+        city: responseData['addresses']['city'],
+        landmark: responseData['addresses']['landmark'],
+        locality: responseData['addresses']['locality'],
+        phoneNumber: responseData['addresses']['phone_number'],
+        pincode: responseData['addresses']['pincode'],
+        streetAddress: responseData['addresses']['street_address'],
+        timeOfDelivery: responseData['addresses']['time_of_delivery'],
+      );
+
+      _address = address;
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<void> addOrUpdateAddress(

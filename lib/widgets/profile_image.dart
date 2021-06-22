@@ -18,6 +18,9 @@ class ProfileImage extends StatelessWidget {
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> getImage(int index) async {
+
+      FocusScope.of(context).unfocus();
+
       final pickedFile = await picker.getImage(
         source: index == 0 ? ImageSource.gallery : ImageSource.camera,
         imageQuality: 20,
@@ -25,7 +28,6 @@ class ProfileImage extends StatelessWidget {
 
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        print(_image);
         File croppedImage = await ImageCropper.cropImage(
           sourcePath: _image.path,
           compressQuality: 100,

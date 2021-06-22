@@ -6,6 +6,7 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
+import 'package:meatforte/screens/pending_verification_screen.dart';
 import 'package:meatforte/screens/send_otp_screen.dart';
 import 'package:meatforte/screens/signup_screen.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
@@ -106,6 +107,17 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isLoading = false;
         });
+
+        if (error.toString() == 'Your profile is under verification') {
+          Navigator.of(context).pushReplacement(
+            FadePageRoute(
+              childWidget: PendingVerificationScreen(),
+            ),
+          );
+
+          return;
+        }
+
         var errorMessage = 'Authentication Failed!';
         errorMessage = error.toString();
         _showErrorDialog(errorMessage);
@@ -117,78 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
             'Could not authenticate you. Please try again later';
         _showErrorDialog(errorMessage);
       }
-
-      // bool isValid = _formKey.currentState.validate();
-
-      // if (!isValid) {
-      //   return null;
-      // }
-
-      // FocusScope.of(context).unfocus();
-
-      // ProgressDialog progressDialog = new ProgressDialog(
-      //   context,
-      //   customBody: Container(
-      //     width: MediaQuery.of(context).size.width * 0.90,
-      //     height: 80.0,
-      //     child: Padding(
-      //       padding: const EdgeInsets.only(left: 20.0),
-      //       child: Row(
-      //         children: [
-      //           CircularProgressIndicator(
-      //             valueColor: AlwaysStoppedAnimation<Color>(
-      //               Theme.of(context).primaryColor,
-      //             ),
-      //           ),
-      //           SizedBox(
-      //             width: 20.0,
-      //           ),
-      //           Text(
-      //             'Authenticating...',
-      //             style: TextStyle(
-      //               color: Theme.of(context).accentColor,
-      //               fontSize: 18.0,
-      //               fontWeight: FontWeight.w600,
-      //             ),
-      //           )
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      //   isDismissible: false,
-      // );
-
-      // progressDialog.show();
-
-      // var _identifier = 'PHONE_NUMBER';
-
-      // if (RegExp(
-      //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-      //     .hasMatch(_emailPhoneNumberController.text)) {
-      //   _identifier = 'EMAIL';
-      // } else if (int.tryParse(_emailPhoneNumberController.text) == null) {
-      //   _identifier = 'PHONE_NUMBER';
-      // }
-
-      // try {
-      //   Provider.of<Auth>(context, listen: false).login(
-      //     _emailPhoneNumberController.text,
-      //     _passwordController.text,
-      //     _identifier,
-      //   );
-      //   progressDialog.hide();
-      //   setState(() {});
-      // } on HttpException catch (error) {
-      //   progressDialog.hide();
-      //   var errorMessage = 'Authentication Failed!';
-      //   errorMessage = error.toString();
-      //   _showErrorDialog(errorMessage);
-      // } catch (error) {
-      //   progressDialog.hide();
-      //   const errorMessage =
-      //       'Could not authenticate you. Please try again later';
-      //   _showErrorDialog(errorMessage);
-      // }
     }
 
     return SafeArea(

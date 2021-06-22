@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/screens/detect_location_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
@@ -16,15 +19,43 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   Timer _timer;
 
+  Future<bool> isFirstTime() async {
+    SharedPreferences isFirstTime = await SharedPreferences.getInstance();
+    if (isFirstTime.containsKey('location')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _timer = Timer(
       Duration(seconds: 4),
       () {
-        Navigator.of(context).pushReplacementNamed('/');
+        isFirstTime().then(
+          (value) {
+            print(value);
+            if (value) {
+              Navigator.of(context).pushReplacementNamed('/');
+            } else {
+              Navigator.of(context).pushReplacement(
+                FadePageRoute(
+                  childWidget: DetectLocationScreen(),
+                ),
+              );
+            }
+          },
+        );
       },
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
   }
 
   @override

@@ -1,8 +1,12 @@
+import 'package:intl/intl.dart';
+
 class DateTimeFormat {
   static String convertToAgo(DateTime input) {
     Duration diff = DateTime.now().difference(input);
 
-    if (diff.inDays >= 1) {
+    if (diff.inDays > 6) {
+      return DateFormat.yMMMEd().format(input);
+    } else if (diff.inDays >= 1) {
       return '${diff.inDays}d ago';
     } else if (diff.inHours >= 1) {
       return '${diff.inHours}h ago';

@@ -261,7 +261,7 @@ class _ListItemState extends State<ListItem> {
                             topLeft: Radius.circular(5.0),
                           ),
                           child: Image.asset(
-                            'assets/images/test.jpeg',
+                            'assets/images/test.jpg',
                             fit: BoxFit.cover,
                           ),
                         ),

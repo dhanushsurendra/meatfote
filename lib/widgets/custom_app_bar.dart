@@ -10,6 +10,7 @@ class CustomAppBar extends StatelessWidget {
   final Icon trailingButtonIcon;
   final Function trailingButtonOnTap;
   final bool isNotificationScreen;
+  final bool containsShadow;
 
   CustomAppBar({
     Key key,
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget {
     this.containsBackButton = false,
     this.containsTrailingButton = false,
     this.isNotificationScreen = false,
+    this.containsShadow = true,
     this.trailingButtonIcon = const Icon(
       Icons.delete,
       color: Colors.transparent,
@@ -32,9 +34,9 @@ class CustomAppBar extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         boxShadow: [
           BoxShadow(
-            offset: Offset(0.0, 2.0),
-            blurRadius: 6.0,
-            color: Colors.black26,
+            offset: containsShadow ? Offset(0.0, 2.0) : Offset(0.0, 0.0),
+            blurRadius: containsShadow ? 6.0 : 0.0,
+            color: containsShadow ? Colors.black26 : Colors.transparent,
           )
         ],
       ),

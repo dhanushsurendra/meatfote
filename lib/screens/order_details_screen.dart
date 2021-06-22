@@ -36,20 +36,10 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  String userId;
-
-  @override
-  void initState() {
-    super.initState();
-    userId = Provider.of<Auth>(context, listen: false).userId;
-    Future.delayed(Duration.zero).then(
-      (_) async => await Provider.of<Orders>(context, listen: false)
-          .fetchOrder(userId, widget.orderId),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    String userId = Provider.of<Auth>(context, listen: false).userId;
     String _calcTotal() {
       double total =
           widget.cartItems.fold(0.0, (init, accum) => init += accum.price);
@@ -94,12 +84,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     Address address;
 
     if (!widget.isOrderSummary) {
-      orderItem = Provider.of<Orders>(context, listen: false).orderItem;
-      print(orderItem);
+      orderItem = Provider.of<Orders>(context, listen: false).getOrder(widget.orderId);
     } else {
       address = Provider.of<Addresses>(context, listen: false)
           .getAddress(widget.addressId);
     }
+
+    print(orderItem.address);
 
     final List<String> _address = [
       'Business Name',
@@ -320,9 +311,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         context: context,
                         dialogType: DialogType.SUCCES,
                         animType: AnimType.BOTTOMSLIDE,
-                        title: 'Successful!',
+                        title: 'Success!',
                         desc:
-                            'Order ${widget.hasCancelOrder ? 'deleted' : 'placed'} successfully.',
+                            'Order ${widget.hasCancelOrder ? 'cancelled' : 'placed'} successfully.',
                         showCloseIcon: false,
                         btnOkOnPress: () => widget.hasCancelOrder
                             ? Navigator.of(context).pop()
@@ -336,7 +327,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         dismissOnTouchOutside: false,
                       )..show();
                     } catch (error) {
-                      print(error);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Something went wrong!'),
@@ -348,7 +338,52 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       widget.hasCancelOrder ? 'Cancel Order' : 'Confirm',
                 ),
               )
-            : SizedBox.shrink(),
+            : orderItem.orderStatus == 'PENDING'
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 16.0,
+                    ),
+                    child: Button(
+                      onTap: () async {
+                        try {
+                          await Provider.of<Orders>(context, listen: false)
+                              .cancelOrder(
+                            userId,
+                            orderItem.id,
+                          );
+
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.SUCCES,
+                            animType: AnimType.BOTTOMSLIDE,
+                            title: 'Success!',
+                            desc:
+                                'Order cancelled successfully.',
+                            showCloseIcon: false,
+                            btnOkOnPress: () => widget.hasCancelOrder
+                                ? Navigator.of(context).pop()
+                                : Navigator.of(context).push(
+                                    FadePageRoute(
+                                      childWidget: NotificationScreen(),
+                                    ),
+                                  ),
+                            btnOkColor: Theme.of(context).primaryColor,
+                            dismissOnBackKeyPress: false,
+                            dismissOnTouchOutside: false,
+                          )..show();
+                        } catch (error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Something went wrong!'),
+                            ),
+                          );
+                        }
+                      },
+                      buttonText: 'Cancel Order',
+                    ),
+                  )
+                : SizedBox.shrink(),
       ),
     );
   }

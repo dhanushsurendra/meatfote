@@ -8,6 +8,7 @@ import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/screens/login_screen.dart';
+import 'package:meatforte/screens/personal_details_verification_screen.dart';
 import 'package:meatforte/screens/webview_screen.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
 import 'package:meatforte/widgets/button.dart';
@@ -61,9 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
         title: 'Error!',
         desc: error,
         showCloseIcon: true,
-        btnOkOnPress: () {
-          Navigator.of(context).pop();
-        },
+        btnOkOnPress: () {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
     }
@@ -116,9 +115,9 @@ class _SignupScreenState extends State<SignupScreen> {
           _isLoading = false;
         });
 
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           FadePageRoute(
-            childWidget: BottomNavigation(),
+            childWidget: PersonalDetailsVerificationScreen(),
           ),
         );
       } on SocketException catch (_) {

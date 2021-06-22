@@ -7,8 +7,8 @@ import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/providers/products.dart';
 import 'package:meatforte/providers/search.dart';
 import 'package:meatforte/providers/team_members.dart';
+import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/all_orders_screen.dart';
-import 'package:meatforte/screens/detect_location_screen.dart';
 import 'package:meatforte/screens/home_screen.dart';
 import 'package:meatforte/screens/intro_screen.dart';
 import 'package:meatforte/screens/login_screen.dart';
@@ -67,41 +67,45 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<TeamMembers>(
           create: (ctx) => TeamMembers(),
+        ),
+        ChangeNotifierProvider<User>(
+          create: (ctx) => User(),
         )
       ],
       child: Consumer<Auth>(
-        builder: (context, auth, widget) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Meatforte',
-          theme: ThemeData(
-            primaryColor: Color(0xFFFF0037),
-            accentColor: Color(0xFF202126),
-            fontFamily: 'Poppins',
-            canvasColor: Colors.white,
-          ),
-          initialRoute: '/splash-screen',
-          home: DetectLocationScreen(),
-          // auth.isAuth
-          //     ? BottomNavigation()
-          //     : FutureBuilder(
-          //         future:
-          //             Provider.of<Auth>(context, listen: false).tryAutoSignIn(),
-          //         builder: (BuildContext context, AsyncSnapshot snapshot) =>
-          //             snapshot.connectionState == ConnectionState.waiting
-          //                 ? SplashScreen()
-          //                 : LoginScreen(),
-          //       ),
-          routes: {
-            SplashScreen.routeName: (ctx) => SplashScreen(),
-            BottomNavigation.routeName: (ctx) => BottomNavigation(),
-            HomeScreen.routeName: (ctx) => HomeScreen(),
-            IntroScreen.routeName: (ctx) => IntroScreen(),
-            LoginScreen.routeName: (ctx) => LoginScreen(),
-            AllOrdersScreen.routeName: (ctx) => AllOrdersScreen(),
-            PaymentsScreen.routeName: (ctx) => PaymentsScreen(),
-            UserAccountScreen.routeName: (ctx) => UserAccountScreen(),
-          },
-        ),
+        builder: (context, auth, widget) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Meatforte',
+            theme: ThemeData(
+              primaryColor: Color(0xFFFF0037),
+              accentColor: Color(0xFF202126),
+              fontFamily: 'Poppins',
+              canvasColor: Colors.white,
+            ),
+            initialRoute: '/splash-screen',
+            home: auth.isAuth
+                ? BottomNavigation()
+                : FutureBuilder(
+                    future: Provider.of<Auth>(context, listen: false)
+                        .tryAutoSignIn(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) =>
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? SplashScreen()
+                            : LoginScreen(),
+                  ),
+            routes: {
+              SplashScreen.routeName: (ctx) => SplashScreen(),
+              BottomNavigation.routeName: (ctx) => BottomNavigation(),
+              HomeScreen.routeName: (ctx) => HomeScreen(),
+              IntroScreen.routeName: (ctx) => IntroScreen(),
+              LoginScreen.routeName: (ctx) => LoginScreen(),
+              AllOrdersScreen.routeName: (ctx) => AllOrdersScreen(),
+              PaymentsScreen.routeName: (ctx) => PaymentsScreen(),
+              UserAccountScreen.routeName: (ctx) => UserAccountScreen(),
+            },
+          );
+        },
       ),
     );
   }

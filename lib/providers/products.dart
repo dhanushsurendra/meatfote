@@ -79,7 +79,6 @@ class Products with ChangeNotifier {
           throw HttpException(responseData['error']);
         }
 
-        print(responseData['products'][0]['is_in_stock']);
         List<String> favoriteArr = await getFavorites(userId);
 
         List<Product> _loadedProducts = [];
@@ -104,7 +103,6 @@ class Products with ChangeNotifier {
         }
 
         _products = _loadedProducts;
-        print(_products);
 
         notifyListeners();
       }

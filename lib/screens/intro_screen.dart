@@ -3,7 +3,6 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/screens/detect_location_screen.dart';
 import 'package:meatforte/screens/login_screen.dart';
-import 'package:meatforte/widgets/bottom_navigation.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key key}) : super(key: key);
@@ -20,7 +19,7 @@ class _IntroScreenState extends State<IntroScreen> {
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
       FadePageRoute(
-        childWidget: DetectLocationScreen(),
+        childWidget: LoginScreen(),
       ),
     );
   }
@@ -79,7 +78,7 @@ class _IntroScreenState extends State<IntroScreen> {
         skip: TextButton(
           onPressed: () => Navigator.of(context).push(
             FadePageRoute(
-              childWidget: DetectLocationScreen(),
+              childWidget: LoginScreen(),
             ),
           ),
           style: ButtonStyle(
@@ -102,7 +101,7 @@ class _IntroScreenState extends State<IntroScreen> {
         done: TextButton(
           onPressed: () => Navigator.of(context).push(
             FadePageRoute(
-              childWidget: DetectLocationScreen(),
+              childWidget: LoginScreen(),
             ),
           ),
           style: ButtonStyle(

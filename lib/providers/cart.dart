@@ -107,7 +107,6 @@ class Cart with ChangeNotifier {
     double pieces,
     int birds,
   }) async {
-    print(birds);
 
     try {
       final favoritesResponse = await http.post(
@@ -131,8 +130,6 @@ class Cart with ChangeNotifier {
       if (cartData['statusCode'] != 201) {
         throw HttpException(cartData['error']);
       }
-
-      print(cartData);
 
       final product = new Product(
         id: cartData['product']['_id'],

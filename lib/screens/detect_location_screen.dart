@@ -1,10 +1,116 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:meatforte/screens/intro_screen.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
-import 'package:meatforte/screens/login_screen.dart';
-import 'package:meatforte/widgets/button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DetectLocationScreen extends StatelessWidget {
+class DetectLocationScreen extends StatefulWidget {
   const DetectLocationScreen({Key key}) : super(key: key);
+
+  @override
+  _DetectLocationScreenState createState() => _DetectLocationScreenState();
+}
+
+class _DetectLocationScreenState extends State<DetectLocationScreen> {
+  bool _isLoading = false;
+
+  Future<void> _detectLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error!',
+          desc: 'Location services are not enabled. Enable it to continue.',
+          showCloseIcon: false,
+          btnOkOnPress: () => {},
+          btnOkColor: Theme.of(context).primaryColor,
+        )..show();
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error!',
+          desc: 'Permission denied. Enable it to detect location.',
+          showCloseIcon: false,
+          btnOkOnPress: () => {},
+          btnOkColor: Theme.of(context).primaryColor,
+        )..show();
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc: 'Permission denied for this app. Enable it in settings.',
+        showCloseIcon: false,
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var address =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    if (!address[0].addressLine.contains('Bengaluru')) {
+      setState(() {
+        _isLoading = false;
+      });
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc:
+            'Sorry, we currrently don\'t operate at your location. Coming soon!',
+        showCloseIcon: false,
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('location', true);
+
+      Navigator.of(context).pushReplacement(
+        FadePageRoute(
+          childWidget: IntroScreen(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +146,29 @@ class DetectLocationScreen extends StatelessWidget {
                   child: Material(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(5.0),
-                      onTap: () => Navigator.of(context).push(
-                        FadePageRoute(
-                          childWidget: LoginScreen(),
-                        ),
-                      ),
+                      onTap: () async => await _detectLocation(),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 50.0,
                         child: Center(
-                          child: Text(
-                            'Use My Current Location',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          child: _isLoading
+                              ? SizedBox(
+                                  width: 25.0,
+                                  height: 25.0,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  'Use My Current Location',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                         ),
                       ),
                     ),

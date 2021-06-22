@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:meatforte/widgets/personal_details.dart';
 import 'package:meatforte/widgets/products_list.dart';
-import 'package:meatforte/widgets/settings_details.dart';
-
-import 'business_details.dart';
 
 class TabLayout extends StatefulWidget {
-  final String type;
   final List<String> categories;
   final Widget initialValue;
 
   TabLayout({
     Key key,
-    @required this.type,
     @required this.categories,
     @required this.initialValue,
   }) : super(key: key);
@@ -39,33 +33,27 @@ class _TabLayoutState extends State<TabLayout>
       switch (index) {
         case 0:
           setState(() {
-            _contentList = widget.type == 'FOOD'
-                ? ProductsList(
-                    type: 'chicken',
-                    isFavorite: true,
-                  )
-                : PersonalDetails();
+            _contentList = ProductsList(
+              type: 'chicken',
+              isFavorite: true,
+            );
           });
           break;
         case 1:
           setState(() {
-            _contentList = widget.type == 'FOOD'
-                ? ProductsList(
-                    type: 'mutton',
-                    isFavorite: true,
-                  )
-                : BusinessDetails();
+            _contentList = ProductsList(
+              type: 'mutton',
+              isFavorite: true,
+            );
           });
           break;
         case 2:
           setState(
             () {
-              _contentList = widget.type == 'FOOD'
-                  ? ProductsList(
-                      type: 'sea food',
-                      isFavorite: true,
-                    )
-                  : SettingsDetails();
+              ProductsList(
+                type: 'sea food',
+                isFavorite: true,
+              );
             },
           );
           break;

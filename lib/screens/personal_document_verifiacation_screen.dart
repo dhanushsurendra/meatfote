@@ -4,12 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/helpers/modal_bottom_sheet.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 
-class PersonalVerificationScreen extends StatelessWidget {
+class UserDetailsVerificationScreen extends StatelessWidget {
   final String document;
+  final String title;
 
-  const PersonalVerificationScreen({
+  const UserDetailsVerificationScreen({
     Key key,
     @required this.document,
+    @required this.title,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,7 @@ class PersonalVerificationScreen extends StatelessWidget {
             automaticallyImplyLeading: false,
             elevation: 0.0,
             flexibleSpace: CustomAppBar(
-              title: 'Personal Verification',
+              title: title,
               containsBackButton: true,
             ),
           ),

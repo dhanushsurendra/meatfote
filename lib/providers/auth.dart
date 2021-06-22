@@ -13,9 +13,14 @@ class Auth extends ChangeNotifier {
   String _userId;
   String _token;
   String errorMessage = '';
+  bool _location;
 
   bool get isAuth {
     return _token != null;
+  }
+
+  bool get location {
+    return _location != null;
   }
 
   String get userId {
@@ -41,8 +46,6 @@ class Auth extends ChangeNotifier {
       );
 
       final responseData = json.decode(response.body);
-
-      print(responseData);
 
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
@@ -91,17 +94,7 @@ class Auth extends ChangeNotifier {
       }
 
       _userId = responseData['userId'];
-      _token = responseData['token'];
-
-      final userData = json.encode({
-        'userId': _userId,
-        'token': _token,
-      });
-
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString('userData', userData);
-
+  
       notifyListeners();
     } catch (error) {
       throw error;
@@ -131,7 +124,7 @@ class Auth extends ChangeNotifier {
     _token = null;
     notifyListeners();
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    sharedPrefs.clear();
+    sharedPrefs.remove('userData');
   }
 
   Future<void> sendOTP(String email) async {
@@ -181,7 +174,6 @@ class Auth extends ChangeNotifier {
     String currentPassword = '',
     String userId = '',
   }) async {
-
     final url =
         !isInApp ? '$BASE_URL/resetPassword' : '$BASE_URL/changePassword';
 
@@ -213,5 +205,21 @@ class Auth extends ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<bool> fetchLocation() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+
+    if (!sharedPrefs.containsKey('location')) {
+      return false;
+    }
+
+    final extractedData = sharedPrefs.getBool('location');
+
+    _location = extractedData;
+
+    notifyListeners();
+
+    return true;
   }
 }
