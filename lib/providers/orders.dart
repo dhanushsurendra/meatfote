@@ -35,6 +35,7 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orderItems = [];
+  OrderItem orderItem;
 
   bool _fetchedData = false;
 
@@ -147,7 +148,6 @@ class Orders with ChangeNotifier {
     double totalPrice,
   ) async {
     try {
-      print(products[0].id);
       final response = await http.post(
         Uri.parse('$BASE_URL/createOrder/'),
         headers: {
@@ -205,8 +205,6 @@ class Orders with ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
-      print(responseData);
-
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
@@ -242,6 +240,74 @@ class Orders with ChangeNotifier {
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> fetchOrder(String userId, String orderId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$BASE_URL/getOrder?userId=$userId&orderId=$orderId'),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      List<Product> _orderedProducts = [];
+
+      for (var i = 0; i < responseData['order']['products'].length; i++) {
+        _orderedProducts.add(
+          new Product(
+            id: responseData['order']['products'][i]['_id'],
+            imageUrl: responseData['order']['products'][i]['product_id']
+                ['imageUrl'],
+            layout: responseData['order']['products'][i]['product_id']
+                ['layout'],
+            name: responseData['order']['products'][i]['product_id']['name'],
+            price: responseData['order']['products'][i]['product_id']['price']
+                .toDouble(),
+            productType: responseData['order']['products'][i]['product_id']
+                ['product_type'],
+            isInStock: responseData['order']['products'][i]['product_id']
+                ['is_in_stock'],
+            gross: responseData['order']['products'][i]['gross'].toDouble(),
+            pieces: responseData['order']['products'][i]['pieces'] == null
+                ? 0.0
+                : responseData['order']['products'][i]['pieces'].toDouble(),
+            birds: responseData['order']['products'][i]['birds'] == null
+                ? 0
+                : responseData['order']['products'][i]['birds'],
+          ),
+        );
+      }
+
+      final OrderItem loadedOrderItem = new OrderItem(
+        id: responseData['order']['_id'],
+        orderStatus: responseData['order']['order_status'],
+        paymentStatus: responseData['order']['payment_status'],
+        totalPrice: responseData['order']['total_price'].toDouble(),
+        createdAt: responseData['order']['createdAt'],
+        address: new Address(
+          id: responseData['order']['address']['_id'],
+          businessName: responseData['order']['address']['business_name'],
+          streetAddress: responseData['order']['address']['street_address'],
+          city: responseData['order']['address']['city'],
+          landmark: responseData['order']['address']['landmark'],
+          locality: responseData['order']['address']['locality'],
+          timeOfDelivery: responseData['order']['address']['time_of_delivery'],
+          phoneNumber: responseData['order']['address']['phone_number'],
+          pincode: responseData['order']['address']['pincode'],
+        ),
+        orderedProducts: _orderedProducts,
+      );
+
+      orderItem = loadedOrderItem;
 
       notifyListeners();
     } catch (error) {

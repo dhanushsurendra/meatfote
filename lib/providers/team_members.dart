@@ -108,8 +108,6 @@ class TeamMembers extends ChangeNotifier {
 
       _teamMembers.add(teamMember);
 
-      print(_teamMembers);
-
       notifyListeners();
     } catch (error) {
       throw error;

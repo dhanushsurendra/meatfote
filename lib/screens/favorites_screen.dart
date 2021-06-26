@@ -84,7 +84,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         color: Theme.of(context).primaryColor,
                         onRefresh: () => _getFavorites(userId),
                         child: ErrorHandler(
-                          message: 'Something went wrong. Please try again.',
+                          message: 'Something went wrong.',
                           heightPercent: 0.823,
                         ),
                       );

@@ -11,7 +11,7 @@ import 'package:meatforte/widgets/address_item.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/empty_image.dart';
 import 'package:meatforte/widgets/error_handler.dart';
-import 'package:meatforte/widgets/radio_address.dart';
+import 'package:meatforte/widgets/select_address_item.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -162,7 +162,22 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                       ),
                       SizedBox(height: 10.0),
                       widget.title == 'Select Address'
-                          ? RadioListBuilder()
+                          ? Expanded(
+                              child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                itemCount: Provider.of<Addresses>(context)
+                                    .addresses
+                                    .length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final Address address =
+                                      Provider.of<Addresses>(context)
+                                          .addresses[index];
+                                  return SelectAddressItem(
+                                    address: address,
+                                  );
+                                },
+                              ),
+                            )
                           : Expanded(
                               child: ListView.builder(
                                 physics: BouncingScrollPhysics(),
@@ -229,54 +244,54 @@ class AddressItemBuilder extends StatelessWidget {
   }
 }
 
-class RadioListBuilder extends StatefulWidget {
-  RadioListBuilder({Key key}) : super(key: key);
+// class RadioListBuilder extends StatefulWidget {
+//   RadioListBuilder({Key key}) : super(key: key);
 
-  @override
-  _RadioListBuilderState createState() => _RadioListBuilderState();
-}
+//   @override
+//   _RadioListBuilderState createState() => _RadioListBuilderState();
+// }
 
-class _RadioListBuilderState extends State<RadioListBuilder> {
-  int value = 0;
+// class _RadioListBuilderState extends State<RadioListBuilder> {
+//   int value = 0;
 
-  void _onRadioChanged(int newValue) {
-    setState(
-      () {
-        value = newValue;
-      },
-    );
-  }
+//   void _onRadioChanged(int newValue) {
+//     setState(
+//       () {
+//         value = newValue;
+//       },
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) {
-          final Address address =
-              Provider.of<Addresses>(context).addresses[index];
-          if (index == Provider.of<Addresses>(context).addresses.length - 1) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: RadioAddress(
-                address: address,
-                index: index,
-                value: value,
-                onTap: _onRadioChanged,
-              ),
-            );
-          }
-          return RadioAddress(
-            address: address,
-            index: index,
-            value: value,
-            onTap: (int value) {
-              _onRadioChanged(value);
-            },
-          );
-        },
-        itemCount: Provider.of<Addresses>(context).addresses.length,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Expanded(
+//       child: ListView.builder(
+//         physics: BouncingScrollPhysics(),
+//         itemBuilder: (context, index) {
+//           final Address address =
+//               Provider.of<Addresses>(context).addresses[index];
+//           if (index == Provider.of<Addresses>(context).addresses.length - 1) {
+//             return Padding(
+//               padding: const EdgeInsets.only(bottom: 16.0),
+//               child: RadioAddress(
+//                 address: address,
+//                 index: index,
+//                 value: value,
+//                 onTap: _onRadioChanged,
+//               ),
+//             );
+//           }
+//           return RadioAddress(
+//             address: address,
+//             index: index,
+//             value: value,
+//             onTap: (int value) {
+//               _onRadioChanged(value);
+//             },
+//           );
+//         },
+//         itemCount: Provider.of<Addresses>(context).addresses.length,
+//       ),
+//     );
+//   }
+// }

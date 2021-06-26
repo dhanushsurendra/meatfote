@@ -6,6 +6,7 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/date_time_format.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/notification.dart';
+import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/screens/order_details_screen.dart';
 import 'package:meatforte/widgets/empty_image.dart';
 import 'package:meatforte/widgets/error_handler.dart';
@@ -117,9 +118,17 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                         InkWell(
                           splashColor: Colors.transparent,
                           onTap: () async {
-                            await Provider.of<Notifications>(context,
-                                    listen: false)
-                                .notificationRead(userId, notification.id);
+                            await Provider.of<Notifications>(
+                              context,
+                              listen: false,
+                            ).notificationRead(userId, notification.id);
+
+                            await Provider.of<Orders>(context, listen: false)
+                                .fetchOrder(
+                              userId,
+                              notification.orderId,
+                            );
+
                             Navigator.of(context).push(
                               FadePageRoute(
                                 childWidget: OrderDetailsScreen(

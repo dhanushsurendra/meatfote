@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -36,10 +39,33 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = Provider.of<Auth>(context, listen: false).userId;
+  }
 
   @override
   Widget build(BuildContext context) {
-    String userId = Provider.of<Auth>(context, listen: false).userId;
+    OrderItem orderItem;
+    Address address;
+
+    if (!widget.isOrderSummary) {
+      if (Provider.of<Orders>(context, listen: false)
+              .getOrder(widget.orderId) !=
+          null) {
+        orderItem = Provider.of<Orders>(context, listen: false)
+            .getOrder(widget.orderId);
+      } else {
+        orderItem = Provider.of<Orders>(context, listen: false).orderItem;
+      }
+    } else {
+      address = Provider.of<Addresses>(context, listen: false)
+          .getAddress(widget.addressId);
+    }
+
     String _calcTotal() {
       double total =
           widget.cartItems.fold(0.0, (init, accum) => init += accum.price);
@@ -80,18 +106,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       );
     }
 
-    OrderItem orderItem;
-    Address address;
-
-    if (!widget.isOrderSummary) {
-      orderItem = Provider.of<Orders>(context, listen: false).getOrder(widget.orderId);
-    } else {
-      address = Provider.of<Addresses>(context, listen: false)
-          .getAddress(widget.addressId);
-    }
-
-    print(orderItem.address);
-
     final List<String> _address = [
       'Business Name',
       'Street Address',
@@ -125,6 +139,148 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             orderItem.address.phoneNumber,
           ];
 
+    Widget _mainContent = SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.0),
+            color: Colors.white,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                widget.isOrderSummary
+                    ? Container()
+                    : Text(
+                        'Order Id: ${orderItem.id}',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                !widget.isOrderSummary
+                    ? SizedBox(height: 30.0)
+                    : SizedBox(height: 0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total:',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        widget.isOrderSummary
+                            ? Container()
+                            : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: orderItem.paymentStatus == 'PAID'
+                                      ? Colors.green[200].withOpacity(0.5)
+                                      : Colors.red[200].withOpacity(0.5),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                    vertical: 2.0,
+                                  ),
+                                  child: Text(
+                                    orderItem.paymentStatus,
+                                    style: TextStyle(
+                                      color: orderItem.paymentStatus == 'PAID'
+                                          ? Colors.green[700]
+                                          : Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        SizedBox(width: 20.0),
+                        FaIcon(
+                          FontAwesomeIcons.rupeeSign,
+                          size: 14.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Text(
+                          widget.isOrderSummary
+                              ? _calcTotal()
+                              : orderItem.totalPrice.toStringAsFixed(2),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.isOrderSummary
+                          ? DateFormat.yMMMEd().format(
+                              DateTime.now(),
+                            )
+                          : '${DateFormat.yMMMEd().format(DateTime.parse(orderItem.createdAt))}',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                CartDropDownItems(
+                  cartItems: widget.isOrderSummary
+                      ? widget.cartItems
+                      : orderItem.orderedProducts,
+                ),
+                SizedBox(height: 10.0),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    'Address',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                ..._address
+                    .asMap()
+                    .map(
+                      (key, value) => MapEntry(
+                        key,
+                        _buildAddress(
+                          value,
+                          _values[key],
+                        ),
+                      ),
+                    )
+                    .values
+                    .toList(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -138,148 +294,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2.0),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    widget.isOrderSummary
-                        ? Container()
-                        : Text(
-                            'Order Id: ${orderItem.id}',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                    !widget.isOrderSummary
-                        ? SizedBox(height: 30.0)
-                        : SizedBox(height: 0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total:',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            widget.isOrderSummary
-                                ? Container()
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      color: orderItem.paymentStatus == 'PAID'
-                                          ? Colors.green[200].withOpacity(0.5)
-                                          : Colors.red[200].withOpacity(0.5),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0,
-                                        vertical: 2.0,
-                                      ),
-                                      child: Text(
-                                        orderItem.paymentStatus,
-                                        style: TextStyle(
-                                          color:
-                                              orderItem.paymentStatus == 'PAID'
-                                                  ? Colors.green[700]
-                                                  : Colors.red,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                            SizedBox(width: 20.0),
-                            FaIcon(
-                              FontAwesomeIcons.rupeeSign,
-                              size: 14.0,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Text(
-                              widget.isOrderSummary
-                                  ? _calcTotal()
-                                  : orderItem.totalPrice.toStringAsFixed(2),
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.isOrderSummary
-                              ? DateFormat.yMMMEd().format(
-                                  DateTime.now(),
-                                )
-                              : '${DateFormat.yMMMEd().format(DateTime.parse(orderItem.createdAt))}',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    CartDropDownItems(
-                      cartItems: widget.isOrderSummary
-                          ? widget.cartItems
-                          : orderItem.orderedProducts,
-                    ),
-                    SizedBox(height: 10.0),
-                    Divider(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Address',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    ..._address
-                        .asMap()
-                        .map(
-                          (key, value) => MapEntry(
-                            key,
-                            _buildAddress(
-                              value,
-                              _values[key],
-                            ),
-                          ),
-                        )
-                        .values
-                        .toList(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        body: _mainContent,
         bottomSheet: widget.isOrderSummary || widget.hasCancelOrder
             ? Padding(
                 padding: const EdgeInsets.symmetric(
@@ -329,7 +344,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     } catch (error) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Something went wrong!'),
+                          content: Text(
+                            'Something went wrong!',
+                          ),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
                         ),
                       );
                     }
@@ -358,8 +377,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             dialogType: DialogType.SUCCES,
                             animType: AnimType.BOTTOMSLIDE,
                             title: 'Success!',
-                            desc:
-                                'Order cancelled successfully.',
+                            desc: 'Order cancelled successfully.',
                             showCloseIcon: false,
                             btnOkOnPress: () => widget.hasCancelOrder
                                 ? Navigator.of(context).pop()

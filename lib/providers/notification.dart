@@ -47,13 +47,15 @@ class Notifications with ChangeNotifier {
 
       for (var i = 0; i < responseData['notifications'].length; i++) {
         final notification = new NotificationItem(
-            id: responseData['notifications'][i]['_id'],
-            orderId: responseData['notifications'][i]['order_id'],
-            title: responseData['notifications'][i]['title'],
-            subtitle: responseData['notifications'][i]['subtitle'],
-            read: responseData['notifications'][i]['read'],
-            createdAt:
-                DateTime.parse(responseData['notifications'][i]['createdAt']));
+          id: responseData['notifications'][i]['_id'],
+          orderId: responseData['notifications'][i]['order_id'],
+          title: responseData['notifications'][i]['title'],
+          subtitle: responseData['notifications'][i]['subtitle'],
+          read: responseData['notifications'][i]['read'],
+          createdAt: DateTime.parse(
+            responseData['notifications'][i]['createdAt'],
+          ),
+        );
 
         _loadedNotifications.add(notification);
       }
@@ -84,8 +86,6 @@ class Notifications with ChangeNotifier {
       if (responseData['statusCode'] != 201) {
         throw HttpException(responseData['error']);
       }
-
-      print(responseData);
 
       final notificationIndex =
           _notifications.indexWhere((element) => element.id == notificationId);

@@ -95,14 +95,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           title: 'Successful!',
           desc: 'Address added successfully.',
           showCloseIcon: false,
-          btnOkOnPress: () => Navigator.of(context).push(
-            FadePageRoute(
-              childWidget: ManageAddressScreen(
-                type: 'SELECT',
-                title: 'Select Address',
-              ),
-            ),
-          ),
+          btnOkOnPress: () => Navigator.of(context).pop(),
           btnOkColor: Theme.of(context).primaryColor,
           dismissOnBackKeyPress: false,
           dismissOnTouchOutside: false,
@@ -123,14 +116,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           title: 'Successful',
           desc: 'Address updated successfully.',
           showCloseIcon: false,
-          btnOkOnPress: () => Navigator.of(context).push(
-             FadePageRoute(
-              childWidget: ManageAddressScreen(
-                type: 'MANAGE',
-                title: 'Edit Address',
-              ),
-            ),
-          ),
+          btnOkOnPress: () => Navigator.of(context).pop(),
           btnOkColor: Theme.of(context).primaryColor,
           dismissOnBackKeyPress: false,
           dismissOnTouchOutside: false,

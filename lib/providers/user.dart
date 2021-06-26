@@ -52,8 +52,6 @@ class User extends ChangeNotifier {
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
 
-      print(responseData);
-
       notifyListeners();
     } catch (error) {
       throw error;

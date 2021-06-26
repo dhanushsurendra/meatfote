@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -65,7 +66,6 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
-
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> _addProductToCart() async {
@@ -545,6 +545,16 @@ class _ListItemState extends State<ListItem> {
 class FavoriteIcon extends StatelessWidget {
   final String userId;
 
+  Future<bool> check() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
+  }
+
   const FavoriteIcon({Key key, this.userId}) : super(key: key);
 
   void _showSnackBar(BuildContext context, String message) {
@@ -589,19 +599,24 @@ class FavoriteIcon extends StatelessWidget {
                     key: ValueKey(product.id),
                     onTap: (value) async {
                       try {
-                        String userId =
-                            Provider.of<Auth>(context, listen: false).userId;
-                        await product.toggleFavorite(userId, product.id);
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: product.isFavorite
-                                ? Text('Liked ${product.name}')
-                                : Text('Unliked ${product.name}'),
-                            behavior: SnackBarBehavior.floating,
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
+                        if (await check()) {
+                          String userId =
+                              Provider.of<Auth>(context, listen: false).userId;
+                          await product.toggleFavorite(userId, product.id);
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: product.isFavorite
+                                  ? Text('Liked ${product.name}')
+                                  : Text('Unliked ${product.name}'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        } else {
+                          _showSnackBar(context, 'No internet!');
+                          return false;
+                        }
                         return true;
                       } on HttpException catch (_) {
                         print('HttpException');

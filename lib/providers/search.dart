@@ -46,8 +46,6 @@ class Search with ChangeNotifier {
 
       _searchProducts = _loadedProduct;
 
-      print(_searchProducts);
-
       notifyListeners();
     } catch (error) {
       throw error;
