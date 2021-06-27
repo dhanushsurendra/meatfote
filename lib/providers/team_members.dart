@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.8:8080';
+const BASE_URL = 'https://meatforte.herokuapp.com';
 
 class TeamMember {
   final String id;

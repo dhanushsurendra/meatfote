@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -260,9 +261,13 @@ class _ListItemState extends State<ListItem> {
                             topRight: Radius.circular(5.0),
                             topLeft: Radius.circular(5.0),
                           ),
-                          child: Image.asset(
-                            'assets/images/test.jpg',
+                          child: ExtendedImage.network(
+                            'https://meatforte.s3.ap-south-1.amazonaws.com/products/test.jpg',
                             fit: BoxFit.cover,
+                            cache: true,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30.0),
+                            ),
                           ),
                         ),
                       ),

@@ -44,6 +44,9 @@ dependencies:
     image_cropper: ^1.4.0
     geolocator: ^7.1.0
     geocoder: ^0.2.1
+    extended_image: ^4.1.0
+    dio: ^4.0.0
+    aws_s3: ^0.1.1+hotfix.5
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.

@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 
-const BASE_URL = 'http://192.168.0.8:8080';
+const BASE_URL = 'https://meatforte.herokuapp.com';
 
 class User extends ChangeNotifier {
   final String id;
@@ -15,6 +19,7 @@ class User extends ChangeNotifier {
   final String businessName;
   final String establishmentYear;
   final String identifer;
+  final String imageUrl;
 
   User({
     this.id,
@@ -24,6 +29,7 @@ class User extends ChangeNotifier {
     this.businessName,
     this.establishmentYear,
     this.identifer,
+    this.imageUrl,
   });
 
   String userName;
@@ -32,6 +38,8 @@ class User extends ChangeNotifier {
   String userBusinessName;
   String userEstablishmentYear;
   String userIdentifier;
+  String userImageUrl;
+  bool isImageUploadSuccess = false;
 
   Future<void> getUserPersonalDetails(String userId) async {
     try {
@@ -51,6 +59,7 @@ class User extends ChangeNotifier {
       userEmail = responseData['user']['email'];
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
+      userImageUrl = responseData['user']['profile_image_url'];
 
       notifyListeners();
     } catch (error) {
@@ -76,7 +85,9 @@ class User extends ChangeNotifier {
         Uri.parse(
           '$BASE_URL/personalDetails',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: json.encode(
           {
             'userId': userId,
@@ -96,7 +107,8 @@ class User extends ChangeNotifier {
       userName = responseData['user']['name'];
       userEmail = responseData['user']['email'];
       userPhoneNumber = responseData['user']['phone_number'];
-      
+      userImageUrl = responseData['user']['profile_image_url'];
+
       notifyListeners();
     } catch (error) {
       throw error;
@@ -160,6 +172,68 @@ class User extends ChangeNotifier {
 
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
+
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> uploadProfileImage(File file, String userId) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$BASE_URL/uploadProfileImage/$userId/${p.extension(file.path)}',
+        ),
+      );
+
+      final responseData = json.decode(response.body);
+
+      if (responseData['statusCode'] != 200) {
+        throw HttpException(responseData['error']);
+      }
+
+      Dio dio = new Dio();
+      var len = await file.length();
+      dio.options.headers['Content-Type'] = 'image/jpeg';
+      var responseAWS = await dio.put(
+        responseData['url'],
+        data: file.openRead(),
+        options: Options(
+          headers: {
+            Headers.contentLengthHeader: len,
+          },
+        ),
+      );
+
+      if (responseAWS.statusCode == 200) {
+        try {
+          final responseImageUrl = await http.post(
+            Uri.parse(
+              '$BASE_URL/postImageUrl/',
+            ),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(
+              {
+                'userId': userId,
+                'imageUrl': responseData['key'],
+              },
+            ),
+          );
+
+          final responseImageUrlData = json.decode(responseImageUrl.body);
+
+          if (responseImageUrlData['statusCode'] != 201) {
+            isImageUploadSuccess = false;
+            throw HttpException(responseData['error']);
+          }
+
+          isImageUploadSuccess = true;
+          notifyListeners();
+        } catch (error) {
+          throw error;
+        }
+      }
 
       notifyListeners();
     } catch (error) {

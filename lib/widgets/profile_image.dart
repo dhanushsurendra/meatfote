@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meatforte/providers/auth.dart';
+import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/image_preview_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,6 @@ class ProfileImage extends StatelessWidget {
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> getImage(int index) async {
-
       FocusScope.of(context).unfocus();
 
       final pickedFile = await picker.getImage(
@@ -57,7 +57,7 @@ class ProfileImage extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ImagePreview(
-              filePath: croppedImage,
+              file: croppedImage,
             ),
           ),
         );
@@ -90,9 +90,15 @@ class ProfileImage extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100.0),
-            child: Image.asset(
-              'assets/images/profile_image.png',
-            ),
+            child: Provider.of<User>(context).userImageUrl == null ||
+                    Provider.of<User>(context).userImageUrl == ''
+                ? Image.asset(
+                    'assets/images/profile_image.png',
+                  )
+                : Image.network(
+                    Provider.of<User>(context).userImageUrl,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         Positioned(

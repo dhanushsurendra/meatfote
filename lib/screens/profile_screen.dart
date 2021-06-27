@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/providers/auth.dart';
+import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/all_orders_screen.dart';
 import 'package:meatforte/screens/login_screen.dart';
 import 'package:meatforte/screens/payments_screen.dart';
@@ -13,9 +14,23 @@ import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:meatforte/widgets/profile_image.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:shimmer/shimmer.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key key}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = Provider.of<Auth>(context, listen: false).userId;
+  }
 
   Widget _buildListTile(
     String title,
@@ -123,7 +138,9 @@ class ProfileScreen extends StatelessWidget {
           ),
       () => Navigator.of(context).push(
             FadePageRoute(
-              childWidget: AllOrdersScreen(isSearchResult: false,),
+              childWidget: AllOrdersScreen(
+                isSearchResult: false,
+              ),
             ),
           ),
       () => Navigator.of(context).push(
@@ -180,6 +197,8 @@ class ProfileScreen extends StatelessWidget {
           )..show()
     ];
 
+    String userId = Provider.of<Auth>(context, listen: false).userId;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -189,31 +208,67 @@ class ProfileScreen extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    ProfileImage(),
-                    SizedBox(height: 5.0),
-                    Text(
-                      'manishvishwa777',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).accentColor,
-                      ),
-                    ),
-                    Text(
-                      'manishvishwa777@gmail.com',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
+                child: FutureBuilder(
+                  future: Provider.of<User>(context, listen: false)
+                      .getUserPersonalDetails(userId),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 40.0,
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            child: Container(
+                              width: 90.0,
+                              height: 90.0,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(0.0, 2.0),
+                                    blurRadius: 6.0,
+                                    color: Colors.black12,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 40.0,
+                        ),
+                        ProfileImage(),
+                        SizedBox(height: 5.0),
+                        Text(
+                          Provider.of<User>(context, listen: false).userName,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).accentColor,
+                          ),
+                        ),
+                        Text(
+                          Provider.of<User>(context, listen: false).userEmail,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 ),
               ),
               SizedBox(height: 10.0),
