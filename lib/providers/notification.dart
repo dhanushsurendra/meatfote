@@ -22,7 +22,7 @@ class NotificationItem {
   });
 }
 
-const BASE_URL = 'https://meatforte.herokuapp.com';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Notifications with ChangeNotifier {
   List<NotificationItem> _notifications = [];

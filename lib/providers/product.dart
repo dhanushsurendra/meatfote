@@ -8,7 +8,7 @@ import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'https://meatforte.herokuapp.com';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Product with ChangeNotifier {
   final String id;

@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ImageInput extends StatelessWidget {
-  final File filePath;
+  final File file;
 
   const ImageInput({
     Key key,
-    @required this.filePath,
+    @required this.file,
   }) : super(key: key);
 
   @override
@@ -23,9 +23,9 @@ class ImageInput extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
               ),
-              child: filePath == null
+              child: file == null
                   ? Center(child: Text('No photo selected'))
-                  : Image.file(filePath),
+                  : Image.file(file),
             ),
           ),
         ],

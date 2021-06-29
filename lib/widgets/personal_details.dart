@@ -6,6 +6,7 @@ import 'package:meatforte/helpers/modal_bottom_sheet.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/business_details_verification_screen.dart';
+import 'package:meatforte/screens/user_details_verification_screen.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:meatforte/widgets/profile_image.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +14,12 @@ import 'package:provider/provider.dart';
 class PersonalDetails extends StatefulWidget {
   final Key key;
   final String buttonText;
+  final bool inApp;
 
   PersonalDetails({
     this.key,
     this.buttonText = 'Update',
+    @required this.inApp,
   });
 
   @override
@@ -108,11 +111,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           title: 'Success',
           desc: 'Personal details successfully updated.',
           showCloseIcon: false,
-          btnOkOnPress: () => Navigator.of(context).push(
-            FadePageRoute(
-              childWidget: BusinessDetailsVerificationScreen(),
-            ),
-          ),
+          btnOkOnPress: () => widget.inApp
+              ? {}
+              : Navigator.of(context).push(
+                  FadePageRoute(
+                    childWidget: BusinessDetailsVerificationScreen(),
+                  ),
+                ),
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
       } catch (error) {
@@ -130,6 +135,67 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
       }
+    }
+
+    _showModalBottomSheet() {
+      final _listItems = [
+        'Aadhar Card',
+        'Pan Card',
+        'Voter Id',
+        'Driver\'s License',
+      ];
+
+      return showModalBottomSheet<dynamic>(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Container(
+            height: _listItems.length * 60.0 + 60.0,
+            child: Column(
+              children: [
+                SizedBox(height: 20.0),
+                Text(
+                  'Select any one',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Expanded(
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: _listItems.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(
+                          _listItems[index],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            FadePageRoute(
+                              childWidget: UserDetailsVerificationScreen(
+                                document: _listItems[index],
+                                title: 'Personal Verification',
+                                documentType: 'personal',
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
     }
 
     return SingleChildScrollView(
@@ -217,7 +283,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   cursorColor: Theme.of(context).primaryColor,
                   keyboardType: TextInputType.phone,
                   controller: _phoneNumberController,
-                  textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     prefixText: '+91 ',
                     prefixStyle: TextStyle(
@@ -235,7 +300,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       horizontal: 10.0,
                     ),
                   ),
-                  onFieldSubmitted: (_) => _onFormSubmitted(),
                   validator: (value) {
                     if (value.length < 10 || value.isEmpty) {
                       return 'Invalid phone number';
@@ -252,16 +316,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       'Get verified to avail loans / credits on your purchase',
                   onTap: () {
                     FocusScope.of(context).unfocus();
-                    ModalBottomSheet.modalBottomSheet(
-                      context,
-                      [
-                        'Aadhar Card',
-                        'Pan Card',
-                        'Voter Id',
-                        'Driver\'s License'
-                      ],
-                      'Select any one',
-                    );
+                    return _showModalBottomSheet();
                   },
                   icon: Icon(Icons.security),
                   fontSize: 12.0,

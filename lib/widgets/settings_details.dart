@@ -64,29 +64,6 @@ class SettingsDetails extends StatelessWidget {
           icon: Icon(Icons.lock_outlined),
           fontSize: 12.0,
         ),
-        SizedBox(height: 20.0),
-        FontHeading(text: 'Delete Account'),
-        SizedBox(height: 10.0),
-        ListTileContainer(
-          title: 'Delete My Account',
-          letterSpacing: 0.0,
-          fontWeight: FontWeight.w400,
-          onTap: () => ShowDialog.showDialog(
-            context,
-            DialogType.WARNING,
-            'Delete Account',
-            'Are you sure you want to delete your accout? All your data will be deleted permanently.',
-            () => Navigator.of(context).push(
-              FadePageRoute(
-                childWidget: LoginScreen(),
-              ),
-            ),
-            true,
-            () {},
-          ),
-          icon: Icon(Icons.delete_outlined),
-          fontSize: 12.0,
-        ),
       ],
     );
   }

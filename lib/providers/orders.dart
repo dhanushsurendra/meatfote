@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/providers/search.dart';
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'https://meatforte.herokuapp.com';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class OrderItem {
   final String id;

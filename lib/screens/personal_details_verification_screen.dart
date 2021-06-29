@@ -28,6 +28,7 @@ class PersonalDetailsVerificationScreen extends StatelessWidget {
           ),
           child: PersonalDetails(
             buttonText: 'Continue',
+            inApp: false,
           ),
         ),
       ),

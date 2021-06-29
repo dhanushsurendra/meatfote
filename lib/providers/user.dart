@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:extended_image/extended_image.dart';
 import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 
-const BASE_URL = 'https://meatforte.herokuapp.com';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class User extends ChangeNotifier {
   final String id;
@@ -38,6 +38,7 @@ class User extends ChangeNotifier {
   String userBusinessName;
   String userEstablishmentYear;
   String userIdentifier;
+  String userBusinessType;
   String userImageUrl;
   bool isImageUploadSuccess = false;
 
@@ -131,6 +132,7 @@ class User extends ChangeNotifier {
 
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
+      userBusinessType = responseData['user']['business_type'];
 
       notifyListeners();
     } catch (error) {
@@ -140,26 +142,30 @@ class User extends ChangeNotifier {
 
   Future<void> postUserBusinessDetails(
     String shopName,
+    String businessType,
     String userId,
     String establishmentYear,
-    // later add file to upload
   ) async {
-    if (userBusinessName == shopName &&
-        userEstablishmentYear == establishmentYear) {
-      return;
-    }
+    // if (userBusinessName == shopName &&
+    //     userEstablishmentYear == establishmentYear &&
+    //     businessType == businessType) {
+    //   return;
+    // }
 
     try {
       final response = await http.post(
         Uri.parse(
           '$BASE_URL/businessDetails',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: json.encode(
           {
             'userId': userId,
             'shopName': shopName,
             'establishmentYear': establishmentYear,
+            'businessType': businessType,
           },
         ),
       );
@@ -172,6 +178,7 @@ class User extends ChangeNotifier {
 
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
+      userBusinessType = responseData['user']['business_type'];
 
       notifyListeners();
     } catch (error) {
@@ -179,11 +186,19 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<void> uploadProfileImage(File file, String userId) async {
+  Future<void> uploadDocument(
+    File file,
+    String userId, {
+    String documentType,
+    String document,
+  }) async {
+    print(documentType);
+    print(document);
+
     try {
       final response = await http.post(
         Uri.parse(
-          '$BASE_URL/uploadProfileImage/$userId/${p.extension(file.path)}',
+          '$BASE_URL/uploadDocument/$userId/${p.extension(file.path)}',
         ),
       );
 
@@ -217,6 +232,8 @@ class User extends ChangeNotifier {
               {
                 'userId': userId,
                 'imageUrl': responseData['key'],
+                'documentType': documentType != null ? documentType : null,
+                'document': document != null ? document : null,
               },
             ),
           );

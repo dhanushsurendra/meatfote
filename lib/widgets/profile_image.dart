@@ -16,8 +16,6 @@ class ProfileImage extends StatelessWidget {
     File _image;
     final picker = ImagePicker();
 
-    String userId = Provider.of<Auth>(context, listen: false).userId;
-
     Future<void> getImage(int index) async {
       FocusScope.of(context).unfocus();
 

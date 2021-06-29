@@ -22,6 +22,8 @@ class BusinessDetails extends StatefulWidget {
 }
 
 class _BusinessDetailsState extends State<BusinessDetails> {
+  String _businessType;
+
   final _formKey = GlobalKey<FormState>();
 
   final _shopNameController = TextEditingController();
@@ -33,6 +35,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
   String userId;
 
   bool _isLoading = false;
+  var provider;
 
   @override
   void initState() {
@@ -49,6 +52,20 @@ class _BusinessDetailsState extends State<BusinessDetails> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    provider = Provider.of<User>(context);
+
+    if (provider.userBusinessType == '' || provider.userBusinessType == null) {
+      _businessType = 'Select business type';
+    } else {
+      setState(() {
+        _businessType = provider.userBusinessType;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _shopNameFocusNode.dispose();
@@ -57,8 +74,6 @@ class _BusinessDetailsState extends State<BusinessDetails> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<User>(context);
-
     if (provider.userBusinessName != '' || provider.userBusinessName != null) {
       _shopNameController.text = provider.userBusinessName;
     }
@@ -74,6 +89,17 @@ class _BusinessDetailsState extends State<BusinessDetails> {
         return;
       }
 
+      if (_businessType == 'Select business type') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Select business type'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 1),
+          ),
+        );
+        return;
+      }
+
       setState(() {
         _isLoading = true;
       });
@@ -83,6 +109,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
       try {
         await Provider.of<User>(context, listen: false).postUserBusinessDetails(
           _shopNameController.text,
+          _businessType,
           userId,
           _establishmentYearController.text,
         );
@@ -98,11 +125,12 @@ class _BusinessDetailsState extends State<BusinessDetails> {
           title: 'Success',
           desc: 'Personal details successfully updated.',
           showCloseIcon: false,
-          btnOkOnPress: () => Navigator.of(context).push(
-            FadePageRoute(
-              childWidget: PendingVerificationScreen(),
-            ),
-          ),
+          btnOkOnPress: () => {},
+          // Navigator.of(context).push(
+          //   FadePageRoute(
+          //     childWidget: PendingVerificationScreen(),
+          //   ),
+          // ),
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
       } catch (error) {
@@ -120,6 +148,65 @@ class _BusinessDetailsState extends State<BusinessDetails> {
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
       }
+    }
+
+    _showModalBottomSheet() {
+      final _listItems = [
+        'Fine Dinning',
+        'Quick Service Resturants',
+        'Events Management',
+        'Cloud Kitchen',
+        'Institutions',
+        'Food Caterers',
+        'Food Truck',
+        'Food Processors'
+      ];
+
+      return showModalBottomSheet<dynamic>(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Container(
+            height: _listItems.length * 60.0 + 50.0,
+            child: Column(
+              children: [
+                SizedBox(height: 20.0),
+                Text(
+                  'Select any one',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Expanded(
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: _listItems.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(
+                          _listItems[index],
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _businessType = _listItems[index];
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
     }
 
     return SingleChildScrollView(
@@ -193,27 +280,12 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 FontHeading(text: 'Business Type'),
                 SizedBox(height: 10.0),
                 ListTileContainer(
-                  title: 'Select Business Type',
+                  title: _businessType,
                   letterSpacing: 0.0,
                   fontWeight: FontWeight.w400,
                   onTap: () {
                     FocusScope.of(context).unfocus();
-                    ModalBottomSheet.modalBottomSheet(
-                      context,
-                      [
-                        'Fine Dinning',
-                        'Quick Service Resturants',
-                        'Events Management',
-                        'Cloud Kitchen',
-                        'Institutions',
-                        'Food Caterers',
-                        'Food Truck',
-                        'Food Processors'
-                      ],
-                      'Select any one',
-                      true,
-                      true,
-                    );
+                    _showModalBottomSheet();
                   },
                   icon: Icon(Icons.business_center_outlined),
                   fontSize: 12.0,

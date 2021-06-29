@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const BASE_URL = 'https://meatforte.herokuapp.com';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Auth extends ChangeNotifier {
   String _userId;
@@ -36,7 +36,7 @@ class Auth extends ChangeNotifier {
       final response = await http.post(
         Uri.parse('$BASE_URL/login'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(
+        body: json.encode(
           {
             'emailPhoneNumber': emailPhoneNumber,
             'password': password,

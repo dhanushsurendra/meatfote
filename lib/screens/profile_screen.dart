@@ -228,13 +228,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(100.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: Offset(0.0, 2.0),
-                                    blurRadius: 6.0,
-                                    color: Colors.black12,
-                                  ),
-                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6.0,
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: 20.0,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6.0,
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: 20.0,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
                               ),
                             ),
                           ),

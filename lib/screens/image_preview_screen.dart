@@ -72,7 +72,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         ),
         body: Column(
           children: [
-            ImageInput(filePath: widget.file),
+            ImageInput(file: widget.file),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Button(
@@ -84,7 +84,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                           _isLoading = true;
                         });
                         Provider.of<User>(context, listen: false)
-                            .uploadProfileImage(widget.file, userId);
+                            .uploadDocument(widget.file, userId);
 
                         checkStatus();
                       },

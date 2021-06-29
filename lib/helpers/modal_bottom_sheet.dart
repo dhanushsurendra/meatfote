@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
-import 'package:meatforte/screens/personal_document_verifiacation_screen.dart';
+import 'package:meatforte/screens/user_details_verification_screen.dart';
 
 class ModalBottomSheet {
   static modalBottomSheet(
@@ -92,6 +92,7 @@ class ModalBottomSheet {
                                   childWidget: UserDetailsVerificationScreen(
                                     document: title,
                                     title: 'Business Verification',
+                                    documentType: 'business',
                                   ),
                                 ),
                               );
