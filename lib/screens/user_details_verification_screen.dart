@@ -75,16 +75,11 @@ class _UserDetailsVerificationScreenState
           ),
         );
 
-        print(widget.document);
-        print(widget.documentType);
-
         Navigator.of(context).pushReplacement(
           FadePageRoute(
             childWidget: UserDetailsVerificationScreen(
               document: widget.document,
-              title: widget.documentType == 'personal'
-                  ? 'Personal Verification'
-                  : 'Business Verification',
+              title: widget.title,
               file: croppedImage,
               documentType: widget.documentType,
             ),
@@ -264,8 +259,7 @@ class _UserDetailsVerificationScreenState
                                             animType: AnimType.BOTTOMSLIDE,
                                             title: 'Success!',
                                             desc:
-                                                'Document submitted successfully.',
-                                            showCloseIcon: false,
+                                                'Document uploaded successfully.',
                                             btnOkOnPress: () => {},
                                             btnOkColor:
                                                 Theme.of(context).primaryColor,

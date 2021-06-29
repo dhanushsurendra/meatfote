@@ -2,10 +2,10 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
-import 'package:meatforte/helpers/modal_bottom_sheet.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/pending_verification_screen.dart';
+import 'package:meatforte/screens/user_details_verification_screen.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:provider/provider.dart';
 
@@ -150,8 +150,8 @@ class _BusinessDetailsState extends State<BusinessDetails> {
       }
     }
 
-    _showModalBottomSheet() {
-      final _listItems = [
+    _showModalBottomSheet(String type) {
+      final _businessTypeList = [
         'Fine Dinning',
         'Quick Service Resturants',
         'Events Management',
@@ -162,12 +162,23 @@ class _BusinessDetailsState extends State<BusinessDetails> {
         'Food Processors'
       ];
 
+      final _businessVerificationList = [
+        'GST Certificate',
+        'Udyam Aadhar',
+        'Shop & Establishment License',
+        'Trade Certificate / Licencse',
+        'FSSAI Registration',
+        'Current Account Check',
+      ];
+
       return showModalBottomSheet<dynamic>(
         context: context,
         isScrollControlled: true,
         builder: (BuildContext context) {
           return Container(
-            height: _listItems.length * 60.0 + 50.0,
+            height: type == 'business_type'
+                ? _businessTypeList.length * 60.0 + 50.0
+                : _businessVerificationList.length * 60.0 + 50.0,
             child: Column(
               children: [
                 SizedBox(height: 20.0),
@@ -182,21 +193,38 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 Expanded(
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: _listItems.length,
+                    itemCount: type == 'business_type'
+                        ? _businessTypeList.length
+                        : _businessVerificationList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         title: Text(
-                          _listItems[index],
+                          type == 'business_type'
+                        ? _businessTypeList[index]
+                        : _businessVerificationList[index],
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         onTap: () {
-                          setState(() {
-                            _businessType = _listItems[index];
-                          });
-                          Navigator.of(context).pop();
+                          if (type == 'business_type') {
+                            setState(() {
+                              _businessType = _businessTypeList[index];
+                            });
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              FadePageRoute(
+                                childWidget: UserDetailsVerificationScreen(
+                                  document: _businessVerificationList[index],
+                                  title: 'Business Verification',
+                                  documentType: 'business',
+                                ),
+                              ),
+                            );
+                          }
                         },
                       );
                     },
@@ -260,18 +288,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                   fontWeight: FontWeight.w400,
                   onTap: () {
                     FocusScope.of(context).unfocus();
-                    ModalBottomSheet.modalBottomSheet(
-                      context,
-                      [
-                        'GST Certificate',
-                        'Udyam Aadhar',
-                        'Shop & Establishment License',
-                        'Trade Certificate / Licencse',
-                        'FSSAI Registration',
-                        'Current Account Check',
-                      ],
-                      'Select any one',
-                    );
+                    _showModalBottomSheet('business_verification');
                   },
                   icon: Icon(Icons.security_outlined),
                   fontSize: 12.0,
@@ -285,7 +302,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                   fontWeight: FontWeight.w400,
                   onTap: () {
                     FocusScope.of(context).unfocus();
-                    _showModalBottomSheet();
+                    _showModalBottomSheet('business_type');
                   },
                   icon: Icon(Icons.business_center_outlined),
                   fontSize: 12.0,
