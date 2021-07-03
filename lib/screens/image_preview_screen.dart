@@ -38,7 +38,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
       AwesomeDialog(
         context: context,
-        dialogType: DialogType.SUCCES,
+        dialogType: status ? DialogType.SUCCES : DialogType.ERROR,
         animType: AnimType.BOTTOMSLIDE,
         title: status ? 'Success!' : 'Error!',
         desc: status

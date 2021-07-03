@@ -222,8 +222,10 @@ class _UserDetailsVerificationScreenState
                               !_isLoading
                                   ? TextButton(
                                       onPressed: () async {
-                                        if (widget.file == null &&
-                                            _image == null) {
+                                        if ((widget.file == null &&
+                                                _image == null) ||
+                                            (widget.file == null) ||
+                                            (_image == null)) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(

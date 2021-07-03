@@ -4,7 +4,6 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
-import 'package:meatforte/screens/pending_verification_screen.dart';
 import 'package:meatforte/screens/user_details_verification_screen.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:provider/provider.dart';
