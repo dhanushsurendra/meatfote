@@ -24,7 +24,6 @@ class BottomBar extends StatelessWidget {
         title: 'Out of Stock',
         desc:
             'One or more products are not in stock. Sorry for the inconvenience.',
-        showCloseIcon: false,
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();

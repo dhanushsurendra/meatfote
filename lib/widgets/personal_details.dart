@@ -109,7 +109,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Success',
           desc: 'Personal details successfully updated.',
-          showCloseIcon: false,
           btnOkOnPress: () => widget.inApp
               ? {}
               : Navigator.of(context).push(
@@ -129,7 +128,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Error!',
           desc: 'Something went wrong.',
-          showCloseIcon: false,
           btnOkOnPress: () => {},
           btnOkColor: Theme.of(context).primaryColor,
         )..show();

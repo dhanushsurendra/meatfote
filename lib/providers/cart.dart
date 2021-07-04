@@ -67,10 +67,10 @@ class Cart with ChangeNotifier {
       List<Product> cartItemsArr = [];
 
       for (int i = 0; i < responseData['products'].length; i++) {
-        print(responseData['products'][i]['pieces'] == null);
+                  print(responseData['products'][i]['product_id']['_id']);
 
         final Product product = new Product(
-          id: responseData['products'][i]['product_id']['_id'],
+          id: responseData['products'][i]['_id'],
           name: responseData['products'][i]['product_id']['name'],
           price: responseData['products'][i]['product_id']['price'].toDouble(),
           imageUrl: responseData['products'][i]['product_id']['imageUrl'],

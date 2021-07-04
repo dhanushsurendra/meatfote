@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
+import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/cart.dart';
@@ -697,9 +698,7 @@ class DeleteIcon extends StatelessWidget {
                 await Provider.of<Products>(context, listen: false)
                     .deleteFavorite(userId, productId);
               }
-            },
-            true,
-            () {
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Deleted successfully!'),
@@ -708,6 +707,8 @@ class DeleteIcon extends StatelessWidget {
                 ),
               );
             },
+            true,
+            () {},
           ),
         },
         child: Container(

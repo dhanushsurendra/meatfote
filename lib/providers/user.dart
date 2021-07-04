@@ -40,6 +40,7 @@ class User extends ChangeNotifier {
   String userIdentifier;
   String userBusinessType;
   String userImageUrl;
+  bool isProfileVerified;
   bool isImageUploadSuccess = false;
 
   Future<void> getUserPersonalDetails(String userId) async {
@@ -61,6 +62,7 @@ class User extends ChangeNotifier {
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
       userImageUrl = responseData['user']['profile_image_url'];
+      isProfileVerified = responseData['user']['is_profile_verified'];
 
       notifyListeners();
     } catch (error) {
@@ -227,7 +229,9 @@ class User extends ChangeNotifier {
             Uri.parse(
               '$BASE_URL/postImageUrl/',
             ),
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: json.encode(
               {
                 'userId': userId,

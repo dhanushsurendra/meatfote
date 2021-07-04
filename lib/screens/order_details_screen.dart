@@ -329,7 +329,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         title: 'Success!',
                         desc:
                             'Order ${widget.hasCancelOrder ? 'cancelled' : 'placed'} successfully.',
-                        showCloseIcon: false,
                         btnOkOnPress: () => widget.hasCancelOrder
                             ? Navigator.of(context).pop()
                             : Navigator.of(context).push(
@@ -378,7 +377,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             animType: AnimType.BOTTOMSLIDE,
                             title: 'Success!',
                             desc: 'Order cancelled successfully.',
-                            showCloseIcon: false,
                             btnOkOnPress: () => widget.hasCancelOrder
                                 ? Navigator.of(context).pop()
                                 : Navigator.of(context).push(

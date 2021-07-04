@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -222,10 +225,25 @@ class _UserDetailsVerificationScreenState
                               !_isLoading
                                   ? TextButton(
                                       onPressed: () async {
-                                        if ((widget.file == null &&
-                                                _image == null) ||
-                                            (widget.file == null) ||
-                                            (_image == null)) {
+                                        if (Provider.of<User>(context,
+                                                listen: false)
+                                            .isProfileVerified) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Your profile is already verified. You cannot add another document.',
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                            ),
+                                          );
+                                          return null;
+                                        }
+
+                                        if (widget.file == null) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
@@ -271,22 +289,20 @@ class _UserDetailsVerificationScreenState
                                             _isLoading = false;
                                           });
                                         } catch (error) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Something went wrong. Please try again.',
-                                              ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                            ),
-                                          );
-
                                           setState(() {
                                             _isLoading = false;
                                           });
+                                          
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.ERROR,
+                                            animType: AnimType.BOTTOMSLIDE,
+                                            title: 'Error',
+                                            desc: 'Failed to upload!',
+                                            btnOkOnPress: () => () {},
+                                            btnOkColor:
+                                                Theme.of(context).primaryColor,
+                                          )..show();
                                         }
                                       },
                                       style: ButtonStyle(

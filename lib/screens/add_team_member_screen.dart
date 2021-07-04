@@ -342,7 +342,6 @@ class _AddMemberState extends State<AddMember> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Succes',
           desc: 'Team memeber added successfully!',
-          showCloseIcon: true,
           dismissOnTouchOutside: false,
           dismissOnBackKeyPress: false,
           btnCancelOnPress: null,
@@ -369,7 +368,6 @@ class _AddMemberState extends State<AddMember> {
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error',
         desc: errorMessage,
-        showCloseIcon: true,
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
       setState(() {

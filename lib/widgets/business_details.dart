@@ -123,13 +123,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Success',
           desc: 'Personal details successfully updated.',
-          showCloseIcon: false,
           btnOkOnPress: () => {},
-          // Navigator.of(context).push(
-          //   FadePageRoute(
-          //     childWidget: PendingVerificationScreen(),
-          //   ),
-          // ),
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
       } catch (error) {
@@ -142,7 +136,6 @@ class _BusinessDetailsState extends State<BusinessDetails> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Error!',
           desc: 'Something went wrong.',
-          showCloseIcon: false,
           btnOkOnPress: () => {},
           btnOkColor: Theme.of(context).primaryColor,
         )..show();

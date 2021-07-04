@@ -68,6 +68,7 @@ class Orders with ChangeNotifier {
       }
 
       List<List<Product>> _orderedProducts = [];
+      print(responseData['orders'].length);
 
       for (var i = 0; i < responseData['orders'].length; i++) {
         List<Product> _orderedProduct = [];

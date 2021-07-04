@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/image_preview_screen.dart';
 import 'package:provider/provider.dart';

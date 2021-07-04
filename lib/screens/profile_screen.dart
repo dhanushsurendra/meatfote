@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
@@ -10,6 +13,7 @@ import 'package:meatforte/screens/login_screen.dart';
 import 'package:meatforte/screens/payments_screen.dart';
 import 'package:meatforte/screens/webview_screen.dart';
 import 'package:meatforte/screens/user_account_screen.dart';
+import 'package:meatforte/widgets/error_handler.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:meatforte/widgets/profile_image.dart';
 import 'package:provider/provider.dart';
@@ -26,10 +30,23 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String userId;
 
+  StreamSubscription<ConnectivityResult> subscription;
+
   @override
   void initState() {
     super.initState();
     userId = Provider.of<Auth>(context, listen: false).userId;
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subscription.cancel();
   }
 
   Widget _buildListTile(
@@ -114,6 +131,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: Colors.transparent,
       ),
     );
+  }
+
+  Future<void> _getUserDetails(BuildContext context, String userId) async {
+    await Provider.of<User>(context, listen: false)
+        .getUserPersonalDetails(userId);
+    setState(() {});
   }
 
   @override
@@ -260,6 +283,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ],
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return RefreshIndicator(
+                        color: Theme.of(context).primaryColor,
+                        onRefresh: () => _getUserDetails(context, userId),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 40.0,
+                              ),
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300],
+                                highlightColor: Colors.grey[100],
+                                child: Container(
+                                  width: 90.0,
+                                  height: 90.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6.0,
+                              ),
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300],
+                                highlightColor: Colors.grey[100],
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  height: 20.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 6.0,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                height: 20.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                ),
+                                child: Text(
+                                  'No Internet!',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // child: ErrorHandler(
+                        //   message: 'Something went wrong.',
+                        //   heightPercent: 0.823,
+                        // ),
                       );
                     }
 

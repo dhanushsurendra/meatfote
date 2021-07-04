@@ -29,7 +29,6 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Error!',
           desc: 'Location services are not enabled. Enable it to continue.',
-          showCloseIcon: false,
           btnOkOnPress: () => {},
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
@@ -46,7 +45,6 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Error!',
           desc: 'Permission denied. Enable it to detect location.',
-          showCloseIcon: false,
           btnOkOnPress: () => {},
           btnOkColor: Theme.of(context).primaryColor,
         )..show();
@@ -61,7 +59,6 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error!',
         desc: 'Permission denied for this app. Enable it in settings.',
-        showCloseIcon: false,
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
@@ -92,7 +89,6 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
         title: 'Error!',
         desc:
             'Sorry, we currrently don\'t operate at your location. Coming soon!',
-        showCloseIcon: false,
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
