@@ -11,8 +11,6 @@ class CartDropDownItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    print(cartItems[0]);
     return Container(
       width: double.infinity,
       height: cartItems.length * 80.0,

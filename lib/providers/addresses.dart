@@ -6,7 +6,7 @@ import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.6:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Address {
   String id;

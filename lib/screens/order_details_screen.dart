@@ -1,7 +1,5 @@
-import 'dart:async';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
@@ -39,6 +37,8 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   String userId;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -300,82 +300,45 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   horizontal: 16.0,
                   vertical: 16.0,
                 ),
-                child: Button(
-                  onTap: () async {
-                    try {
-                      if (!widget.hasCancelOrder) {
-                        await Provider.of<Orders>(context, listen: false)
-                            .createOrder(
-                          userId,
-                          widget.addressId,
-                          widget.cartItems,
-                          double.parse(
-                            _calcTotal(),
-                          ),
-                        );
-                      } else {
-                        await Provider.of<Orders>(context, listen: false)
-                            .cancelOrder(
-                          userId,
-                          orderItem.id,
-                        );
-                      }
-
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.SUCCES,
-                        animType: AnimType.BOTTOMSLIDE,
-                        title: 'Success!',
-                        desc:
-                            'Order ${widget.hasCancelOrder ? 'cancelled' : 'placed'} successfully.',
-                        btnOkOnPress: () => widget.hasCancelOrder
-                            ? Navigator.of(context).pop()
-                            : Navigator.of(context).push(
-                                FadePageRoute(
-                                  childWidget: NotificationScreen(),
-                                ),
-                              ),
-                        btnOkColor: Theme.of(context).primaryColor,
-                        dismissOnBackKeyPress: false,
-                        dismissOnTouchOutside: false,
-                      )..show();
-                    } catch (error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Something went wrong!',
-                          ),
-                          duration: const Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  },
-                  buttonText:
-                      widget.hasCancelOrder ? 'Cancel Order' : 'Confirm',
-                ),
-              )
-            : orderItem.orderStatus == 'PENDING'
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0,
-                    ),
-                    child: Button(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Material(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(5.0),
                       onTap: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
                         try {
-                          await Provider.of<Orders>(context, listen: false)
-                              .cancelOrder(
-                            userId,
-                            orderItem.id,
-                          );
+                          if (!widget.hasCancelOrder) {
+                            await Provider.of<Orders>(context, listen: false)
+                                .createOrder(
+                              userId,
+                              widget.addressId,
+                              widget.cartItems,
+                              double.parse(
+                                _calcTotal(),
+                              ),
+                            );
+                          } else {
+                            await Provider.of<Orders>(context, listen: false)
+                                .cancelOrder(
+                              userId,
+                              orderItem.id,
+                            );
+                          }
 
                           AwesomeDialog(
                             context: context,
                             dialogType: DialogType.SUCCES,
                             animType: AnimType.BOTTOMSLIDE,
                             title: 'Success!',
-                            desc: 'Order cancelled successfully.',
+                            desc:
+                                'Order ${widget.hasCancelOrder ? 'cancelled' : 'placed'} successfully.',
                             btnOkOnPress: () => widget.hasCancelOrder
                                 ? Navigator.of(context).pop()
                                 : Navigator.of(context).push(
@@ -387,15 +350,142 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             dismissOnBackKeyPress: false,
                             dismissOnTouchOutside: false,
                           )..show();
+
+                          setState(() {
+                            _isLoading = false;
+                          });
                         } catch (error) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Something went wrong!'),
+                              content: Text(
+                                'Something went wrong!',
+                              ),
+                              duration: const Duration(seconds: 1),
+                              behavior: SnackBarBehavior.floating,
                             ),
                           );
                         }
                       },
-                      buttonText: 'Cancel Order',
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50.0,
+                        child: Center(
+                          child: !_isLoading
+                              ? Text(
+                                  widget.hasCancelOrder
+                                      ? 'Cancel Order'
+                                      : 'Confirm',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: 25.0,
+                                  height: 25.0,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                ),
+              )
+            : orderItem.orderStatus == 'PENDING'
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 16.0,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Material(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(5.0),
+                          onTap: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              await Provider.of<Orders>(context, listen: false)
+                                  .cancelOrder(
+                                userId,
+                                orderItem.id,
+                              );
+
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.SUCCES,
+                                animType: AnimType.BOTTOMSLIDE,
+                                title: 'Success!',
+                                desc: 'Order cancelled successfully.',
+                                btnOkOnPress: () => widget.hasCancelOrder
+                                    ? Navigator.of(context).pop()
+                                    : Navigator.of(context).push(
+                                        FadePageRoute(
+                                          childWidget: NotificationScreen(),
+                                        ),
+                                      ),
+                                btnOkColor: Theme.of(context).primaryColor,
+                                dismissOnBackKeyPress: false,
+                                dismissOnTouchOutside: false,
+                              )..show();
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            } catch (error) {
+                              print(error);
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Something went wrong!'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50.0,
+                            child: Center(
+                              child: !_isLoading
+                                  ? Text(
+                                      'Cancel Order',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      width: 25.0,
+                                      height: 25.0,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                        color: Colors.transparent,
+                      ),
                     ),
                   )
                 : SizedBox.shrink(),

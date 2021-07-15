@@ -6,7 +6,7 @@ import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.6:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Products with ChangeNotifier {
   List<Product> _products = [];
@@ -78,8 +78,6 @@ class Products with ChangeNotifier {
         if (responseData['statusCode'] != 200) {
           throw HttpException(responseData['error']);
         }
-
-        print(responseData);
 
         List<String> favoriteArr = await getFavorites(userId);
 

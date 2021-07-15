@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/providers/search.dart';
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'http://192.168.0.6:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class OrderItem {
   final String id;
@@ -55,7 +55,7 @@ class Orders with ChangeNotifier {
   ) async {
     try {
       final url = type == 'PRODUCTS'
-          ? '$BASE_URL/getOrders/$userId'
+          ? '$BASE_URL/getOrders/$userId/user'
           : '$BASE_URL/searchOrders?userId=$userId&query=${Provider.of<Search>(context, listen: false).searchInput}';
       final response = await http.get(
         Uri.parse(url),
@@ -68,7 +68,6 @@ class Orders with ChangeNotifier {
       }
 
       List<List<Product>> _orderedProducts = [];
-      print(responseData['orders'].length);
 
       for (var i = 0; i < responseData['orders'].length; i++) {
         List<Product> _orderedProduct = [];
@@ -209,11 +208,6 @@ class Orders with ChangeNotifier {
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
-
-      final orderItemIndex = _orderItems
-          .indexWhere((OrderItem orderItem) => orderItem.id == orderId);
-
-      _orderItems.removeAt(orderItemIndex);
 
       notifyListeners();
     } catch (error) {

@@ -6,7 +6,7 @@ import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.6:3000';
+const BASE_URL = 'http://192.168.0.8:3000';
 
 class Cart with ChangeNotifier {
   List<Product> _cartItems = [];
@@ -70,7 +70,7 @@ class Cart with ChangeNotifier {
                   print(responseData['products'][i]['product_id']['_id']);
 
         final Product product = new Product(
-          id: responseData['products'][i]['_id'],
+          id: responseData['products'][i]['product_id']['_id'],
           name: responseData['products'][i]['product_id']['name'],
           price: responseData['products'][i]['product_id']['price'].toDouble(),
           imageUrl: responseData['products'][i]['product_id']['imageUrl'],

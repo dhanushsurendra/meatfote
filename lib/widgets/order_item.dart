@@ -120,7 +120,7 @@ class OrderItem extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
+                        borderRadius: BorderRadius.circular(2.0),
                         color: orderItem.paymentStatus == 'PAID'
                             ? Colors.green[200].withOpacity(0.5)
                             : Colors.red[200].withOpacity(0.5),
@@ -194,8 +194,9 @@ class ButtonDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 80.0,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(2.0),
         border: Border.all(
           color: Theme.of(context).primaryColor,
           width: 1.0,
@@ -213,10 +214,11 @@ class ButtonDetails extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontSize: 14.0,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 SizedBox(width: 5.0),
