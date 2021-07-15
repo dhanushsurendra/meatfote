@@ -1,5 +1,3 @@
-// IMPLEMENT Product  - isInStock for all the products.
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,7 +6,7 @@ import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'http://192.168.0.9:3000';
+const BASE_URL = 'http://192.168.0.6:3000';
 
 class Product with ChangeNotifier {
   final String id;

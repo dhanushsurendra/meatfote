@@ -4,30 +4,10 @@ import 'package:meatforte/screens/notification_screen.dart';
 import 'package:meatforte/screens/search_input_screen.dart';
 import 'package:meatforte/widgets/products_list.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   HomeScreen({Key key}) : super(key: key);
 
   static const routeName = '/home-screen';
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

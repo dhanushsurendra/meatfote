@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 
-const BASE_URL = 'http://192.168.0.9:3000';
+const BASE_URL = 'http://192.168.0.6:3000';
 
 class User extends ChangeNotifier {
   final String id;
@@ -194,8 +194,6 @@ class User extends ChangeNotifier {
     String documentType,
     String document,
   }) async {
-    print(documentType);
-    print(document);
 
     try {
       final response = await http.post(
@@ -246,7 +244,7 @@ class User extends ChangeNotifier {
 
           if (responseImageUrlData['statusCode'] != 201) {
             isImageUploadSuccess = false;
-            throw HttpException(responseData['error']);
+            throw HttpException(responseImageUrlData['error']);
           }
 
           isImageUploadSuccess = true;

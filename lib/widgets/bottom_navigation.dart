@@ -38,11 +38,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: 'Home',
             icon: Icon(
               Icons.home_outlined,
-              size: 30.0,
+              size: 28.0,
             ),
             activeIcon: Icon(
-              Icons.home_rounded,
-              size: 30.0,
+              Icons.home,
+              size: 28.0,
             ),
           ),
           BottomNavigationBarItem(
