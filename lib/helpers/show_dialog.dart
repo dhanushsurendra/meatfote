@@ -19,7 +19,6 @@ class ShowDialog {
       animType: AnimType.BOTTOMSLIDE,
       title: title,
       desc: desc,
-      showCloseIcon: true,
       dismissOnTouchOutside: dismissOnTouchOutside,
       dismissOnBackKeyPress: dismissOnBackKeyPress,
       btnCancelOnPress: containsButtonCancel ? () {} : null,

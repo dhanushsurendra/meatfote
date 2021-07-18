@@ -19,6 +19,7 @@ class OrderItem {
   final List<Product> orderedProducts;
   final Address address;
   final String createdAt;
+  final String orderRejectedReason;
   bool isExpanded;
 
   OrderItem({
@@ -29,6 +30,7 @@ class OrderItem {
     @required this.orderStatus,
     @required this.address,
     @required this.createdAt,
+    @required this.orderRejectedReason,
     this.isExpanded = false,
   });
 }
@@ -56,7 +58,7 @@ class Orders with ChangeNotifier {
     try {
       final url = type == 'PRODUCTS'
           ? '$BASE_URL/getOrders/$userId/user'
-          : '$BASE_URL/searchOrders?userId=$userId&query=${Provider.of<Search>(context, listen: false).searchInput}';
+          : '$BASE_URL/searchOrders?userId=$userId&query=${Provider.of<Search>(context, listen: false).searchInput}&type=user';
       final response = await http.get(
         Uri.parse(url),
       );
@@ -126,6 +128,7 @@ class Orders with ChangeNotifier {
             pincode: responseData['orders'][i]['address']['pincode'],
           ),
           orderedProducts: _orderedProducts[i],
+          orderRejectedReason: responseData['orders'][i]['order_rejection_reason']
         );
 
         _loadedOrderItems.add(orderItem);
@@ -288,6 +291,7 @@ class Orders with ChangeNotifier {
         paymentStatus: responseData['order']['payment_status'],
         totalPrice: responseData['order']['total_price'].toDouble(),
         createdAt: responseData['order']['createdAt'],
+        orderRejectedReason: responseData['order']['order_rejection_reason'],
         address: new Address(
           id: responseData['order']['address']['_id'],
           businessName: responseData['order']['address']['business_name'],

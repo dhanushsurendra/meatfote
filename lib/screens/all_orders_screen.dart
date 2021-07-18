@@ -91,6 +91,7 @@ class AllOrdersScreen extends StatelessWidget {
                                 isSearchResult: isSearchResult,
                                 hasCancelOrder:
                                     orderItem.orderStatus == 'PENDING',
+                                type: '',
                               );
                             },
                           ),

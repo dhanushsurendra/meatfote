@@ -98,6 +98,7 @@ class _OrderItemsState extends State<OrderItems> {
                         index: index,
                         orderItem: orderItem,
                         hasCancelOrder: orderItem.orderStatus == 'PENDING',
+                        type: widget.type,
                       );
                     }
 
@@ -108,6 +109,7 @@ class _OrderItemsState extends State<OrderItems> {
                         index: index,
                         orderItem: orderItem,
                         hasCancelOrder: false,
+                        type: widget.type,
                       );
                     }
                     return Container();

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class OrderItem extends StatelessWidget {
   final bool isAllOrders;
   final bool hasCancelOrder;
   final bool isSearchResult;
+  final String type;
 
   const OrderItem({
     Key key,
@@ -23,6 +25,7 @@ class OrderItem extends StatelessWidget {
     @required this.index,
     @required this.isAllOrders,
     @required this.hasCancelOrder,
+    @required this.type,
     this.isSearchResult = false,
   }) : super(key: key);
 
@@ -68,7 +71,7 @@ class OrderItem extends StatelessWidget {
                     children: [
                       FaIcon(
                         FontAwesomeIcons.rupeeSign,
-                        size: 14.0,
+                        size: 12.0,
                         color: Theme.of(context).primaryColor,
                       ),
                       Text(
@@ -156,26 +159,111 @@ class OrderItem extends StatelessWidget {
                               );
                             },
                           )
-                        : ButtonDetails(
-                            onTap: () => Navigator.of(context).push(
-                              FadePageRoute(
-                                childWidget: OrderDetailsScreen(
-                                  orderId: orderItem.id,
-                                  title: 'Order Details',
-                                  isOrderSummary: false,
-                                  addressId: orderItem.address.id,
-                                  hasCancelOrder: hasCancelOrder,
+                        : type == 'REJECTED'
+                            ? Row(
+                                children: [
+                                  ButtonReconcile(
+                                    title: 'Reason',
+                                    onTap: () {
+                                      print(orderItem.orderRejectedReason);
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.ERROR,
+                                        animType: AnimType.BOTTOMSLIDE,
+                                        title: 'Order Rejected!',
+                                        desc:
+                                            'Your order was rejected because ' +
+                                                orderItem.orderRejectedReason
+                                                    .toLowerCase(),
+                                        btnOkOnPress: () {},
+                                        btnOkColor:
+                                            Theme.of(context).primaryColor,
+                                      )..show();
+                                    },
+                                  ),
+                                  SizedBox(width: 20.0),
+                                  ButtonDetails(
+                                    onTap: () => Navigator.of(context).push(
+                                      FadePageRoute(
+                                        childWidget: OrderDetailsScreen(
+                                          orderId: orderItem.id,
+                                          title: 'Order Details',
+                                          isOrderSummary: false,
+                                          addressId: orderItem.address.id,
+                                          hasCancelOrder: hasCancelOrder,
+                                        ),
+                                      ),
+                                    ),
+                                    title: 'Details',
+                                  )
+                                ],
+                              )
+                            : ButtonDetails(
+                                onTap: () => Navigator.of(context).push(
+                                  FadePageRoute(
+                                    childWidget: OrderDetailsScreen(
+                                      orderId: orderItem.id,
+                                      title: 'Order Details',
+                                      isOrderSummary: false,
+                                      addressId: orderItem.address.id,
+                                      hasCancelOrder: hasCancelOrder,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: 'Details',
-                          )
+                                title: 'Details',
+                              )
                   ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ButtonReconcile extends StatelessWidget {
+  final String title;
+  final Function onTap;
+
+  const ButtonReconcile({
+    Key key,
+    @required this.title,
+    @required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 90.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(2.0),
+        border: Border.all(
+          color: Color(0xFF00CA71),
+          width: 1.0,
+        ),
+      ),
+      child: Material(
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 6.0,
+              vertical: 2.0,
+            ),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF00CA71),
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        color: Colors.transparent,
       ),
     );
   }

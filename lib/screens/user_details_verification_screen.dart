@@ -226,8 +226,9 @@ class _UserDetailsVerificationScreenState
                                   ? TextButton(
                                       onPressed: () async {
                                         if (Provider.of<User>(context,
-                                                listen: false)
-                                            .isProfileVerified) {
+                                                    listen: false)
+                                                .isProfileVerified ==
+                                            'VERIFIED') {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
@@ -292,7 +293,7 @@ class _UserDetailsVerificationScreenState
                                           setState(() {
                                             _isLoading = false;
                                           });
-                                          
+
                                           AwesomeDialog(
                                             context: context,
                                             dialogType: DialogType.ERROR,

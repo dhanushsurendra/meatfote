@@ -40,7 +40,7 @@ class User extends ChangeNotifier {
   String userIdentifier;
   String userBusinessType;
   String userImageUrl;
-  bool isProfileVerified;
+  String isProfileVerified;
   bool isImageUploadSuccess = false;
 
   Future<void> getUserPersonalDetails(String userId) async {
@@ -62,7 +62,7 @@ class User extends ChangeNotifier {
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
       userImageUrl = responseData['user']['profile_image_url'];
-      isProfileVerified = responseData['user']['is_profile_verified'];
+      isProfileVerified = responseData['user']['profile_verification_status'];
 
       notifyListeners();
     } catch (error) {
@@ -75,7 +75,6 @@ class User extends ChangeNotifier {
     String userId,
     String email,
     String phoneNumber,
-    // later add file to upload
   ) async {
     if (userName == name &&
         phoneNumber == userPhoneNumber &&
