@@ -145,7 +145,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
     _showModalBottomSheet(String type) {
       final _businessTypeList = [
         'Fine Dinning',
-        'Quick Service Resturants',
+        'Quick Service Restaurant',
         'Events Management',
         'Cloud Kitchen',
         'Institutions',
