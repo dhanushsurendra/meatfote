@@ -41,6 +41,7 @@ class Auth extends ChangeNotifier {
             'emailPhoneNumber': emailPhoneNumber,
             'password': password,
             'identifier': identifier,
+            'role': 'user',
           },
         ),
       );
@@ -94,7 +95,7 @@ class Auth extends ChangeNotifier {
       }
 
       _userId = responseData['userId'];
-  
+
       notifyListeners();
     } catch (error) {
       throw error;

@@ -380,4 +380,4 @@ class _BusinessDetailsState extends State<BusinessDetails> {
       ),
     );
   }
-}
+} 

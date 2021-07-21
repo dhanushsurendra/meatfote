@@ -141,7 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final List<Map> _listItems = [
       {'key': 'Account', 'value': Icon(Icons.person_outline_outlined)},
       {'key': 'Orders', 'value': Icon(Icons.shopping_bag_outlined)},
@@ -206,10 +205,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: 'Confirm logout',
             desc: 'Are you sure you want to logout?',
             btnCancelOnPress: () {},
-            btnOkOnPress: () {
-              Provider.of<Auth>(context, listen: false).logout();
+            btnOkOnPress: () async {
+              await Provider.of<Auth>(context, listen: false).logout();
             },
-            onDissmissCallback: () {
+            onDissmissCallback: (_) {
               Navigator.of(context).pushReplacement(
                 FadePageRoute(
                   childWidget: LoginScreen(),

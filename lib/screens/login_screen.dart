@@ -53,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error!',
         desc: error,
-        showCloseIcon: true,
         btnOkOnPress: () {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();

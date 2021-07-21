@@ -81,7 +81,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
           animType: AnimType.BOTTOMSLIDE,
           title: 'Succes',
           desc: 'Password updated successfully!',
-          showCloseIcon: true,
           dismissOnTouchOutside: false,
           dismissOnBackKeyPress: false,
           btnCancelOnPress: null,
@@ -110,7 +109,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error!',
         desc: error.message,
-        showCloseIcon: true,
         btnOkColor: Theme.of(context).primaryColor,
         btnOkOnPress: () {},
       )..show();
@@ -126,7 +124,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error',
         desc: 'Something went wrong!',
-        showCloseIcon: true,
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
       setState(() {

@@ -112,7 +112,6 @@ class _SendOTPScreenState extends State<SendOTPScreen> {
                               animType: AnimType.BOTTOMSLIDE,
                               title: 'Error',
                               desc: error.message,
-                              showCloseIcon: true,
                               btnOkColor: Theme.of(context).primaryColor,
                             )..show();
                             setState(() {
@@ -125,7 +124,6 @@ class _SendOTPScreenState extends State<SendOTPScreen> {
                               animType: AnimType.BOTTOMSLIDE,
                               title: 'Error',
                               desc: 'Something went wrong',
-                              showCloseIcon: true,
                               btnOkColor: Theme.of(context).primaryColor,
                             )..show();
                             setState(() {
