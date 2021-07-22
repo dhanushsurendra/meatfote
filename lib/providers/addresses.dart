@@ -11,25 +11,17 @@ const BASE_URL = 'http://192.168.0.8:3000';
 class Address {
   String id;
   String userId;
-  final String businessName;
-  final String streetAddress;
-  final String locality;
-  final String landmark;
-  final String city;
-  final int pincode;
-  final String phoneNumber;
+  String businessName;
+  String address;
+  String phoneNumber;
   final String timeOfDelivery;
 
   Address({
     this.id,
     this.userId,
     @required this.businessName,
-    @required this.streetAddress,
-    @required this.locality,
-    @required this.landmark,
-    @required this.city,
     @required this.phoneNumber,
-    @required this.pincode,
+    @required this.address,
     @required this.timeOfDelivery,
   });
 }
@@ -64,13 +56,9 @@ class Addresses with ChangeNotifier {
       final Address address = new Address(
         id: responseData['addresses']['_id'],
         userId: responseData['addresses']['use_id'],
-        businessName: responseData['addresses']['business_name'],
-        city: responseData['addresses']['city'],
-        landmark: responseData['addresses']['landmark'],
-        locality: responseData['addresses']['locality'],
+        address: responseData['addresses']['address'],
         phoneNumber: responseData['addresses']['phone_number'],
-        pincode: responseData['addresses']['pincode'],
-        streetAddress: responseData['addresses']['street_address'],
+        businessName: responseData['addresses']['business_name'],
         timeOfDelivery: responseData['addresses']['time_of_delivery'],
       );
 
@@ -82,16 +70,10 @@ class Addresses with ChangeNotifier {
     }
   }
 
-  Future<void> addOrUpdateAddress(
+  Future<void> addAddress(
     Map<String, dynamic> address,
-    String type,
   ) async {
-    Uri url;
-    if (type == 'ADD') {
-      url = Uri.parse('$BASE_URL/addAddress/');
-    } else if (type == 'UPDATE') {
-      url = Uri.parse('$BASE_URL/updateAddress/');
-    }
+    Uri url = Uri.parse('$BASE_URL/addAddress/');
 
     try {
       final response = await http.post(
@@ -104,56 +86,22 @@ class Addresses with ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
-      if (responseData['statusCode'] != 201) {
+      if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
 
-      if (type == 'ADD') {
-        if (responseData['address'] != null) {
-          _addresses.add(
-            new Address(
-              id: responseData['address']['_id'],
-              userId: responseData['address']['user_id'],
-              businessName: responseData['address']['business_name'],
-              city: responseData['address']['city'],
-              locality: responseData['address']['locality'],
-              landmark: responseData['address']['landmark'],
-              phoneNumber:
-                  responseData['address']['phone_number'].split(' ')[1],
-              pincode: responseData['address']['pincode'],
-              streetAddress: responseData['address']['street_address'],
-              timeOfDelivery: responseData['address']['time_of_delivery'],
-            ),
-          );
+      _addresses.add(
+        new Address(
+          id: responseData['address']['_id'],
+          userId: responseData['address']['user_id'],
+          address: responseData['address']['address'],
+          phoneNumber: responseData['address']['phone_number'],
+          businessName: responseData['address']['business_name'],
+          timeOfDelivery: responseData['address']['time_of_delivery'],
+        ),
+      );
 
-          notifyListeners();
-        }
-      } else if (type == 'UPDATE') {
-        if (responseData['address'] != null) {
-          final _addressIndex = _addresses.indexWhere(
-            (element) => element.id == responseData['address']['_id'],
-          );
-
-          _addresses.removeAt(_addressIndex);
-
-          final Address _newAddresss = new Address(
-            id: responseData['address']['_id'],
-            userId: responseData['address']['user_id'],
-            businessName: responseData['address']['business_name'],
-            city: responseData['address']['city'],
-            locality: responseData['address']['locality'],
-            landmark: responseData['address']['landmark'],
-            phoneNumber: responseData['address']['phone_number'].split(' ')[1],
-            pincode: responseData['address']['pincode'],
-            streetAddress: responseData['address']['street_address'],
-            timeOfDelivery: responseData['address']['time_of_delivery'],
-          );
-
-          _addresses.insert(_addressIndex, _newAddresss);
-
-          notifyListeners();
-        }
-      }
+      notifyListeners();
     } on HttpException catch (error) {
       throw error;
     } on SocketException catch (error) {
@@ -180,14 +128,10 @@ class Addresses with ChangeNotifier {
       for (int i = 0; i < responseData['addresses'].length; i++) {
         final Address address = new Address(
           id: responseData['addresses'][i]['_id'],
-          userId: responseData['addresses'][i]['use_id'],
-          businessName: responseData['addresses'][i]['business_name'],
-          city: responseData['addresses'][i]['city'],
-          landmark: responseData['addresses'][i]['landmark'],
-          locality: responseData['addresses'][i]['locality'],
           phoneNumber: responseData['addresses'][i]['phone_number'],
-          pincode: responseData['addresses'][i]['pincode'],
-          streetAddress: responseData['addresses'][i]['street_address'],
+          userId: responseData['addresses'][i]['user_id'],
+          address: responseData['addresses'][i]['address'],
+          businessName: responseData['addresses'][i]['business_name'],
           timeOfDelivery: responseData['addresses'][i]['time_of_delivery'],
         );
 
@@ -195,7 +139,6 @@ class Addresses with ChangeNotifier {
       }
 
       _addresses = _loadedAddresses;
-      print(_addresses.length);
 
       notifyListeners();
     } on HttpException catch (error) {
@@ -242,7 +185,6 @@ class Addresses with ChangeNotifier {
   }
 
   List<Address> get addresses {
-    print(_addresses.length);
     return [..._addresses];
   }
 }

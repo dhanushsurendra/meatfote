@@ -20,7 +20,7 @@ class SettingsDetails extends StatelessWidget {
         FontHeading(text: 'Manage Address'),
         SizedBox(height: 10.0),
         ListTileContainer(
-          title: 'Edit or delete address',
+          title: 'Add or delete address',
           letterSpacing: 0.0,
           fontWeight: FontWeight.w400,
           onTap: () => Navigator.of(context).push(

@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart' as GeoLoc;
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/screens/checkout_screen.dart';
+import 'package:meatforte/screens/location_address.dart';
 import 'package:meatforte/widgets/address_item.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:meatforte/widgets/empty_image.dart';
@@ -14,6 +18,7 @@ import 'package:meatforte/widgets/error_handler.dart';
 import 'package:meatforte/widgets/select_address_item.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:meatforte/providers/addresses.dart' as Modal;
 
 class ManageAddressScreen extends StatefulWidget {
   final String type;
@@ -51,6 +56,89 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
   Future<void> _getAddresses(String userId) async {
     await Provider.of<Addresses>(context, listen: false).getAddresses(userId);
     setState(() {});
+  }
+
+  Future<void> _detectLocation() async {
+    bool serviceEnabled;
+    GeoLoc.LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await GeoLoc.Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc: 'Location services are not enabled. Enable it to continue.',
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+      return;
+    }
+
+    permission = await GeoLoc.Geolocator.checkPermission();
+    if (permission == GeoLoc.LocationPermission.denied) {
+      permission = await GeoLoc.Geolocator.requestPermission();
+      if (permission == GeoLoc.LocationPermission.denied) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error!',
+          desc: 'Permission denied. Enable it to detect location.',
+          btnOkOnPress: () => {},
+          btnOkColor: Theme.of(context).primaryColor,
+        )..show();
+        return;
+      }
+    }
+
+    if (permission == GeoLoc.LocationPermission.deniedForever) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc: 'Permission denied for this app. Enable it in settings.',
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+      return;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    GeoLoc.Position position = await GeoLoc.Geolocator.getCurrentPosition(
+      desiredAccuracy: GeoLoc.LocationAccuracy.best,
+    );
+
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var address =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    if (!address[0].addressLine.contains('Bengaluru')) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc:
+            'Sorry, we currrently don\'t operate at your location. Coming soon!',
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+    } else {
+      Navigator.of(context).push(
+        FadePageRoute(
+          childWidget: LocationAddress(
+            address: address[0].addressLine,
+            latitude: address[0].coordinates.latitude,
+            longitude: address[0].coordinates.longitude,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -169,11 +257,12 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                                     .addresses
                                     .length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  final Address address =
+                                  final Modal.Address address =
                                       Provider.of<Addresses>(context)
                                           .addresses[index];
                                   return SelectAddressItem(
                                     address: address,
+                                    isOrderSummary: true,
                                   );
                                 },
                               ),
@@ -185,7 +274,7 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
                                   context,
                                 ).addresses.length,
                                 itemBuilder: (context, index) {
-                                  final Address address =
+                                  final Modal.Address address =
                                       Provider.of<Addresses>(context)
                                           .addresses[index];
                                   if (index ==
@@ -215,15 +304,63 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
             color: Colors.white,
           ),
           backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () => Navigator.of(context).push(
-            FadePageRoute(
-              childWidget: CheckoutScreen(
-                title: 'Add Address',
-                address: null,
-                buttonText: 'Continue',
-              ),
-            ),
-          ),
+          onPressed: () {
+            showModalBottomSheet<dynamic>(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return Container(
+                  height: 180.0,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.0),
+                      Text(
+                        'Select',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 20.0),
+                      ListTile(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+                          await _detectLocation();
+                        },
+                        leading: Icon(Icons.location_on),
+                        title: Text(
+                          'Current Location',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+
+                          Navigator.of(context).push(
+                            FadePageRoute(
+                              childWidget: CheckoutScreen(),
+                            ),
+                          );
+                        },
+                        leading: Icon(Icons.map),
+                        title: Text(
+                          'Select on Map',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -231,7 +368,7 @@ class _ManageAddressScreenState extends State<ManageAddressScreen> {
 }
 
 class AddressItemBuilder extends StatelessWidget {
-  final Address address;
+  final Modal.Address address;
 
   const AddressItemBuilder({
     Key key,

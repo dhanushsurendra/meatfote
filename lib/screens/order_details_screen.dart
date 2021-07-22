@@ -8,9 +8,9 @@ import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/providers/product.dart';
 import 'package:meatforte/screens/notification_screen.dart';
-import 'package:meatforte/widgets/button.dart';
 import 'package:meatforte/widgets/cart_dropdown_items.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
+import 'package:meatforte/widgets/select_address_item.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
@@ -71,72 +71,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       return total.toStringAsFixed(2);
     }
 
-    Widget _buildAddress(String item, String value) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.0,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 20.0),
-                Expanded(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-          ],
-        ),
-      );
-    }
+    // final List<String> _address = [
+    //   'Business Name',
+    //   'Street Address',
+    //   'Locality',
+    //   'Landmark',
+    //   'City',
+    //   'Pincode',
+    //   'Time of Delivery',
+    //   'Phone Number'
+    // ];
 
-    final List<String> _address = [
-      'Business Name',
-      'Street Address',
-      'Locality',
-      'Landmark',
-      'City',
-      'Pincode',
-      'Time of Delivery',
-      'Phone Number'
-    ];
-
-    final List _values = widget.isOrderSummary
-        ? [
-            address.businessName,
-            address.streetAddress,
-            address.locality,
-            address.landmark,
-            address.city,
-            address.pincode.toString(),
-            address.timeOfDelivery,
-            address.phoneNumber
-          ]
-        : [
-            orderItem.address.businessName,
-            orderItem.address.streetAddress,
-            orderItem.address.locality,
-            orderItem.address.landmark,
-            orderItem.address.city,
-            orderItem.address.pincode.toString(),
-            orderItem.address.timeOfDelivery,
-            orderItem.address.phoneNumber,
-          ];
+    // final List _values = widget.isOrderSummary
+    //     ? [
+    //         address.businessName,
+    //         address.address,
+    //         address.timeOfDelivery,
+    //         address.phoneNumber
+    //       ]
+    //     : [
+    //         orderItem.address.businessName,
+    //         orderItem.address.address,
+    //         orderItem.address.timeOfDelivery,
+    //         orderItem.address.phoneNumber,
+    //       ];
 
     Widget _mainContent = SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -260,19 +218,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                ..._address
-                    .asMap()
-                    .map(
-                      (key, value) => MapEntry(
-                        key,
-                        _buildAddress(
-                          value,
-                          _values[key],
-                        ),
-                      ),
-                    )
-                    .values
-                    .toList(),
+                SelectAddressItem(
+                  address: address != null ? address : orderItem.address,
+                  isOrderSummary: false,
+                ),
               ],
             ),
           ),
@@ -421,10 +370,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             });
                             try {
                               await Provider.of<Orders>(context, listen: false)
-                                  .cancelOrder(
-                                userId,
-                                orderItem.id,
-                              );
+                                  .cancelOrder(userId, orderItem.id);
 
                               AwesomeDialog(
                                 context: context,

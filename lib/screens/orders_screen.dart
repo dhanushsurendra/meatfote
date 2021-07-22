@@ -54,8 +54,9 @@ class _OrdersScreenState extends State<OrdersScreen>
                   Material(
                     color: Colors.white,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TabBar(
+                        controller: _tabController,
                         physics: BouncingScrollPhysics(),
                         indicatorWeight: 3.0,
                         labelPadding:

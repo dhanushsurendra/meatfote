@@ -117,18 +117,14 @@ class Orders with ChangeNotifier {
           address: new Address(
             id: responseData['orders'][i]['address']['_id'],
             businessName: responseData['orders'][i]['address']['business_name'],
-            streetAddress: responseData['orders'][i]['address']
-                ['street_address'],
-            city: responseData['orders'][i]['address']['city'],
-            landmark: responseData['orders'][i]['address']['landmark'],
-            locality: responseData['orders'][i]['address']['locality'],
             timeOfDelivery: responseData['orders'][i]['address']
                 ['time_of_delivery'],
             phoneNumber: responseData['orders'][i]['address']['phone_number'],
-            pincode: responseData['orders'][i]['address']['pincode'],
+            address: responseData['orders'][i]['address']['address'],
           ),
           orderedProducts: _orderedProducts[i],
-          orderRejectedReason: responseData['orders'][i]['order_rejection_reason']
+          orderRejectedReason: responseData['orders'][i]
+              ['order_rejection_reason'],
         );
 
         _loadedOrderItems.add(orderItem);
@@ -294,14 +290,10 @@ class Orders with ChangeNotifier {
         orderRejectedReason: responseData['order']['order_rejection_reason'],
         address: new Address(
           id: responseData['order']['address']['_id'],
+          address: responseData['order']['address']['address'],
           businessName: responseData['order']['address']['business_name'],
-          streetAddress: responseData['order']['address']['street_address'],
-          city: responseData['order']['address']['city'],
-          landmark: responseData['order']['address']['landmark'],
-          locality: responseData['order']['address']['locality'],
-          timeOfDelivery: responseData['order']['address']['time_of_delivery'],
           phoneNumber: responseData['order']['address']['phone_number'],
-          pincode: responseData['order']['address']['pincode'],
+          timeOfDelivery: responseData['order']['address']['time_of_delivery'],
         ),
         orderedProducts: _orderedProducts,
       );

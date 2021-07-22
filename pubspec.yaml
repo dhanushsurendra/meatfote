@@ -30,7 +30,6 @@ dependencies:
     awesome_dialog: ^2.0.0
     webview_flutter: ^2.0.7
     dotted_border: ^2.0.0
-    syncfusion_flutter_datepicker: ^19.1.64-beta
     intl: ^0.17.0
     http: ^0.13.3
     shimmer: ^2.0.0
@@ -46,7 +45,8 @@ dependencies:
     geocoder: ^0.2.1
     extended_image: ^4.1.0
     dio: ^4.0.0
-    aws_s3: ^0.1.1+hotfix.5
+    google_maps_flutter: ^2.0.6
+    location: ^4.3.0
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -91,6 +91,7 @@ flutter:
         - assets/images/waiting.png
         - assets/images/server_error.png
         - assets/images/app_icon.png
+        - assets/images/location_icon.png
     #   - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see

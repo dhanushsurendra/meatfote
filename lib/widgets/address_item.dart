@@ -5,7 +5,6 @@ import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/auth.dart';
-import 'package:meatforte/screens/checkout_screen.dart';
 import 'package:provider/provider.dart';
 
 class AddressItem extends StatelessWidget {
@@ -46,157 +45,102 @@ class AddressItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    address.businessName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: () => Navigator.of(context).push(
-                          FadePageRoute(
-                            childWidget: CheckoutScreen(
-                              title: 'Edit Address',
-                              address:
-                                  Provider.of<Addresses>(context, listen: false)
-                                      .getAddress(address.id),
-                              buttonText: 'Continue',
-                            ),
-                          ),
+                      Text(
+                        address.businessName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.0,
                         ),
-                        child: Container(
-                          width: 35.0,
-                          height: 35.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100.0),
-                            color: Color(0xFFEBEBF1),
-                          ),
-                          child: Icon(
-                            Icons.edit_outlined,
-                            size: 22.0,
+                      ),
+                      SizedBox(height: 5.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Text(
+                          '${address.address}',
+                          softWrap: true,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                      SizedBox(width: 20.0),
-                      InkWell(
-                        onTap: () => ShowDialog.showDialog(
-                          context,
-                          DialogType.WARNING,
-                          'Confirm delete',
-                          'Are you sure you want to delete this address?',
-                          () async {
-                            try {
-                              await Provider.of<Addresses>(context,
-                                      listen: false)
-                                  .deleteAddress(address.id, userId);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Deleted successfully!'),
-                                ),
-                              );
-                            } on HttpException catch (_) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Something went wrong.'),
-                                ),
-                              );
-                            } catch (error) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Something went wrong.'),
-                                ),
-                              );
-                            }
-                          },
-                          true,
-                          () {},
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Time of Delivery: ${address.timeOfDelivery}',
+                        softWrap: true,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Container(
-                          width: 35.0,
-                          height: 35.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100.0),
-                            color: Color(0xFFEBEBF1),
-                          ),
-                          child: Icon(
-                            Icons.delete_outline,
-                            size: 22.0,
-                          ),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Contact: ${address.phoneNumber}',
+                        softWrap: true,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
+                  InkWell(
+                    onTap: () => ShowDialog.showDialog(
+                      context,
+                      DialogType.WARNING,
+                      'Confirm delete',
+                      'Are you sure you want to delete this address?',
+                      () async {
+                        try {
+                          await Provider.of<Addresses>(context, listen: false)
+                              .deleteAddress(address.id, userId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Deleted successfully!'),
+                            ),
+                          );
+                        } on HttpException catch (_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Something went wrong.'),
+                            ),
+                          );
+                        } catch (error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Something went wrong.'),
+                            ),
+                          );
+                        }
+                      },
+                      true,
+                      () {},
+                    ),
+                    child: Container(
+                      width: 35.0,
+                      height: 35.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: Color(0xFFEBEBF1),
+                      ),
+                      child: Icon(
+                        Icons.delete_outline,
+                        size: 22.0,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 10.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Street: ${address.streetAddress}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Locality: ${address.locality}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Landmark: ${address.landmark}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'City: ${address.city} - ${address.pincode.toString()}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Time of Delivery: ${address.timeOfDelivery}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    'Contact: ${address.phoneNumber}',
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
