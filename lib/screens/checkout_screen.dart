@@ -111,23 +111,24 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
     FocusScope.of(context).unfocus();
 
-    if (!_addressController.text.toLowerCase().contains('bengaluru') ||
-        !_addressController.text.toLowerCase().contains('bangalore')) {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.ERROR,
-        animType: AnimType.BOTTOMSLIDE,
-        title: 'Error',
-        desc: 'We do not operate at your location.',
-        btnOkOnPress: () {},
-        btnOkColor: Theme.of(context).primaryColor,
-      )..show();
+    if (!_addressController.text.toLowerCase().contains('bengaluru')) {
+      if (_addressController.text.toLowerCase().contains('bangalore')) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error',
+          desc: 'We do not operate at your location.',
+          btnOkOnPress: () {},
+          btnOkColor: Theme.of(context).primaryColor,
+        )..show();
 
-      setState(() {
-        _isLoading = false;
-      });
+        setState(() {
+          _isLoading = false;
+        });
 
-      return;
+        return;
+      }
     }
 
     Map<String, dynamic> _address = {
