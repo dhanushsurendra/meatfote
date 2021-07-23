@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -38,8 +39,6 @@ class OrderItem {
 class Orders with ChangeNotifier {
   List<OrderItem> _orderItems = [];
   OrderItem orderItem;
-
-  bool _fetchedData = false;
 
   List<OrderItem> get orderItems {
     return [..._orderItems];
@@ -132,8 +131,6 @@ class Orders with ChangeNotifier {
 
       _orderItems = _loadedOrderItems;
 
-      _fetchedData = true;
-
       notifyListeners();
     } catch (error) {
       throw error;
@@ -215,6 +212,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> reorder(String userId, String orderId) async {
+
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/reorder/'),

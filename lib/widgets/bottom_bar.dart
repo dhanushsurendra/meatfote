@@ -16,14 +16,13 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AwesomeDialog _showDialog() {
+    AwesomeDialog _showDialog(String title, String content) {
       return AwesomeDialog(
         context: context,
         dialogType: DialogType.ERROR,
         animType: AnimType.BOTTOMSLIDE,
-        title: 'Out of Stock',
-        desc:
-            'One or more products are not in stock. Sorry for the inconvenience.',
+        title: title,
+        desc: content,
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
@@ -93,20 +92,29 @@ class BottomBar extends StatelessWidget {
                     child: InkWell(
                       onTap: () => !Provider.of<Cart>(context, listen: false)
                               .isCartItemsInStock
-                          ? _showDialog()
+                          ? _showDialog('Out of Stock',
+                              'One or more products are not in stock. Sorry for the inconvenience.')
                           : Provider.of<Cart>(context, listen: false)
-                                      .cartItems
-                                      .length ==
-                                  0
-                              ? null
-                              : Navigator.of(context).push(
-                                  FadePageRoute(
-                                    childWidget: ManageAddressScreen(
-                                      type: 'SELECT',
-                                      title: 'Select Address',
+                                          .totalGrossWeight <
+                                      10 ||
+                                  Provider.of<Cart>(context, listen: false)
+                                          .totalGrossWeight >
+                                      300
+                              ? _showDialog('Error!',
+                                  'Minimun order is 10 kgs and maximum order is 300 kgs.')
+                              : Provider.of<Cart>(context, listen: false)
+                                          .cartItems
+                                          .length ==
+                                      0
+                                  ? null
+                                  : Navigator.of(context).push(
+                                      FadePageRoute(
+                                        childWidget: ManageAddressScreen(
+                                          type: 'SELECT',
+                                          title: 'Select Address',
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 50.0,

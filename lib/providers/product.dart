@@ -19,6 +19,7 @@ class Product with ChangeNotifier {
   final double pieces;
   final int birds;
   final bool isInStock;
+  final String cartItemId;
   bool isFavorite;
 
   Product({
@@ -29,6 +30,7 @@ class Product with ChangeNotifier {
     @required this.layout,
     @required this.productType,
     @required this.isInStock,
+    this.cartItemId,
     this.gross = 0.0,
     this.pieces = 0.0,
     this.birds = 0,

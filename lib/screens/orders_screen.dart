@@ -18,17 +18,17 @@ class _OrdersScreenState extends State<OrdersScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(124.0),
+            preferredSize: Size.fromHeight(120.0),
             child: AppBar(
               elevation: 0.0,
               automaticallyImplyLeading: false,
@@ -59,16 +59,36 @@ class _OrdersScreenState extends State<OrdersScreen>
                         controller: _tabController,
                         physics: BouncingScrollPhysics(),
                         indicatorWeight: 3.0,
-                        labelPadding:
-                            const EdgeInsets.only(bottom: 10.0, top: 10.0),
+                        isScrollable: true,
                         indicatorColor: Theme.of(context).primaryColor,
                         labelColor: Theme.of(context).primaryColor,
                         unselectedLabelColor: Theme.of(context).accentColor,
                         tabs: [
-                          Text('Pending'),
-                          Text('Rejected'),
-                          Text('Shipped'),
-                          Text('Delivered'),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                            child: Text('Pending'),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                            child: Text('Rejected'),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                            child: Text('Shipped'),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                            child: Text('Delivered'),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                            child: Text('Returned'),
+                          ),
                         ],
                       ),
                     ),
@@ -111,6 +131,14 @@ class _OrdersScreenState extends State<OrdersScreen>
                 child: OrderItems(
                   typeExists: false,
                   type: 'DELIVERED',
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+                child: OrderItems(
+                  typeExists: false,
+                  type: 'RETURNED',
                 ),
               ),
             ],

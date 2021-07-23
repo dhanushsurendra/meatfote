@@ -58,9 +58,12 @@ class _OrderItemsState extends State<OrderItems> {
           .getOrders(userId, 'PRODUCTS', context),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: OrdersShimmer(),
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(
+                Theme.of(context).primaryColor,
+              ),
+            ),
           );
         }
 
@@ -82,38 +85,42 @@ class _OrderItemsState extends State<OrderItems> {
                 heightPercent: 0.7,
               )
             : SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-                child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: Provider.of<Orders>(context).orderItems.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final OrderItem orderItem =
-                        Provider.of<Orders>(context, listen: false)
-                            .orderItems[index];
+                physics: BouncingScrollPhysics(),
+                child: RefreshIndicator(
+                  color: Theme.of(context).primaryColor,
+                  onRefresh: () => _getOrders(userId),
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: Provider.of<Orders>(context).orderItems.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final OrderItem orderItem =
+                          Provider.of<Orders>(context, listen: false)
+                              .orderItems[index];
 
-                    if (orderItem.orderStatus == widget.type) {
-                      return WidgetOrderItem.OrderItem(
-                        isAllOrders: false,
-                        index: index,
-                        orderItem: orderItem,
-                        hasCancelOrder: orderItem.orderStatus == 'PENDING',
-                        type: widget.type,
-                      );
-                    }
+                      if (orderItem.orderStatus == widget.type) {
+                        return WidgetOrderItem.OrderItem(
+                          isAllOrders: false,
+                          index: index,
+                          orderItem: orderItem,
+                          hasCancelOrder: orderItem.orderStatus == 'PENDING',
+                          type: widget.type,
+                        );
+                      }
 
-                    if (widget.typeExists &&
-                        orderItem.paymentStatus == widget.type) {
-                      return WidgetOrderItem.OrderItem(
-                        isAllOrders: false,
-                        index: index,
-                        orderItem: orderItem,
-                        hasCancelOrder: false,
-                        type: widget.type,
-                      );
-                    }
-                    return Container();
-                  },
+                      if (widget.typeExists &&
+                          orderItem.paymentStatus == widget.type) {
+                        return WidgetOrderItem.OrderItem(
+                          isAllOrders: false,
+                          index: index,
+                          orderItem: orderItem,
+                          hasCancelOrder: false,
+                          type: widget.type,
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
                 ),
               );
       },

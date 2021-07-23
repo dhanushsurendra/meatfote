@@ -27,6 +27,15 @@ class Cart with ChangeNotifier {
     return _isInStock;
   }
 
+  double get totalGrossWeight {
+    double _grossWeight = 0.0;
+    for (var i = 0; i < _cartItems.length; i++) {
+      _grossWeight += _cartItems[i].gross;
+    }
+
+    return _grossWeight;
+  }
+
   double totalPrice = 0;
 
   double get total {
@@ -67,9 +76,9 @@ class Cart with ChangeNotifier {
       List<Product> cartItemsArr = [];
 
       for (int i = 0; i < responseData['products'].length; i++) {
-                  print(responseData['products'][i]['product_id']['_id']);
 
         final Product product = new Product(
+          cartItemId: responseData['products'][i]['_id'],
           id: responseData['products'][i]['product_id']['_id'],
           name: responseData['products'][i]['product_id']['name'],
           price: responseData['products'][i]['product_id']['price'].toDouble(),
@@ -107,7 +116,6 @@ class Cart with ChangeNotifier {
     double pieces,
     int birds,
   }) async {
-
     try {
       final favoritesResponse = await http.post(
         Uri.parse('$BASE_URL/addToCart/'),
@@ -178,7 +186,7 @@ class Cart with ChangeNotifier {
       }
 
       var _cartItemIndex =
-          _cartItems.indexWhere((element) => element.id == cartItemId);
+          _cartItems.indexWhere((element) => element.cartItemId == cartItemId);
       _cartItems.removeAt(_cartItemIndex);
 
       notifyListeners();

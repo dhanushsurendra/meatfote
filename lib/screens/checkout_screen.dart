@@ -111,7 +111,8 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
     FocusScope.of(context).unfocus();
 
-    if (!_addressController.text.toLowerCase().contains('bengaluru')) {
+    if (!_addressController.text.toLowerCase().contains('bengaluru') ||
+        !_addressController.text.toLowerCase().contains('bangalore')) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.ERROR,

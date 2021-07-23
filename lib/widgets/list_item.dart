@@ -49,7 +49,7 @@ class ListItem extends StatefulWidget {
 }
 
 class _ListItemState extends State<ListItem> {
-  int _birdCount = 0;
+  int _birdCount = 1;
   TextEditingController _grossController = TextEditingController(text: '');
   TextEditingController _piecesController = TextEditingController(text: '');
 
@@ -57,7 +57,7 @@ class _ListItemState extends State<ListItem> {
   void initState() {
     super.initState();
 
-    if (!widget.isLoading) {
+    if (!widget.isLoading && !widget.containsAddToCartButton) {
       _grossController = TextEditingController(text: widget.gross);
       _piecesController = TextEditingController(text: widget.pieces);
       _birdCount = widget.birds;
@@ -85,22 +85,32 @@ class _ListItemState extends State<ListItem> {
         return;
       }
 
-      if (_gross.isEmpty) {
+      if (_gross.isEmpty || double.tryParse(_gross) <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Enter value to add product to cart.'),
+            content: Text('Invalid value for item'),
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 1),
           ),
         );
-      } else if (_gross.isEmpty && _pieces.isNotEmpty) {
+      } else if ((_gross.isEmpty && _pieces.isNotEmpty)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Enter value to add product to cart.'),
+            content: Text('Invalid value for item'),
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 1),
           ),
         );
+        return;
+      } else if (_gross.isNotEmpty && _pieces.isNotEmpty) {
+        if (double.tryParse(_gross) <= 0 || double.tryParse(_pieces) <= 0)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid value for item'),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 1),
+            ),
+          );
         return;
       } else if (_gross.isEmpty && _pieces.isNotEmpty) {
         return;
@@ -133,7 +143,7 @@ class _ListItemState extends State<ListItem> {
           _grossController.text = '';
           _piecesController.text = '';
           setState(() {
-            _birdCount = 0;
+            _birdCount = 1;
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -274,13 +284,13 @@ class _ListItemState extends State<ListItem> {
                           ? FavoriteIcon()
                           : widget.isCart
                               ? DeleteIcon(
-                                  productId: widget.product.id,
+                                  id: widget.product.cartItemId,
                                   userId: userId,
                                   deleteType: widget.deleteType,
                                 )
                               : !widget.isFavorite
                                   ? DeleteIcon(
-                                      productId: widget.product.id,
+                                      id: widget.product.id,
                                       userId: userId,
                                       deleteType: widget.deleteType,
                                     )
@@ -466,7 +476,7 @@ class _ListItemState extends State<ListItem> {
                                     if (!widget.textFieldEnabled) {
                                       return;
                                     }
-                                    if (_birdCount == 0) {
+                                    if (_birdCount == 1) {
                                       return;
                                     }
                                     setState(() {
@@ -500,6 +510,11 @@ class _ListItemState extends State<ListItem> {
                                     if (!widget.textFieldEnabled) {
                                       return;
                                     }
+
+                                    if (_birdCount == 100) {
+                                      return;
+                                    }
+
                                     setState(() {
                                       _birdCount += 1;
                                     });
@@ -667,11 +682,11 @@ class FavoriteIcon extends StatelessWidget {
 
 class DeleteIcon extends StatelessWidget {
   final String userId;
-  final String productId;
+  final String id;
   final String deleteType;
 
   DeleteIcon({
-    @required this.productId,
+    @required this.id,
     @required this.userId,
     @required this.deleteType,
   });
@@ -691,10 +706,10 @@ class DeleteIcon extends StatelessWidget {
             () async {
               if (deleteType == 'CART') {
                 await Provider.of<Cart>(context, listen: false)
-                    .deleteCartItem(userId, productId);
+                    .deleteCartItem(userId, id);
               } else if (deleteType == 'FAVORITES') {
                 await Provider.of<Products>(context, listen: false)
-                    .deleteFavorite(userId, productId);
+                    .deleteFavorite(userId, id);
               }
 
               ScaffoldMessenger.of(context).showSnackBar(
