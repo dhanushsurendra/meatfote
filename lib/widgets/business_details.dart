@@ -4,16 +4,19 @@ import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
+import 'package:meatforte/screens/pending_verification_screen.dart';
 import 'package:meatforte/screens/user_details_verification_screen.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:provider/provider.dart';
 
 class BusinessDetails extends StatefulWidget {
   final String buttonText;
+  final bool isInApp;
 
   const BusinessDetails({
     Key key,
     this.buttonText = 'Update',
+    @required this.isInApp,
   }) : super(key: key);
 
   @override
@@ -35,6 +38,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
 
   bool _isLoading = false;
   var provider;
+  bool _isFirstTime = true;
 
   @override
   void initState() {
@@ -53,15 +57,30 @@ class _BusinessDetailsState extends State<BusinessDetails> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    provider = Provider.of<User>(context);
+    if (_isFirstTime) {
+      provider = Provider.of<User>(context);
 
-    if (provider.userBusinessType == '' || provider.userBusinessType == null) {
-      _businessType = 'Select business type';
-    } else {
-      setState(() {
-        _businessType = provider.userBusinessType;
-      });
+      if (provider.userBusinessType == '' ||
+          provider.userBusinessType == null) {
+        _businessType = 'Select business type';
+      } else {
+        setState(() {
+          _businessType = provider.userBusinessType;
+        });
+      }
+
+      if (provider.userBusinessName != '' ||
+          provider.userBusinessName != null) {
+        _shopNameController.text = provider.userBusinessName;
+      }
+
+      if (provider.userEstablishmentYear != '' ||
+          provider.userEstablishmentYear != null) {
+        _establishmentYearController.text = provider.userEstablishmentYear;
+      }
     }
+
+    _isFirstTime = false;
   }
 
   @override
@@ -71,77 +90,80 @@ class _BusinessDetailsState extends State<BusinessDetails> {
     _establishmentYearFocusNode.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (provider.userBusinessName != '' || provider.userBusinessName != null) {
-      _shopNameController.text = provider.userBusinessName;
+  Future<void> _onFormSubmitted() async {
+    bool isValid = _formKey.currentState.validate();
+    if (!isValid) {
+      return;
     }
 
-    if (provider.userEstablishmentYear != '' ||
-        provider.userEstablishmentYear != null) {
-      _establishmentYearController.text = provider.userEstablishmentYear;
+    if (_businessType == 'Select business type') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Select business type'),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 1),
+        ),
+      );
+      return;
     }
 
-    Future<void> _onFormSubmitted() async {
-      bool isValid = _formKey.currentState.validate();
-      if (!isValid) {
-        return;
-      }
+    setState(() {
+      _isLoading = true;
+    });
 
-      if (_businessType == 'Select business type') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Select business type'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 1),
-          ),
-        );
-        return;
-      }
+    FocusScope.of(context).unfocus();
+
+    try {
+      await Provider.of<User>(context, listen: false).postUserBusinessDetails(
+        _shopNameController.text,
+        _businessType,
+        userId,
+        _establishmentYearController.text,
+      );
 
       setState(() {
-        _isLoading = true;
+        _isLoading = false;
       });
 
-      FocusScope.of(context).unfocus();
-
-      try {
-        await Provider.of<User>(context, listen: false).postUserBusinessDetails(
-          _shopNameController.text,
-          _businessType,
-          userId,
-          _establishmentYearController.text,
-        );
-
-        setState(() {
-          _isLoading = false;
-        });
-
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.SUCCES,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Success',
-          desc: 'Personal details successfully updated.',
-          btnOkOnPress: () => {},
-          btnOkColor: Theme.of(context).primaryColor,
-        )..show();
-      } catch (error) {
-        setState(() {
-          _isLoading = false;
-        });
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Error!',
-          desc: 'Something went wrong.',
-          btnOkOnPress: () => {},
-          btnOkColor: Theme.of(context).primaryColor,
-        )..show();
-      }
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Success',
+        desc: 'Business details successfully updated!',
+        btnOkOnPress: widget.isInApp
+            ? () => {}
+            : () => Navigator.of(context).push(
+                  FadePageRoute(
+                    childWidget: PendingVerificationScreen(),
+                  ),
+                ),
+        btnOkColor: Theme.of(context).primaryColor,
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+      )..show();
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error',
+        desc: error
+                .toString()
+                .startsWith('Business verification document not added')
+            ? error.toString()
+            : 'Something went wrong!',
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     _showModalBottomSheet(String type) {
       final _businessTypeList = [
         'Fine Dinning',
@@ -192,8 +214,8 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                       return ListTile(
                         title: Text(
                           type == 'business_type'
-                        ? _businessTypeList[index]
-                        : _businessVerificationList[index],
+                              ? _businessTypeList[index]
+                              : _businessVerificationList[index],
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.w500,
@@ -380,4 +402,4 @@ class _BusinessDetailsState extends State<BusinessDetails> {
       ),
     );
   }
-} 
+}

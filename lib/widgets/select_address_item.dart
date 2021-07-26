@@ -18,19 +18,23 @@ class SelectAddressItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          FadePageRoute(
-            childWidget: OrderDetailsScreen(
-              title: 'Order Summary',
-              isOrderSummary: true,
-              hasCancelOrder: false,
-              addressId: address.id,
-              cartItems: Provider.of<Cart>(context, listen: false).cartItems,
-            ),
-          ),
-        );
-      },
+      onTap: isOrderSummary
+          ? () {
+              Navigator.of(context).push(
+                FadePageRoute(
+                  childWidget: OrderDetailsScreen(
+                    title: 'Order Summary',
+                    isOrderSummary: true,
+                    hasCancelOrder: false,
+                    isNotificationScreen: false,
+                    addressId: address.id,
+                    cartItems:
+                        Provider.of<Cart>(context, listen: false).cartItems,
+                  ),
+                ),
+              );
+            }
+          : () {},
       child: Padding(
         padding: isOrderSummary
             ? EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
@@ -103,7 +107,6 @@ class SelectAddressItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
                 ],
               ),
             ),

@@ -1,10 +1,7 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
-import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/screens/add_team_member_screen.dart';
-import 'package:meatforte/screens/login_screen.dart';
 import 'package:meatforte/screens/manage_address_screen.dart';
 import 'package:meatforte/screens/reset_password_screen.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';

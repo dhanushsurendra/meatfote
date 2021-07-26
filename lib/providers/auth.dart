@@ -19,6 +19,10 @@ class Auth extends ChangeNotifier {
     return _token != null;
   }
 
+  String get token {
+    return _token;
+  }
+
   bool get location {
     return _location != null;
   }
@@ -49,7 +53,14 @@ class Auth extends ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (responseData['statusCode'] != 200) {
-        throw HttpException(responseData['error']);
+        if (responseData['error']
+            .toString()
+            .startsWith('Your profile was rejected')) {
+          _userId = responseData['data'];
+          throw HttpException(responseData['error']);
+        } else {
+          throw HttpException(responseData['error']);
+        }
       }
 
       _userId = responseData['userId'];
@@ -91,7 +102,13 @@ class Auth extends ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (responseData['statusCode'] != 200) {
-        throw HttpException(responseData['error']);
+        if (responseData['error'].toString().startsWith(
+            'Your profile is incomplete. Complete it to continue')) {
+          _userId = responseData['data'];
+          throw HttpException(responseData['error']);
+        } else {
+          throw HttpException(responseData['error']);
+        }
       }
 
       _userId = responseData['userId'];

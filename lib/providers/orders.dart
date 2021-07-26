@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -21,6 +20,8 @@ class OrderItem {
   final Address address;
   final String createdAt;
   final String orderRejectedReason;
+  final String orderDeliveryDate;
+  String orderDeliveredTime;
   bool isExpanded;
 
   OrderItem({
@@ -32,6 +33,8 @@ class OrderItem {
     @required this.address,
     @required this.createdAt,
     @required this.orderRejectedReason,
+    this.orderDeliveryDate,
+    this.orderDeliveredTime,
     this.isExpanded = false,
   });
 }
@@ -113,6 +116,8 @@ class Orders with ChangeNotifier {
           paymentStatus: responseData['orders'][i]['payment_status'],
           totalPrice: responseData['orders'][i]['total_price'].toDouble(),
           createdAt: responseData['orders'][i]['createdAt'],
+          orderDeliveryDate: responseData['orders'][i]['order_delivery_date'],
+          orderDeliveredTime: responseData['orders'][i]['order_delivered_time'],
           address: new Address(
             id: responseData['orders'][i]['address']['_id'],
             businessName: responseData['orders'][i]['address']['business_name'],
@@ -212,7 +217,6 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> reorder(String userId, String orderId) async {
-
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/reorder/'),

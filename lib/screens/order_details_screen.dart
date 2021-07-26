@@ -20,6 +20,7 @@ class OrderDetailsScreen extends StatefulWidget {
   final String title;
   final bool isOrderSummary;
   final bool hasCancelOrder;
+  final bool isNotificationScreen;
 
   const OrderDetailsScreen({
     Key key,
@@ -29,6 +30,7 @@ class OrderDetailsScreen extends StatefulWidget {
     @required this.title,
     @required this.isOrderSummary,
     @required this.hasCancelOrder,
+    @required this.isNotificationScreen,
   }) : super(key: key);
 
   @override
@@ -70,31 +72,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           widget.cartItems.fold(0.0, (init, accum) => init += accum.price);
       return total.toStringAsFixed(2);
     }
-
-    // final List<String> _address = [
-    //   'Business Name',
-    //   'Street Address',
-    //   'Locality',
-    //   'Landmark',
-    //   'City',
-    //   'Pincode',
-    //   'Time of Delivery',
-    //   'Phone Number'
-    // ];
-
-    // final List _values = widget.isOrderSummary
-    //     ? [
-    //         address.businessName,
-    //         address.address,
-    //         address.timeOfDelivery,
-    //         address.phoneNumber
-    //       ]
-    //     : [
-    //         orderItem.address.businessName,
-    //         orderItem.address.address,
-    //         orderItem.address.timeOfDelivery,
-    //         orderItem.address.phoneNumber,
-    //       ];
 
     Widget _mainContent = SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -222,6 +199,54 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   address: address != null ? address : orderItem.address,
                   isOrderSummary: false,
                 ),
+                SizedBox(height: 20.0),
+                Text(
+                  'Delivery Date',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                !widget.isOrderSummary && !widget.isNotificationScreen
+                    ? Text(
+                        DateFormat.yMMMEd().format(
+                          DateTime.parse(orderItem.orderDeliveryDate),
+                        ),
+                      )
+                    : Container(),
+                widget.isOrderSummary || widget.isNotificationScreen
+                    ? Text(
+                        DateFormat.yMMMEd().format(
+                          DateTime.now().add(new Duration(days: 1)),
+                        ),
+                      )
+                    : Container(),
+                SizedBox(height: 20.0),
+                !widget.isOrderSummary
+                    ? orderItem.orderStatus == 'DELIVERED'
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Delivered On',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              Text(
+                                DateFormat.yMMMEd().format(
+                                  DateTime.parse(orderItem.orderDeliveredTime),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container()
+                    : Container(),
               ],
             ),
           ),

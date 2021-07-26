@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -214,6 +213,43 @@ class _UserDetailsVerificationScreenState
                                 ),
                               ),
                               SizedBox(height: 10.0),
+                              widget.documentType == 'personal'
+                                  ? Provider.of<User>(context, listen: false)
+                                              .userPersonalVerificationImageUrl !=
+                                          null
+                                      ? Container(
+                                          width: 60.0,
+                                          height: 60.0,
+                                          child: ExtendedImage.network(
+                                            Provider.of<User>(context,
+                                                    listen: false)
+                                                .userPersonalVerificationImageUrl,
+                                            fit: BoxFit.cover,
+                                            cache: true,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox.shrink()
+                                  : Provider.of<User>(context, listen: false)
+                                              .userBusinessVerificationImageUrl !=
+                                          null
+                                      ? Container(
+                                          width: 60.0,
+                                          height: 60.0,
+                                          child: ExtendedImage.network(
+                                            Provider.of<User>(context,
+                                                    listen: false)
+                                                .userBusinessVerificationImageUrl,
+                                            fit: BoxFit.cover,
+                                            cache: true,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
                               widget.file != null
                                   ? Container(
                                       width: 60.0,
@@ -281,9 +317,12 @@ class _UserDetailsVerificationScreenState
                                             title: 'Success!',
                                             desc:
                                                 'Document uploaded successfully.',
-                                            btnOkOnPress: () => {},
+                                            btnOkOnPress: () =>
+                                                Navigator.of(context).pop(),
                                             btnOkColor:
                                                 Theme.of(context).primaryColor,
+                                            dismissOnBackKeyPress: true,
+                                            dismissOnTouchOutside: true,
                                           )..show();
 
                                           setState(() {

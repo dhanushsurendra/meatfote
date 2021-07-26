@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
                         snapshot.connectionState == ConnectionState.waiting
                             ? SplashScreen()
                             : LoginScreen(),
-                  ),
+                  ), 
             routes: {
               SplashScreen.routeName: (ctx) => SplashScreen(),
               BottomNavigation.routeName: (ctx) => BottomNavigation(),

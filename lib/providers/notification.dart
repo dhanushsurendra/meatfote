@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:meatforte/providers/auth.dart';
+import 'package:meatforte/providers/user.dart';
+import 'package:provider/provider.dart';
 
 class NotificationItem {
   final String id;
@@ -31,10 +34,14 @@ class Notifications with ChangeNotifier {
     return [..._notifications];
   }
 
-  Future<void> fetchNotifications(String userId) async {
+  Future<void> fetchNotifications(BuildContext context, String userId) async {
     try {
       final response = await http.get(
         Uri.parse('$BASE_URL/getNotifications/$userId'),
+        headers: {
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+        },
       );
 
       final responseData = json.decode(response.body);
@@ -68,11 +75,19 @@ class Notifications with ChangeNotifier {
     }
   }
 
-  Future<void> notificationRead(String userId, String notificationId) async {
+  Future<void> notificationRead(
+    BuildContext context,
+    String userId,
+    String notificationId,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/updateNotification/'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+        },
         body: json.encode(
           {
             'userId': userId,

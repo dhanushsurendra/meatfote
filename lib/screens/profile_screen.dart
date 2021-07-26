@@ -13,7 +13,6 @@ import 'package:meatforte/screens/login_screen.dart';
 import 'package:meatforte/screens/payments_screen.dart';
 import 'package:meatforte/screens/webview_screen.dart';
 import 'package:meatforte/screens/user_account_screen.dart';
-import 'package:meatforte/widgets/error_handler.dart';
 import 'package:meatforte/widgets/list_tile_container.dart';
 import 'package:meatforte/widgets/profile_image.dart';
 import 'package:provider/provider.dart';
@@ -206,14 +205,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             desc: 'Are you sure you want to logout?',
             btnCancelOnPress: () {},
             btnOkOnPress: () async {
-              await Provider.of<Auth>(context, listen: false).logout();
-            },
-            onDissmissCallback: (_) {
-              Navigator.of(context).pushReplacement(
-                FadePageRoute(
-                  childWidget: LoginScreen(),
-                ),
-              );
+              try {
+                await Provider.of<Auth>(context, listen: false).logout();
+
+                Navigator.of(context).pushReplacement(
+                  FadePageRoute(
+                    childWidget: LoginScreen(),
+                  ),
+                );
+              } catch (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to logout'),
+                  ),
+                );
+              }
             },
             btnOkColor: Color(0xFF00CA71),
             btnCancelColor: Theme.of(context).primaryColor,

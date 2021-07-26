@@ -130,6 +130,26 @@ class _SignupScreenState extends State<SignupScreen> {
         setState(() {
           _isLoading = false;
         });
+        
+        if (error.toString().startsWith('Your profile is incomplete')) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.ERROR,
+            animType: AnimType.BOTTOMSLIDE,
+            title: 'Error!',
+            desc: error.toString(),
+            btnOkOnPress: () => Navigator.of(context).push(
+              FadePageRoute(
+                childWidget: PersonalDetailsVerificationScreen(),
+              ),
+            ),
+            btnOkColor: Theme.of(context).primaryColor,
+            dismissOnBackKeyPress: true,
+            dismissOnTouchOutside: true,
+          )..show();
+          return;
+        }
+
         var errorMessage = 'Authentication Failed!';
         errorMessage = error.toString();
         _showErrorDialog(errorMessage);

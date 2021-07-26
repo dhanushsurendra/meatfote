@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart';
 import 'package:meatforte/widgets/empty_image.dart';
-import 'package:meatforte/widgets/shimmer_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:meatforte/widgets/order_item.dart' as WidgetOrderItem;
 

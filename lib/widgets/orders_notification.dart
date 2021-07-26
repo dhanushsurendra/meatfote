@@ -41,7 +41,7 @@ class _OrdersNotificationState extends State<OrdersNotification> {
 
   Future<void> _getNotifications(String userId) async {
     await Provider.of<Notifications>(context, listen: false)
-        .fetchNotifications(userId);
+        .fetchNotifications(context, userId);
     setState(() {});
   }
 
@@ -51,7 +51,7 @@ class _OrdersNotificationState extends State<OrdersNotification> {
 
     return FutureBuilder(
       future: Provider.of<Notifications>(context, listen: false)
-          .fetchNotifications(userId),
+          .fetchNotifications(context, userId),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SingleChildScrollView(
@@ -121,7 +121,7 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                             await Provider.of<Notifications>(
                               context,
                               listen: false,
-                            ).notificationRead(userId, notification.id);
+                            ).notificationRead(context, userId, notification.id);
 
                             await Provider.of<Orders>(context, listen: false)
                                 .fetchOrder(
@@ -135,6 +135,7 @@ class _OrdersNotificationState extends State<OrdersNotification> {
                                   title: 'Order Details',
                                   isOrderSummary: false,
                                   hasCancelOrder: false,
+                                  isNotificationScreen: true,
                                   orderId: notification.orderId,
                                   // addressId: notification.id,
                                 ),

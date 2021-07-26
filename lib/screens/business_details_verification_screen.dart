@@ -31,6 +31,7 @@ class BusinessDetailsVerificationScreen extends StatelessWidget {
           ),
           child: BusinessDetails(
             buttonText: 'Continue',
+            isInApp: false,
           ),
         ),
       ),

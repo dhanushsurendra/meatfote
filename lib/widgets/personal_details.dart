@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
+import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/user.dart';
 import 'package:meatforte/screens/business_details_verification_screen.dart';
@@ -62,6 +63,77 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     }
   }
 
+  Future<void> _onFormSubmitted() async {
+    bool isValid = _formKey.currentState.validate();
+
+    if (!isValid) {
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await Provider.of<User>(context, listen: false).postUserPersonalDetails(
+        _nameController.text,
+        userId,
+        _emailController.text,
+        _phoneNumberController.text,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Success',
+          desc: 'Personal details successfully updated.',
+          btnOkOnPress: () => widget.inApp
+              ? {}
+              : Navigator.of(context).push(
+                  FadePageRoute(
+                    childWidget: BusinessDetailsVerificationScreen(),
+                  ),
+                ),
+          btnOkColor: Theme.of(context).primaryColor,
+          dismissOnBackKeyPress: false,
+          dismissOnTouchOutside: false)
+        ..show();
+    } on HttpException catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc: error.toString(),
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Error!',
+        desc: 'Something went wrong.',
+        btnOkOnPress: () => {},
+        btnOkColor: Theme.of(context).primaryColor,
+      )..show();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<User>(context);
@@ -76,62 +148,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
     if (provider.userPhoneNumber != '' || provider.userPhoneNumber != null) {
       _phoneNumberController.text = provider.userPhoneNumber;
-    }
-
-    Future<void> _onFormSubmitted() async {
-      bool isValid = _formKey.currentState.validate();
-
-      if (!isValid) {
-        return;
-      }
-
-      FocusScope.of(context).unfocus();
-
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        await Provider.of<User>(context, listen: false).postUserPersonalDetails(
-          _nameController.text,
-          userId,
-          _emailController.text,
-          _phoneNumberController.text,
-        );
-
-        setState(() {
-          _isLoading = false;
-        });
-
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.SUCCES,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Success',
-          desc: 'Personal details successfully updated.',
-          btnOkOnPress: () => widget.inApp
-              ? {}
-              : Navigator.of(context).push(
-                  FadePageRoute(
-                    childWidget: BusinessDetailsVerificationScreen(),
-                  ),
-                ),
-          btnOkColor: Theme.of(context).primaryColor,
-        )..show();
-      } catch (error) {
-        setState(() {
-          _isLoading = false;
-        });
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Error!',
-          desc: 'Something went wrong.',
-          btnOkOnPress: () => {},
-          btnOkColor: Theme.of(context).primaryColor,
-        )..show();
-      }
     }
 
     _showModalBottomSheet() {

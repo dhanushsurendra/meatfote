@@ -7,6 +7,7 @@ import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/screens/pending_verification_screen.dart';
+import 'package:meatforte/screens/personal_details_verification_screen.dart';
 import 'package:meatforte/screens/send_otp_screen.dart';
 import 'package:meatforte/screens/signup_screen.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
@@ -46,14 +47,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void _showErrorDialog(String error) {
+    void _showErrorDialog(String error, Function onTap) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.ERROR,
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error!',
         desc: error,
-        btnOkOnPress: () {},
+        btnOkOnPress: onTap,
         btnOkColor: Theme.of(context).primaryColor,
       )..show();
     }
@@ -101,11 +102,30 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         const errorMessage =
             'Could not authenticate you. Please try again later';
-        _showErrorDialog(errorMessage);
+        _showErrorDialog(errorMessage, () {});
       } on HttpException catch (error) {
         setState(() {
           _isLoading = false;
         });
+
+        if (error.toString().startsWith('Your profile was rejected because')) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.ERROR,
+            animType: AnimType.BOTTOMSLIDE,
+            title: 'Error!',
+            desc: error.toString(),
+            btnOkOnPress: () => Navigator.of(context).push(
+              FadePageRoute(
+                childWidget: PersonalDetailsVerificationScreen(),
+              ),
+            ),
+            btnOkColor: Theme.of(context).primaryColor,
+            dismissOnBackKeyPress: true,
+            dismissOnTouchOutside: true,
+          )..show();
+          return;
+        }
 
         if (error.toString() == 'Your profile is under verification') {
           Navigator.of(context).pushReplacement(
@@ -119,14 +139,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
         var errorMessage = 'Authentication Failed!';
         errorMessage = error.toString();
-        _showErrorDialog(errorMessage);
+        _showErrorDialog(errorMessage, () {});
       } catch (error) {
         setState(() {
           _isLoading = false;
         });
         const errorMessage =
             'Could not authenticate you. Please try again later';
-        _showErrorDialog(errorMessage);
+        _showErrorDialog(errorMessage, () {});
       }
     }
 

@@ -210,9 +210,9 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void _unfocusFields() {
-      FocusScope.of(context).unfocus();
-    }
+      void _unfocusFields() {
+        FocusScope.of(context).unfocus();
+      }
 
     return SafeArea(
       child: Scaffold(

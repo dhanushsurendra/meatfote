@@ -37,6 +37,8 @@ class User extends ChangeNotifier {
   String userPhoneNumber;
   String userBusinessName;
   String userEstablishmentYear;
+  String userPersonalVerificationImageUrl;
+  String userBusinessVerificationImageUrl;
   String userIdentifier;
   String userBusinessType;
   String userImageUrl;
@@ -62,6 +64,8 @@ class User extends ChangeNotifier {
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
       userImageUrl = responseData['user']['profile_image_url'];
+      userPersonalVerificationImageUrl = responseData['user']['personal_verification_image_url'];
+
       isProfileVerified = responseData['user']['profile_verification_status'];
 
       notifyListeners();
@@ -76,11 +80,6 @@ class User extends ChangeNotifier {
     String email,
     String phoneNumber,
   ) async {
-    if (userName == name &&
-        phoneNumber == userPhoneNumber &&
-        userEmail == email) {
-      return;
-    }
 
     try {
       final response = await http.post(
@@ -134,6 +133,9 @@ class User extends ChangeNotifier {
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
       userBusinessType = responseData['user']['business_type'];
+      userBusinessVerificationImageUrl = responseData['user']['business_verification_image_url'];
+
+      print(userBusinessVerificationImageUrl);
 
       notifyListeners();
     } catch (error) {
@@ -147,12 +149,6 @@ class User extends ChangeNotifier {
     String userId,
     String establishmentYear,
   ) async {
-    // if (userBusinessName == shopName &&
-    //     userEstablishmentYear == establishmentYear &&
-    //     businessType == businessType) {
-    //   return;
-    // }
-
     try {
       final response = await http.post(
         Uri.parse(
