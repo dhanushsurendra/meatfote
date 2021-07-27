@@ -102,7 +102,11 @@ class AddressItem extends StatelessWidget {
                       () async {
                         try {
                           await Provider.of<Addresses>(context, listen: false)
-                              .deleteAddress(address.id, userId);
+                              .deleteAddress(
+                            context,
+                            address.id,
+                            userId,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Deleted successfully!'),

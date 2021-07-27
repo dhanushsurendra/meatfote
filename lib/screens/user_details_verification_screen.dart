@@ -304,6 +304,7 @@ class _UserDetailsVerificationScreenState
                                           await Provider.of<User>(context,
                                                   listen: false)
                                               .uploadDocument(
+                                            context,
                                             widget.file,
                                             userId,
                                             documentType: widget.documentType,

@@ -86,7 +86,7 @@ class Notifications with ChangeNotifier {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {

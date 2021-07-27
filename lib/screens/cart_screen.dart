@@ -45,7 +45,8 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _getCartItems(String userId) async {
-    await Provider.of<Cart>(context, listen: false).getCartItems(userId);
+    await Provider.of<Cart>(context, listen: false)
+        .getCartItems(context, userId);
     setState(() {});
   }
 
@@ -70,7 +71,7 @@ class _CartScreenState extends State<CartScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: FutureBuilder(
                         future: Provider.of<Cart>(context, listen: false)
-                            .getCartItems(userId),
+                            .getCartItems(context, userId),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.connectionState ==

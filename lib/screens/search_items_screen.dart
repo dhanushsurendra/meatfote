@@ -45,7 +45,7 @@ class _SearchItemsScreenState extends State<SearchItemsScreen> {
     super.didChangeDependencies();
     if (_isLoading) {
       Future.delayed(Duration.zero).then((_) async {
-        await Provider.of<Cart>(context, listen: false).getCartItems(userId);
+        await Provider.of<Cart>(context, listen: false).getCartItems(context, userId);
       });
     }
     _isLoading = false;

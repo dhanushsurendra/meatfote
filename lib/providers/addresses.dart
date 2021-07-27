@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:meatforte/providers/auth.dart';
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -28,49 +30,13 @@ class Address {
 
 class Addresses with ChangeNotifier {
   List<Address> _addresses = [];
-  Address _address;
 
   Address getAddress(String addressId) {
     return _addresses.firstWhere((element) => element.id == addressId);
   }
 
-  Future<void> fetchAddress(String userId, String addressId) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$BASE_URL/getAddress/$userId'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'userId': userId,
-            'addressId': addressId,
-          },
-        ),
-      );
-
-      final responseData = json.decode(response.body);
-
-      if (responseData['statusCode'] != 200) {
-        throw HttpException(responseData['error']);
-      }
-
-      final Address address = new Address(
-        id: responseData['addresses']['_id'],
-        userId: responseData['addresses']['use_id'],
-        address: responseData['addresses']['address'],
-        phoneNumber: responseData['addresses']['phone_number'],
-        businessName: responseData['addresses']['business_name'],
-        timeOfDelivery: responseData['addresses']['time_of_delivery'],
-      );
-
-      _address = address;
-
-      notifyListeners();
-    } catch (error) {
-      throw error;
-    }
-  }
-
   Future<void> addAddress(
+    BuildContext context,
     Map<String, dynamic> address,
   ) async {
     Uri url = Uri.parse('$BASE_URL/addAddress/');
@@ -80,6 +46,8 @@ class Addresses with ChangeNotifier {
         url,
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(address),
       );
@@ -150,12 +118,17 @@ class Addresses with ChangeNotifier {
     }
   }
 
-  Future<void> deleteAddress(String addressId, String userId) async {
+  Future<void> deleteAddress(
+      BuildContext context, String addressId, String userId) async {
     print(userId);
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/deleteAddress/'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
         body: json.encode(
           {
             'addressId': addressId,

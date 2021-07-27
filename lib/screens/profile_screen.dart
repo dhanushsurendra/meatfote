@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _getUserDetails(BuildContext context, String userId) async {
     await Provider.of<User>(context, listen: false)
-        .getUserPersonalDetails(userId);
+        .getUserPersonalDetails(context, userId);
     setState(() {});
   }
 
@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: double.infinity,
                 child: FutureBuilder(
                   future: Provider.of<User>(context, listen: false)
-                      .getUserPersonalDetails(userId),
+                      .getUserPersonalDetails(context, userId),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Column(
@@ -335,13 +335,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 height: 6.0,
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
                                 height: 20.0,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                 ),
                                 child: Text(
-                                  'No Internet!',
+                                  'Something went wrong!',
                                   textAlign: TextAlign.center,
                                 ),
                               ),

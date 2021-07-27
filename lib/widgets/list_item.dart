@@ -118,6 +118,7 @@ class _ListItemState extends State<ListItem> {
         try {
           if (_gross.isNotEmpty && _pieces.isEmpty && _birdCount == 0) {
             await Provider.of<Cart>(context, listen: false).addToCart(
+              context,
               userId,
               widget.product.id,
               gross: double.parse(_gross),
@@ -126,6 +127,7 @@ class _ListItemState extends State<ListItem> {
               _pieces.isNotEmpty &&
               _birdCount == 0) {
             await Provider.of<Cart>(context, listen: false).addToCart(
+              context,
               userId,
               widget.product.id,
               gross: double.parse(_gross),
@@ -133,6 +135,7 @@ class _ListItemState extends State<ListItem> {
             );
           } else if (_gross.isNotEmpty && _pieces.isEmpty && _birdCount != 0) {
             await Provider.of<Cart>(context, listen: false).addToCart(
+              context,
               userId,
               widget.product.id,
               gross: double.parse(_gross),
@@ -621,7 +624,11 @@ class FavoriteIcon extends StatelessWidget {
                         if (await check()) {
                           String userId =
                               Provider.of<Auth>(context, listen: false).userId;
-                          await product.toggleFavorite(userId, product.id);
+                          await product.toggleFavorite(
+                            context,
+                            userId,
+                            product.id,
+                          );
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -697,32 +704,54 @@ class DeleteIcon extends StatelessWidget {
       right: 8,
       top: 8,
       child: GestureDetector(
-        onTap: () => {
+        onTap: () {
           ShowDialog.showDialog(
             context,
             DialogType.WARNING,
             'Confirm delete',
             'Are you sure you want to delete?',
             () async {
-              if (deleteType == 'CART') {
-                await Provider.of<Cart>(context, listen: false)
-                    .deleteCartItem(userId, id);
-              } else if (deleteType == 'FAVORITES') {
-                await Provider.of<Products>(context, listen: false)
-                    .deleteFavorite(userId, id);
-              }
+              try {
+                if (deleteType == 'CART') {
+                  await Provider.of<Cart>(context, listen: false)
+                      .deleteCartItem(context, userId, id);
+                } else if (deleteType == 'FAVORITES') {
+                  await Provider.of<Products>(context, listen: false)
+                      .deleteFavorite(context, userId, id);
+                }
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Deleted successfully!'),
-                  behavior: SnackBarBehavior.floating,
-                  duration: const Duration(seconds: 1),
-                ),
-              );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Deleted successfully!'),
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              } on HttpException catch (error) {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.ERROR,
+                  animType: AnimType.BOTTOMSLIDE,
+                  title: 'Error!',
+                  desc: error.toString(),
+                  btnOkOnPress: () {},
+                  btnOkColor: Theme.of(context).primaryColor,
+                )..show();
+              } catch (e) {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.ERROR,
+                  animType: AnimType.BOTTOMSLIDE,
+                  title: 'Error!',
+                  desc: 'Something went wrong',
+                  btnOkOnPress: () {},
+                  btnOkColor: Theme.of(context).primaryColor,
+                )..show();
+              }
             },
             true,
             () {},
-          ),
+          );
         },
         child: Container(
           width: 35.0,

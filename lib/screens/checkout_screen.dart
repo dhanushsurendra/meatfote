@@ -112,7 +112,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
     FocusScope.of(context).unfocus();
 
     if (!_addressController.text.toLowerCase().contains('bengaluru')) {
-      if (_addressController.text.toLowerCase().contains('bangalore')) {
+      if (!_addressController.text.toLowerCase().contains('bangalore')) {
         AwesomeDialog(
           context: context,
           dialogType: DialogType.ERROR,
@@ -142,7 +142,8 @@ class CheckoutScreenState extends State<CheckoutScreen> {
     };
 
     try {
-      await Provider.of<Addresses>(context, listen: false).addAddress(_address);
+      await Provider.of<Addresses>(context, listen: false)
+          .addAddress(context, _address);
 
       AwesomeDialog(
         context: context,
@@ -210,9 +211,9 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-      void _unfocusFields() {
-        FocusScope.of(context).unfocus();
-      }
+    void _unfocusFields() {
+      FocusScope.of(context).unfocus();
+    }
 
     return SafeArea(
       child: Scaffold(

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:meatforte/providers/auth.dart';
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -42,14 +44,22 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(String userId, String productId) async {
+  Future<void> toggleFavorite(
+    BuildContext context,
+    String userId,
+    String productId,
+  ) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/toggleFavorite'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
         body: json.encode(
           {
             'userId': userId,

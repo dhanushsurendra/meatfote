@@ -57,8 +57,24 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
     if (userId != null) {
       Future.delayed(Duration.zero).then(
-        (value) async => await Provider.of<User>(context, listen: false)
-            .getUserPersonalDetails(userId),
+        (value) async {
+          try {
+            await Provider.of<User>(context, listen: false)
+                .getUserPersonalDetails(context, userId);
+          } catch (error) {
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.ERROR,
+              animType: AnimType.BOTTOMSLIDE,
+              title: 'Error!',
+              desc: 'Something went wrong',
+              btnOkOnPress: () => Navigator.of(context).pop(),
+              btnOkColor: Theme.of(context).primaryColor,
+              dismissOnBackKeyPress: false,
+              dismissOnTouchOutside: false,
+            )..show();
+          }
+        },
       );
     }
   }
@@ -78,6 +94,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
     try {
       await Provider.of<User>(context, listen: false).postUserPersonalDetails(
+        context,
         _nameController.text,
         userId,
         _emailController.text,
@@ -89,22 +106,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       });
 
       AwesomeDialog(
-          context: context,
-          dialogType: DialogType.SUCCES,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Success',
-          desc: 'Personal details successfully updated.',
-          btnOkOnPress: () => widget.inApp
-              ? {}
-              : Navigator.of(context).push(
-                  FadePageRoute(
-                    childWidget: BusinessDetailsVerificationScreen(),
-                  ),
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.BOTTOMSLIDE,
+        title: 'Success',
+        desc: 'Personal details successfully updated.',
+        btnOkOnPress: () => widget.inApp
+            ? {}
+            : Navigator.of(context).push(
+                FadePageRoute(
+                  childWidget: BusinessDetailsVerificationScreen(),
                 ),
-          btnOkColor: Theme.of(context).primaryColor,
-          dismissOnBackKeyPress: false,
-          dismissOnTouchOutside: false)
-        ..show();
+              ),
+        btnOkColor: Theme.of(context).primaryColor,
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+      )..show();
     } on HttpException catch (error) {
       setState(() {
         _isLoading = false;
@@ -114,7 +131,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         dialogType: DialogType.ERROR,
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error!',
-        desc: error.toString(),
+        desc: error.toString() != null
+            ? error
+                    .toString()
+                    .startsWith('Personal verification document not added')
+                ? error.toString()
+                : 'Something went wrong!'
+            : 'Something went wrong',
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:meatforte/providers/auth.dart';
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -39,12 +41,15 @@ class TeamMembers extends ChangeNotifier {
   }
 
   Future<void> fetchTeamMembers(
+    BuildContext context,
     String userId,
   ) async {
     try {
-      final response = await http.get(
-        Uri.parse('$BASE_URL/teamMembers/$userId'),
-      );
+      final response = await http
+          .get(Uri.parse('$BASE_URL/teamMembers/$userId'), headers: {
+        'Authorization':
+            'Bearer ' + Provider.of<Auth>(context, listen: false).token
+      });
 
       final responseData = json.decode(response.body);
 
@@ -76,6 +81,7 @@ class TeamMembers extends ChangeNotifier {
   }
 
   Future<void> addTeamMember(
+    BuildContext context,
     String userId,
     String name,
     String phoneNumber,
@@ -83,7 +89,11 @@ class TeamMembers extends ChangeNotifier {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/addTeamMember/'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+        },
         body: json.encode(
           {
             'userId': userId,
@@ -114,11 +124,19 @@ class TeamMembers extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteTeamMember(String teamMemberId, String userId) async {
+  Future<void> deleteTeamMember(
+    BuildContext context,
+    String teamMemberId,
+    String userId,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/deleteTeamMember/'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+        },
         body: json.encode(
           {
             'userId': userId,
@@ -133,7 +151,8 @@ class TeamMembers extends ChangeNotifier {
         throw HttpException(responseData['error']);
       }
 
-      final _teamMemberIndex = _teamMembers.indexWhere((element) => element.id == teamMemberId);
+      final _teamMemberIndex =
+          _teamMembers.indexWhere((element) => element.id == teamMemberId);
       _teamMembers.removeAt(_teamMemberIndex);
 
       notifyListeners();

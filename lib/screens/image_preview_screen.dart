@@ -34,7 +34,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
       try {
         await Provider.of<User>(context, listen: false)
-            .uploadDocument(widget.file, userId);
+            .uploadDocument(context, widget.file, userId);
 
         setState(() {
           _isLoading = false;

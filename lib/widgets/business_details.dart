@@ -48,8 +48,24 @@ class _BusinessDetailsState extends State<BusinessDetails> {
 
     if (userId != null) {
       Future.delayed(Duration.zero).then(
-        (value) async => await Provider.of<User>(context, listen: false)
-            .getUserBusinessDetails(userId),
+        (value) async {
+          try {
+            await Provider.of<User>(context, listen: false)
+                .getUserBusinessDetails(context, userId);
+          } catch (error) {
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.ERROR,
+              animType: AnimType.BOTTOMSLIDE,
+              title: 'Error!',
+              desc: 'Something went wrong',
+              btnOkOnPress: () => Navigator.of(context).pop(),
+              btnOkColor: Theme.of(context).primaryColor,
+              dismissOnBackKeyPress: false,
+              dismissOnTouchOutside: false,
+            )..show();
+          }
+        },
       );
     }
   }
@@ -115,6 +131,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
 
     try {
       await Provider.of<User>(context, listen: false).postUserBusinessDetails(
+        context,
         _shopNameController.text,
         _businessType,
         userId,
@@ -151,11 +168,13 @@ class _BusinessDetailsState extends State<BusinessDetails> {
         dialogType: DialogType.ERROR,
         animType: AnimType.BOTTOMSLIDE,
         title: 'Error',
-        desc: error
-                .toString()
-                .startsWith('Business verification document not added')
-            ? error.toString()
-            : 'Something went wrong!',
+        desc: error.toString() != null
+            ? error
+                    .toString()
+                    .startsWith('Business verification document not added')
+                ? error.toString()
+                : 'Something went wrong!'
+            : 'Something went wrong',
         btnOkOnPress: () => {},
         btnOkColor: Theme.of(context).primaryColor,
       )..show();

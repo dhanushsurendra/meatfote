@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
+import 'package:meatforte/providers/auth.dart';
 import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -45,12 +47,17 @@ class User extends ChangeNotifier {
   String isProfileVerified;
   bool isImageUploadSuccess = false;
 
-  Future<void> getUserPersonalDetails(String userId) async {
+  Future<void> getUserPersonalDetails(
+      BuildContext context, String userId) async {
     try {
       final response = await http.get(
         Uri.parse(
           '$BASE_URL/personalDetails/$userId',
         ),
+        headers: {
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
       );
 
       final responseData = json.decode(response.body);
@@ -64,7 +71,8 @@ class User extends ChangeNotifier {
       userPhoneNumber = responseData['user']['phone_number'];
       userIdentifier = responseData['user']['identifier'];
       userImageUrl = responseData['user']['profile_image_url'];
-      userPersonalVerificationImageUrl = responseData['user']['personal_verification_image_url'];
+      userPersonalVerificationImageUrl =
+          responseData['user']['personal_verification_image_url'];
 
       isProfileVerified = responseData['user']['profile_verification_status'];
 
@@ -75,12 +83,12 @@ class User extends ChangeNotifier {
   }
 
   Future<void> postUserPersonalDetails(
+    BuildContext context,
     String name,
     String userId,
     String email,
     String phoneNumber,
   ) async {
-
     try {
       final response = await http.post(
         Uri.parse(
@@ -88,6 +96,8 @@ class User extends ChangeNotifier {
         ),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {
@@ -116,12 +126,17 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<void> getUserBusinessDetails(String userId) async {
+  Future<void> getUserBusinessDetails(
+    BuildContext context,
+    String userId,
+  ) async {
     try {
       final response = await http.get(
-        Uri.parse(
-          '$BASE_URL/businessDetails/$userId',
-        ),
+        Uri.parse('$BASE_URL/businessDetails/$userId'),
+        headers: {
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
       );
 
       final responseData = json.decode(response.body);
@@ -133,9 +148,8 @@ class User extends ChangeNotifier {
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
       userBusinessType = responseData['user']['business_type'];
-      userBusinessVerificationImageUrl = responseData['user']['business_verification_image_url'];
-
-      print(userBusinessVerificationImageUrl);
+      userBusinessVerificationImageUrl =
+          responseData['user']['business_verification_image_url'];
 
       notifyListeners();
     } catch (error) {
@@ -144,6 +158,7 @@ class User extends ChangeNotifier {
   }
 
   Future<void> postUserBusinessDetails(
+    BuildContext context,
     String shopName,
     String businessType,
     String userId,
@@ -151,11 +166,11 @@ class User extends ChangeNotifier {
   ) async {
     try {
       final response = await http.post(
-        Uri.parse(
-          '$BASE_URL/businessDetails',
-        ),
+        Uri.parse('$BASE_URL/businessDetails'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {
@@ -184,17 +199,21 @@ class User extends ChangeNotifier {
   }
 
   Future<void> uploadDocument(
+    BuildContext context,
     File file,
     String userId, {
     String documentType,
     String document,
   }) async {
-
     try {
       final response = await http.post(
         Uri.parse(
           '$BASE_URL/uploadDocument/$userId/${p.extension(file.path)}',
         ),
+        headers: {
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token
+        },
       );
 
       final responseData = json.decode(response.body);
@@ -224,6 +243,7 @@ class User extends ChangeNotifier {
             ),
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + Provider.of<Auth>(context, listen: false).token,
             },
             body: json.encode(
               {

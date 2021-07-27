@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
+import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/orders.dart' as OrderItemClass;
 import 'package:meatforte/providers/orders.dart';
@@ -149,14 +150,41 @@ class OrderItem extends StatelessWidget {
                         ? ButtonDetails(
                             title: 'Reorder',
                             onTap: () async {
-                              await Provider.of<Orders>(context, listen: false)
-                                  .reorder(userId, orderItem.id);
+                              try {
+                                await Provider.of<Orders>(context,
+                                        listen: false)
+                                    .reorder(
+                                  context,
+                                  userId,
+                                  orderItem.id,
+                                );
 
-                              Navigator.of(context).push(
-                                FadePageRoute(
-                                  childWidget: CartScreen(isAllOrders: true),
-                                ),
-                              );
+                                Navigator.of(context).push(
+                                  FadePageRoute(
+                                    childWidget: CartScreen(isAllOrders: true),
+                                  ),
+                                );
+                              } on HttpException catch (error) {
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.ERROR,
+                                  animType: AnimType.BOTTOMSLIDE,
+                                  title: 'Error!',
+                                  desc: error.toString(),
+                                  btnOkOnPress: () {},
+                                  btnOkColor: Theme.of(context).primaryColor,
+                                )..show();
+                              } catch (e) {
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.ERROR,
+                                  animType: AnimType.BOTTOMSLIDE,
+                                  title: 'Error!',
+                                  desc: 'Something went wrong',
+                                  btnOkOnPress: () {},
+                                  btnOkColor: Theme.of(context).primaryColor,
+                                )..show();
+                              }
                             },
                           )
                         : type == 'REJECTED'
@@ -300,24 +328,14 @@ class ButtonDetails extends StatelessWidget {
               horizontal: 6.0,
               vertical: 2.0,
             ),
-            child: Row(
-              children: [
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                FaIcon(
-                  FontAwesomeIcons.chevronRight,
-                  size: 12.0,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ],
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),

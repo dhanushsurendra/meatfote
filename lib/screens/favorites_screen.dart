@@ -38,7 +38,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Future<void> _getFavorites(String userId) async {
-    await Provider.of<Products>(context, listen: false).getFavorites(userId);
+    await Provider.of<Products>(context, listen: false).getFavorites(context, userId);
     setState(() {});
   }
 
@@ -60,7 +60,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: FutureBuilder(
                   future: Provider.of<Products>(context, listen: false)
-                      .getFavorites(userId),
+                      .getFavorites(context, userId),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return ListView.builder(

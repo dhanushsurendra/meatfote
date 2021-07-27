@@ -44,7 +44,7 @@ class _ProductsListState extends State<ProductsList> {
   }
 
   Future<void> _getProducts(String userId) async {
-    await Provider.of<Products>(context, listen: false).getProducts(userId);
+    await Provider.of<Products>(context, listen: false).getProducts(context, userId);
     setState(() {});
   }
 
@@ -55,7 +55,7 @@ class _ProductsListState extends State<ProductsList> {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: FutureBuilder(
-        future: Provider.of<Products>(context).getProducts(userId),
+        future: Provider.of<Products>(context).getProducts(context, userId),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return ShimmerLoading();

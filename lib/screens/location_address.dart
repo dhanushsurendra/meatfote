@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:meatforte/helpers/font_heading.dart';
 import 'package:meatforte/providers/addresses.dart';
 import 'package:meatforte/providers/auth.dart';
-import 'package:meatforte/widgets/button.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +25,6 @@ class LocationAddress extends StatefulWidget {
 }
 
 class _LocationAddressState extends State<LocationAddress> {
-
   String _selectedDropDownValue = '6 AM';
   final _formKey = GlobalKey<FormState>();
 
@@ -81,9 +79,29 @@ class _LocationAddressState extends State<LocationAddress> {
 
       FocusScope.of(context).unfocus();
 
+      if (!_addressController.text.toLowerCase().contains('bengaluru')) {
+        if (!_addressController.text.toLowerCase().contains('bangalore')) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.ERROR,
+            animType: AnimType.BOTTOMSLIDE,
+            title: 'Error',
+            desc: 'We do not operate at your location.',
+            btnOkOnPress: () {},
+            btnOkColor: Theme.of(context).primaryColor,
+          )..show();
+
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        }
+      }
+
       try {
         await Provider.of<Addresses>(context, listen: false)
-            .addAddress(_address);
+            .addAddress(context, _address);
 
         setState(() {
           _isLoading = false;
@@ -282,50 +300,43 @@ class _LocationAddressState extends State<LocationAddress> {
                       SizedBox(
                         height: 10.0,
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.42,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FontHeading(text: 'Time of Delivery'),
-                            SizedBox(
-                              height: 10.0,
+                      FontHeading(text: 'Time of Delivery'),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      DropdownButton<String>(
+                        isExpanded: true,
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        items: <String>[
+                          '6 AM',
+                          '7 AM',
+                          '8 AM',
+                          '9 AM',
+                          '10 AM',
+                          '12 PM',
+                          '1 PM',
+                          '2 PM'
+                        ].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: new Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                            DropdownButton<String>(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                              },
-                              items: <String>[
-                                '6 AM',
-                                '7 AM',
-                                '8 AM',
-                                '9 AM',
-                                '10 AM',
-                                '12 PM',
-                                '1 PM',
-                                '2 PM'
-                              ].map((String value) {
-                                return new DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(
-                                    value,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDropDownValue = value;
-                                  FocusScope.of(context).unfocus();
-                                });
-                              },
-                              value: _selectedDropDownValue,
-                            ),
-                          ],
-                        ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedDropDownValue = value;
+                            FocusScope.of(context).unfocus();
+                          });
+                        },
+                        value: _selectedDropDownValue,
                       ),
                       SizedBox(
                         height: 50.0,

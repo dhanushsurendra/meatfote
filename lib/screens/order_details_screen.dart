@@ -291,6 +291,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           if (!widget.hasCancelOrder) {
                             await Provider.of<Orders>(context, listen: false)
                                 .createOrder(
+                              context,
                               userId,
                               widget.addressId,
                               widget.cartItems,
@@ -301,6 +302,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           } else {
                             await Provider.of<Orders>(context, listen: false)
                                 .cancelOrder(
+                              context,
                               userId,
                               orderItem.id,
                             );
@@ -395,7 +397,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             });
                             try {
                               await Provider.of<Orders>(context, listen: false)
-                                  .cancelOrder(userId, orderItem.id);
+                                  .cancelOrder(
+                                context,
+                                userId,
+                                orderItem.id,
+                              );
 
                               AwesomeDialog(
                                 context: context,
@@ -418,13 +424,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 _isLoading = false;
                               });
                             } catch (error) {
-                              print(error);
                               setState(() {
                                 _isLoading = false;
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Something went wrong!'),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(seconds: 1),
                                 ),
                               );
                             }

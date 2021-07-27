@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:meatforte/models/http_excpetion.dart';
+import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -21,11 +23,13 @@ class Products with ChangeNotifier {
     return [..._userFavorites];
   }
 
-  Future<List<String>> getFavorites(String userId) async {
+  Future<List<String>> getFavorites(BuildContext context, String userId) async {
     try {
-      final favoritesResponse = await http.get(
-        Uri.parse('$BASE_URL/favorites/$userId'),
-      );
+      final favoritesResponse =
+          await http.get(Uri.parse('$BASE_URL/favorites/$userId'), headers: {
+        'Authorization':
+            'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+      });
 
       final favoriteData = json.decode(favoritesResponse.body);
 
@@ -66,11 +70,15 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> getProducts(String userId) async {
+  Future<void> getProducts(BuildContext context, String userId) async {
     try {
       if (products.length == 0) {
         final response = await http.get(
           Uri.parse('$BASE_URL/products/$userId'),
+          headers: {
+            'Authorization':
+                'Bearer ' + Provider.of<Auth>(context, listen: false).token
+          },
         );
 
         final responseData = json.decode(response.body);
@@ -79,7 +87,7 @@ class Products with ChangeNotifier {
           throw HttpException(responseData['error']);
         }
 
-        List<String> favoriteArr = await getFavorites(userId);
+        List<String> favoriteArr = await getFavorites(context, userId);
 
         List<Product> _loadedProducts = [];
 
@@ -111,12 +119,18 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> deleteFavorite(String userId, String productId) async {
+  Future<void> deleteFavorite(
+    BuildContext context,
+    String userId,
+    String productId,
+  ) async {
     try {
       final favoritesResponse = await http.post(
         Uri.parse('$BASE_URL/deleteFavorite/'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {

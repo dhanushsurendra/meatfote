@@ -42,7 +42,7 @@ class _AddTeamMemberScreenState extends State<AddTeamMemberScreen> {
 
   Future<void> _getTeamMembers(String userId) async {
     await Provider.of<TeamMembers>(context, listen: false)
-        .fetchTeamMembers(userId);
+        .fetchTeamMembers(context, userId);
     setState(() {});
   }
 
@@ -65,7 +65,7 @@ class _AddTeamMemberScreenState extends State<AddTeamMemberScreen> {
         ),
         body: FutureBuilder(
           future: Provider.of<TeamMembers>(context, listen: false)
-              .fetchTeamMembers(userId),
+              .fetchTeamMembers(context, userId),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Shimmer.fromColors(
@@ -206,6 +206,7 @@ class _AddTeamMemberScreenState extends State<AddTeamMemberScreen> {
                                                     context,
                                                     listen: false,
                                                   ).deleteTeamMember(
+                                                    context,
                                                     teamMember.id,
                                                     userId,
                                                   );
@@ -331,6 +332,7 @@ class _AddMemberState extends State<AddMember> {
 
     try {
       await Provider.of<TeamMembers>(context, listen: false).addTeamMember(
+        context,
         widget.userId,
         _nameController.text,
         _phoneNumberController.text,

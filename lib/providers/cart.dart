@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:meatforte/models/http_excpetion.dart';
+import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 const BASE_URL = 'http://192.168.0.8:3000';
 
@@ -61,10 +63,14 @@ class Cart with ChangeNotifier {
     return _total;
   }
 
-  Future<void> getCartItems(String userId) async {
+  Future<void> getCartItems(BuildContext context, String userId) async {
     try {
       final response = await http.get(
         Uri.parse('$BASE_URL/getCartItems/$userId'),
+        headers: {
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
       );
 
       final responseData = json.decode(response.body);
@@ -76,7 +82,6 @@ class Cart with ChangeNotifier {
       List<Product> cartItemsArr = [];
 
       for (int i = 0; i < responseData['products'].length; i++) {
-
         final Product product = new Product(
           cartItemId: responseData['products'][i]['_id'],
           id: responseData['products'][i]['product_id']['_id'],
@@ -110,6 +115,7 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> addToCart(
+    BuildContext context,
     String userId,
     String productId, {
     double gross,
@@ -121,6 +127,8 @@ class Cart with ChangeNotifier {
         Uri.parse('$BASE_URL/addToCart/'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {
@@ -164,13 +172,21 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future<void> deleteCartItem(String userId, String cartItemId) async {
+  Future<void> deleteCartItem(
+    BuildContext context,
+    String userId,
+    String cartItemId,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse(
           '$BASE_URL/deleteCartItem',
         ),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+        },
         body: json.encode(
           {
             'userId': userId,

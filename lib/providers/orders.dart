@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:meatforte/providers/addresses.dart';
+import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
@@ -143,6 +144,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> createOrder(
+    BuildContext context,
     String userId,
     String addressId,
     List<Product> products,
@@ -153,6 +155,8 @@ class Orders with ChangeNotifier {
         Uri.parse('$BASE_URL/createOrder/'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {
@@ -189,12 +193,18 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future<void> cancelOrder(String userId, String orderId) async {
+  Future<void> cancelOrder(
+    BuildContext context,
+    String userId,
+    String orderId,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/cancelOrder/'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {
@@ -216,12 +226,18 @@ class Orders with ChangeNotifier {
     }
   }
 
-  Future<void> reorder(String userId, String orderId) async {
+  Future<void> reorder(
+    BuildContext context,
+    String userId,
+    String orderId,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/reorder/'),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ' + '',
         },
         body: json.encode(
           {
