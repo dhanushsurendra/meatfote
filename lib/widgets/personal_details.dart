@@ -170,7 +170,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     }
 
     if (provider.userPhoneNumber != '' || provider.userPhoneNumber != null) {
-      _phoneNumberController.text = provider.userPhoneNumber;
+      _phoneNumberController.text =
+          provider.userPhoneNumber.split(' ').length == 2
+              ? provider.userPhoneNumber.split(' ')[1]
+              : provider.userPhoneNumber.split(' ')[0];
     }
 
     _showModalBottomSheet() {
@@ -396,6 +399,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                     color: Colors.transparent,
                   ),
                 ),
+                SizedBox(height: 30.0)
               ],
             ),
           ),

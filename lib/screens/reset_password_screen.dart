@@ -149,156 +149,158 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Container(
-            margin: const EdgeInsets.only(top: 40.0),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      widget.isInApp
-                          ? FontHeading(text: 'Old Password')
-                          : Container(),
-                      widget.isInApp ? SizedBox(height: 10.0) : Container(),
-                      widget.isInApp
-                          ? TextFormField(
-                              cursorColor: Theme.of(context).primaryColor,
-                              controller: _oldPasswordController,
-                              focusNode: _oldPasswordFocusNode,
-                              textInputAction: TextInputAction.next,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(2.0),
-                                  borderSide: BorderSide.none,
+          child: SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.only(top: 40.0),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        widget.isInApp
+                            ? FontHeading(text: 'Old Password')
+                            : Container(),
+                        widget.isInApp ? SizedBox(height: 10.0) : Container(),
+                        widget.isInApp
+                            ? TextFormField(
+                                cursorColor: Theme.of(context).primaryColor,
+                                controller: _oldPasswordController,
+                                focusNode: _oldPasswordFocusNode,
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(2.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  errorMaxLines: 2,
+                                  fillColor: Color(0xFFCAD1DB).withOpacity(.45),
+                                  filled: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 0.0,
+                                    horizontal: 10.0,
+                                  ),
                                 ),
-                                errorMaxLines: 2,
-                                fillColor: Color(0xFFCAD1DB).withOpacity(.45),
-                                filled: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0.0,
-                                  horizontal: 10.0,
-                                ),
-                              ),
-                              onFieldSubmitted: (_) {
-                                FocusScope.of(context)
-                                    .requestFocus(_newPasswordFocusNode);
-                              },
-                              validator: (value) {
-                                if (value.length < 6) {
-                                  return 'Invalid password.';
-                                }
-                                return null;
-                              },
-                            )
-                          : Container(),
-                      SizedBox(height: 10.0),
-                      FontHeading(text: 'New Password'),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        controller: _newPasswordController,
-                        focusNode: _newPasswordFocusNode,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(2.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          errorMaxLines: 2,
-                          fillColor: Color(0xFFCAD1DB).withOpacity(.45),
-                          filled: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0.0,
-                            horizontal: 10.0,
-                          ),
-                        ),
-                        onFieldSubmitted: (_) {
-                          FocusScope.of(context)
-                              .requestFocus(_confirmNewPasswordFocusNode);
-                        },
-                        validator: (value) {
-                          if (value.length < 6) {
-                            return 'Password should be at least 6 characters.';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 10.0),
-                      FontHeading(text: 'Confirm New Password'),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        focusNode: _confirmNewPasswordFocusNode,
-                        keyboardType: TextInputType.emailAddress,
-                        controller: _confirmNewPasswordController,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(2.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          fillColor: Color(0xFFCAD1DB).withOpacity(.45),
-                          filled: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0.0,
-                            horizontal: 10.0,
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value.length < 6 ||
-                              _newPasswordController.text != value) {
-                            return 'Passwords do not match.';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 20.0),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Material(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(5.0),
-                            onTap: _onFormSubmitted,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50.0,
-                              child: Center(
-                                child: !_isLoading
-                                    ? Text(
-                                        'Update',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    : SizedBox(
-                                        width: 25.0,
-                                        height: 25.0,
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                              ),
+                                onFieldSubmitted: (_) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_newPasswordFocusNode);
+                                },
+                                validator: (value) {
+                                  if (value.length < 6) {
+                                    return 'Invalid password.';
+                                  }
+                                  return null;
+                                },
+                              )
+                            : Container(),
+                        SizedBox(height: 10.0),
+                        FontHeading(text: 'New Password'),
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          controller: _newPasswordController,
+                          focusNode: _newPasswordFocusNode,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(2.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            errorMaxLines: 2,
+                            fillColor: Color(0xFFCAD1DB).withOpacity(.45),
+                            filled: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0.0,
+                              horizontal: 10.0,
                             ),
                           ),
-                          color: Colors.transparent,
+                          onFieldSubmitted: (_) {
+                            FocusScope.of(context)
+                                .requestFocus(_confirmNewPasswordFocusNode);
+                          },
+                          validator: (value) {
+                            if (value.length < 6) {
+                              return 'Password should be at least 6 characters.';
+                            }
+                            return null;
+                          },
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 10.0),
+                        FontHeading(text: 'Confirm New Password'),
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          focusNode: _confirmNewPasswordFocusNode,
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _confirmNewPasswordController,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(2.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            fillColor: Color(0xFFCAD1DB).withOpacity(.45),
+                            filled: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0.0,
+                              horizontal: 10.0,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.length < 6 ||
+                                _newPasswordController.text != value) {
+                              return 'Passwords do not match.';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20.0),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Material(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(5.0),
+                              onTap: _onFormSubmitted,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 50.0,
+                                child: Center(
+                                  child: !_isLoading
+                                      ? Text(
+                                          'Update',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 25.0,
+                                          height: 25.0,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

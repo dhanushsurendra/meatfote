@@ -414,6 +414,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                     color: Colors.transparent,
                   ),
                 ),
+                SizedBox(height: 30.0)
               ],
             ),
           ),

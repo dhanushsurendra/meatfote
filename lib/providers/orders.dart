@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/providers/search.dart';
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'http://192.168.0.8:3000';
+const BASE_URL = 'http://192.168.0.9:3000';
 
 class OrderItem {
   final String id;
@@ -237,7 +237,7 @@ class Orders with ChangeNotifier {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              'Bearer ' + '',
+              'Bearer ' + Provider.of<Auth>(context, listen: false).token,
         },
         body: json.encode(
           {

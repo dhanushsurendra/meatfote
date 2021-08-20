@@ -247,6 +247,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           )
                         : Container()
                     : Container(),
+                SizedBox(height: 60.0)
               ],
             ),
           ),

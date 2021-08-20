@@ -139,7 +139,9 @@ class _UserDetailsVerificationScreenState
                         ),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width * 0.65,
+                          height: MediaQuery.of(context).size.width <= 320.0
+                              ? MediaQuery.of(context).size.width * 0.80
+                              : MediaQuery.of(context).size.width * 0.65,
                           decoration: BoxDecoration(
                             color: Color(0xFFCAD1DB).withOpacity(0.2),
                           ),

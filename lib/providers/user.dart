@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'http://192.168.0.8:3000';
+const BASE_URL = 'http://192.168.0.9:3000';
 
 class User extends ChangeNotifier {
   final String id;

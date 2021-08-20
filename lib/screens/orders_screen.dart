@@ -59,7 +59,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                         controller: _tabController,
                         physics: BouncingScrollPhysics(),
                         indicatorWeight: 3.0,
-                        isScrollable: true,
+                        isScrollable: MediaQuery.of(context).size.width >= 575 ? false : true,
                         indicatorColor: Theme.of(context).primaryColor,
                         labelColor: Theme.of(context).primaryColor,
                         unselectedLabelColor: Theme.of(context).accentColor,

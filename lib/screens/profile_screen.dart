@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Material(
         child: InkWell(
-          onTap: () async => await Share.share('https://www.xnxx.com'),
+          onTap: () async => await Share.share('https://meatforteb2b.com'),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             FadePageRoute(
               childWidget: WebViewScreen(
                 title: 'Policies',
-                websiteUrl: 'https://flutter.dev',
+                websiteUrl: 'https://zen-euclid-fb6162.netlify.app/privacy.html',
               ),
             ),
           ),
@@ -185,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             FadePageRoute(
               childWidget: WebViewScreen(
                 title: 'Terms of Use',
-                websiteUrl: 'https://flutter.dev',
+                websiteUrl: 'https://zen-euclid-fb6162.netlify.app/terms.html',
               ),
             ),
           ),
@@ -193,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             FadePageRoute(
               childWidget: WebViewScreen(
                 title: 'About Us',
-                websiteUrl: 'https://flutter.dev',
+                websiteUrl: 'https://zen-euclid-fb6162.netlify.app/index.html',
               ),
             ),
           ),

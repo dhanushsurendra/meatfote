@@ -130,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
         setState(() {
           _isLoading = false;
         });
-        
+
         if (error.toString().startsWith('Your profile is incomplete')) {
           AwesomeDialog(
             context: context,
@@ -358,7 +358,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         FadePageRoute(
                                           childWidget: WebViewScreen(
                                             title: 'Terms of Use',
-                                            websiteUrl: 'https://flutter.dev',
+                                            websiteUrl: 'https://zen-euclid-fb6162.netlify.app/terms.html',
                                           ),
                                         ),
                                       ),
@@ -440,7 +440,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           color: Colors.transparent,
                         ),
                       ),
-                      SizedBox(height: 20.0),
+                      MediaQuery.of(context).size.width <= 320.0
+                          ? SizedBox(height: 60.0)
+                          : SizedBox(height: 20.0),
                     ],
                   ),
                 ),

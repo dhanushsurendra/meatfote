@@ -155,6 +155,8 @@ class _OTPScreenState extends State<OTPScreen> {
                               title: 'Error',
                               desc: error.message,
                               btnOkColor: Theme.of(context).primaryColor,
+                              btnOkText: 'Okay',
+                              btnOkOnPress: () {}
                             )..show();
                             setState(() {
                               _isLoading = false;

@@ -37,7 +37,7 @@ class OrderItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
       child: Container(
-        width: double.infinity,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(2.0),
           color: Colors.white,
@@ -60,10 +60,12 @@ class OrderItem extends StatelessWidget {
                   Container(
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: Text(
-                      'Order Id: ${orderItem.id.substring(0, 13)}...',
+                      MediaQuery.of(context).size.width <= 320.0
+                          ? 'Order Id: ${orderItem.id.substring(0, 5)}...'
+                          : 'Order Id: ${orderItem.id.substring(0, 13)}...',
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 15.0,
+                        fontSize: MediaQuery.of(context).size.width <= 320.0 ? 14.0 : 15.0,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -72,14 +74,14 @@ class OrderItem extends StatelessWidget {
                     children: [
                       FaIcon(
                         FontAwesomeIcons.rupeeSign,
-                        size: 12.0,
+                        size: MediaQuery.of(context).size.width <= 320.0 ? 10.0 : 12.0,
                         color: Theme.of(context).primaryColor,
                       ),
                       Text(
                         orderItem.totalPrice.toStringAsFixed(2),
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 16.0,
+                          fontSize: MediaQuery.of(context).size.width <= 320.0 ? 14.0 : 16.0,
                           fontWeight: FontWeight.w600,
                         ),
                       )

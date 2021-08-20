@@ -66,6 +66,7 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.width);
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> _addProductToCart() async {
@@ -172,7 +173,9 @@ class _ListItemState extends State<ListItem> {
         ? Container(
             margin: const EdgeInsets.symmetric(vertical: 16.0),
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.32,
+            height: MediaQuery.of(context).size.width <= 320.0
+                ? MediaQuery.of(context).size.height * 0.38
+                : MediaQuery.of(context).size.height * 0.35,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: Colors.transparent,
@@ -356,7 +359,7 @@ class _ListItemState extends State<ListItem> {
                   widget.product.name,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 16.0,
+                    fontSize: MediaQuery.of(context).size.width <= 320.0 ? 14.0 : 16.0,
                   ),
                 ),
                 SizedBox(height: 4.0),
@@ -378,12 +381,12 @@ class _ListItemState extends State<ListItem> {
                             children: [
                               FaIcon(
                                 FontAwesomeIcons.rupeeSign,
-                                size: 15.0,
+                                size: MediaQuery.of(context).size.width <= 320.0 ? 12.0 : 15.0,
                               ),
                               Text(
                                 widget.product.price.toString(),
                                 style: TextStyle(
-                                  fontSize: 18.0,
+                                  fontSize: MediaQuery.of(context).size.width <= 320.0 ? 15.0 : 18.0,
                                 ),
                               ),
                             ],
@@ -432,6 +435,7 @@ class _ListItemState extends State<ListItem> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.22,
                             child: TextField(
+                              cursorColor: Theme.of(context).primaryColor,
                               enabled: widget.textFieldEnabled,
                               controller: _grossController,
                               keyboardType: TextInputType.number,

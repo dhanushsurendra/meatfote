@@ -68,7 +68,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
             ),
             _isLoading
                 ? Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                        Theme.of(context).primaryColor,
+                      ),
+                    ),
                   )
                 : Container(),
           ],

@@ -277,11 +277,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                              FadePageRoute(
-                                childWidget: SendOTPScreen(),
-                              ),
-                            ),
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              Navigator.of(context).push(
+                                FadePageRoute(
+                                  childWidget: SendOTPScreen(),
+                                ),
+                              );
+                            },
                             child: Text(
                               'Forgot Password?',
                               style: TextStyle(fontSize: 14.0),

@@ -26,17 +26,39 @@ class CartDropDownItems extends StatelessWidget {
                 cartItem.name,
                 maxLines: 2,
                 style: TextStyle(
-                  fontSize: 14.0,
+                  fontSize:
+                      MediaQuery.of(context).size.width <= 320.0 ? 12.0 : 14.0,
                 ),
               ),
               subtitle: Row(
                 children: [
                   cartItem.pieces > 0
-                      ? Text('Pieces: ${cartItem.pieces} ')
+                      ? Text(
+                          'Pieces: ${cartItem.pieces} ',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width <= 320.0
+                                ? 10.0
+                                : Theme.of(context).textTheme.subtitle2.fontSize,
+                          ),
+                        )
                       : SizedBox.shrink(),
-                  Text('Gross: ${cartItem.gross.toString()} '),
+                  Text(
+                    'Gross: ${cartItem.gross.toString()} ',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width <= 320.0
+                          ? 10.0
+                          : Theme.of(context).textTheme.subtitle2.fontSize,
+                    ),
+                  ),
                   cartItem.birds > 0
-                      ? Text('Birds: ${cartItem.birds}')
+                      ? Text(
+                          'Birds: ${cartItem.birds} ',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width <= 320.0
+                                ? 10.0
+                                : Theme.of(context).textTheme.subtitle2.fontSize,
+                          ),
+                        )
                       : SizedBox.shrink(),
                 ],
               ),
