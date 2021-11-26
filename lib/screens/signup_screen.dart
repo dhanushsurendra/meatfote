@@ -4,14 +4,11 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/helpers/font_heading.dart';
-import 'package:meatforte/helpers/show_dialog.dart';
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/auth.dart';
 import 'package:meatforte/screens/login_screen.dart';
 import 'package:meatforte/screens/personal_details_verification_screen.dart';
 import 'package:meatforte/screens/webview_screen.dart';
-import 'package:meatforte/widgets/bottom_navigation.dart';
-import 'package:meatforte/widgets/button.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -384,7 +381,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     FadePageRoute(
                                       childWidget: WebViewScreen(
                                         title: 'Privacy Policy',
-                                        websiteUrl: 'https://flutter.dev',
+                                        websiteUrl: 'https://zen-euclid-fb6162.netlify.app/privacy.html',
                                       ),
                                     ),
                                   ),

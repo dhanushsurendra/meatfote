@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'http://192.168.0.9:3000';
+const BASE_URL = 'https://meatstack.herokuapp.com';
 
 class User extends ChangeNotifier {
   final String id;
@@ -48,7 +48,10 @@ class User extends ChangeNotifier {
   bool isImageUploadSuccess = false;
 
   Future<void> getUserPersonalDetails(
-      BuildContext context, String userId) async {
+    BuildContext context,
+    String userId,
+  ) async {
+
     try {
       final response = await http.get(
         Uri.parse(
@@ -73,8 +76,9 @@ class User extends ChangeNotifier {
       userImageUrl = responseData['user']['profile_image_url'];
       userPersonalVerificationImageUrl =
           responseData['user']['personal_verification_image_url'];
-
       isProfileVerified = responseData['user']['profile_verification_status'];
+
+      print(responseData);
 
       notifyListeners();
     } catch (error) {
@@ -144,6 +148,7 @@ class User extends ChangeNotifier {
       if (responseData['statusCode'] != 200) {
         throw HttpException(responseData['error']);
       }
+      print(responseData);
 
       userBusinessName = responseData['user']['shop_name'];
       userEstablishmentYear = responseData['user']['establishment_year'];
@@ -205,6 +210,7 @@ class User extends ChangeNotifier {
     String documentType,
     String document,
   }) async {
+    print('userId: ' + userId);
     try {
       final response = await http.post(
         Uri.parse(
@@ -243,7 +249,8 @@ class User extends ChangeNotifier {
             ),
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + Provider.of<Auth>(context, listen: false).token,
+              'Authorization':
+                  'Bearer ' + Provider.of<Auth>(context, listen: false).token,
             },
             body: json.encode(
               {
@@ -273,5 +280,20 @@ class User extends ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  void clearUserValues() {
+    userName = null;
+    userEmail = null;
+    userPhoneNumber = null;
+    userBusinessName = null;
+    userEstablishmentYear = null;
+    userPersonalVerificationImageUrl = null;
+    userBusinessVerificationImageUrl = null;
+    userIdentifier = null;
+    userBusinessType = null;
+    userImageUrl = null;
+    isProfileVerified = null;
+    notifyListeners();
   }
 }

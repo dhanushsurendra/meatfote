@@ -83,30 +83,3 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 }
-
-// SingleChildScrollView(
-//             physics: BouncingScrollPhysics(),
-//             child: Column(
-//               children: [
-//                 Padding(
-//                   padding:
-//                       const EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
-//                   child: TabBar(
-//                     indicatorColor: Theme.of(context).primaryColor,
-//                     indicatorWeight: 3.0,
-//                     physics: BouncingScrollPhysics(),
-//                     controller: _tabController,
-//                     labelColor: Theme.of(context).primaryColor,
-//                     unselectedLabelColor: Theme.of(context).accentColor,
-//                     onTap: (value) => _changeTabContent(value),
-//                     tabs: [
-//                       Tab(text: 'Activity'),
-//                       Tab(text: 'Orders'),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(height: 20.0),
-//                 _contentList,
-//               ],
-//             ),
-//           ),

@@ -108,6 +108,25 @@ class _LoginScreenState extends State<LoginScreen> {
           _isLoading = false;
         });
 
+        if (error.toString().startsWith('Your profile is not completed. Complete it to continue.')) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.ERROR,
+            animType: AnimType.BOTTOMSLIDE,
+            title: 'Error!',
+            desc: error.toString(),
+            btnOkOnPress: () => Navigator.of(context).push(
+              FadePageRoute(
+                childWidget: PersonalDetailsVerificationScreen(),
+              ),
+            ),
+            btnOkColor: Theme.of(context).primaryColor,
+            dismissOnBackKeyPress: true,
+            dismissOnTouchOutside: true,
+          )..show();
+          return;
+        }
+
         if (error.toString().startsWith('Your profile was rejected because')) {
           AwesomeDialog(
             context: context,

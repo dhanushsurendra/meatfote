@@ -37,7 +37,7 @@ class PendingVerificationScreen extends StatelessWidget {
                   (states) => Theme.of(context).primaryColor,
                 ),
               ),
-              onPressed: () async => await Share.share('https://www.xnxx.com'),
+              onPressed: () async => await Share.share('https://meatforteb2b.com'),
               child: Text(
                 'Share our love',
                 style: TextStyle(

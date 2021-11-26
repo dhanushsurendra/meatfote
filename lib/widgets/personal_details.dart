@@ -39,6 +39,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   String userId;
   bool _isLoading = false;
+  bool _isFirstTime = true;
 
   @override
   void dispose() {
@@ -55,28 +56,46 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
     userId = Provider.of<Auth>(context, listen: false).userId;
 
-    if (userId != null) {
-      Future.delayed(Duration.zero).then(
-        (value) async {
-          try {
-            await Provider.of<User>(context, listen: false)
-                .getUserPersonalDetails(context, userId);
-          } catch (error) {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.ERROR,
-              animType: AnimType.BOTTOMSLIDE,
-              title: 'Error!',
-              desc: 'Something went wrong',
-              btnOkOnPress: () => Navigator.of(context).pop(),
-              btnOkColor: Theme.of(context).primaryColor,
-              dismissOnBackKeyPress: false,
-              dismissOnTouchOutside: false,
-            )..show();
-          }
-        },
-      );
+    Future.delayed(Duration.zero).then((value) async {
+      try {
+        await Provider.of<User>(context, listen: false)
+            .getUserPersonalDetails(context, userId);
+      } catch (error) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error!',
+          desc: 'Something went wrong',
+          btnOkOnPress: () => Navigator.of(context).pop(),
+          btnOkColor: Theme.of(context).primaryColor,
+          dismissOnBackKeyPress: false,
+          dismissOnTouchOutside: false,
+        )..show();
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstTime) {
+      var provider = Provider.of<User>(context);
+
+      if (provider.userName != '' || provider.userName != null) {
+        _nameController.text = provider.userName;
+      }
+
+      if (provider.userEmail != '' || provider.userEmail != null) {
+        _emailController.text = provider.userEmail;
+      }
+
+      if (provider.userPhoneNumber != '' || provider.userPhoneNumber != null) {
+        _phoneNumberController.text = provider.userPhoneNumber;
+      }
     }
+
+    _isFirstTime = false;
   }
 
   Future<void> _onFormSubmitted() async {
@@ -159,23 +178,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<User>(context);
-
-    if (provider.userName != '' || provider.userName != null) {
-      _nameController.text = provider.userName;
-    }
-
-    if (provider.userEmail != '' || provider.userEmail != null) {
-      _emailController.text = provider.userEmail;
-    }
-
-    if (provider.userPhoneNumber != '' || provider.userPhoneNumber != null) {
-      _phoneNumberController.text =
-          provider.userPhoneNumber.split(' ').length == 2
-              ? provider.userPhoneNumber.split(' ')[1]
-              : provider.userPhoneNumber.split(' ')[0];
-    }
-
     _showModalBottomSheet() {
       final _listItems = [
         'Aadhar Card',
@@ -282,7 +284,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 FontHeading(text: 'Email'),
                 SizedBox(height: 10.0),
                 TextFormField(
-                  enabled: Provider.of<User>(context).userIdentifier != 'EMAIL',
+                  enabled: !widget.inApp
+                      ? true
+                      : Provider.of<User>(context).userIdentifier != 'EMAIL',
                   cursorColor: Theme.of(context).primaryColor,
                   focusNode: _emailFocusNode,
                   keyboardType: TextInputType.emailAddress,
@@ -316,8 +320,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 FontHeading(text: 'Phone Number'),
                 SizedBox(height: 10.0),
                 TextFormField(
-                  enabled: Provider.of<User>(context).userIdentifier !=
-                      'PHONE_NUMBER',
+                  enabled: !widget.inApp
+                      ? true
+                      : Provider.of<User>(context).userIdentifier !=
+                          'PHONE_NUMBER',
                   focusNode: _phoneNumberFocusNode,
                   cursorColor: Theme.of(context).primaryColor,
                   keyboardType: TextInputType.phone,

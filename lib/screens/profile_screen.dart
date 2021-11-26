@@ -206,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             btnCancelOnPress: () {},
             btnOkOnPress: () async {
               try {
-                await Provider.of<Auth>(context, listen: false).logout();
+                await Provider.of<Auth>(context, listen: false).logout(context);
 
                 Navigator.of(context).pushReplacement(
                   FadePageRoute(

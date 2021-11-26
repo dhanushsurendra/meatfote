@@ -66,7 +66,6 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width);
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
     Future<void> _addProductToCart() async {
@@ -104,7 +103,7 @@ class _ListItemState extends State<ListItem> {
         );
         return;
       } else if (_gross.isNotEmpty && _pieces.isNotEmpty) {
-        if (double.tryParse(_gross) <= 0 || double.tryParse(_pieces) <= 0)
+        if (double.tryParse(_gross) <= 0 || double.tryParse(_pieces) <= 0) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Invalid value for item'),
@@ -112,27 +111,50 @@ class _ListItemState extends State<ListItem> {
               duration: const Duration(seconds: 1),
             ),
           );
-        return;
+          return;
+        } else if (double.tryParse(_pieces) < 20 ||
+            double.tryParse(_pieces) > 150) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text('Minimum piece weight is 20 gms and maximum is 150'),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 1),
+            ),
+          );
+          return;
+        }
+        await Provider.of<Cart>(context, listen: false).addToCart(
+          context,
+          userId,
+          widget.product.id,
+          gross: double.parse(_gross),
+          pieces: double.parse(_pieces),
+        );
+
+        _grossController.text = '';
+        _piecesController.text = '';
+        setState(() {
+          _birdCount = 1;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Added to cart!'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 1),
+          ),
+        );
       } else if (_gross.isEmpty && _pieces.isNotEmpty) {
         return;
       } else {
         try {
-          if (_gross.isNotEmpty && _pieces.isEmpty && _birdCount == 0) {
+          if (_gross.isNotEmpty && _pieces.isEmpty && _birdCount == 1) {
             await Provider.of<Cart>(context, listen: false).addToCart(
               context,
               userId,
               widget.product.id,
               gross: double.parse(_gross),
-            );
-          } else if (_gross.isNotEmpty &&
-              _pieces.isNotEmpty &&
-              _birdCount == 0) {
-            await Provider.of<Cart>(context, listen: false).addToCart(
-              context,
-              userId,
-              widget.product.id,
-              gross: double.parse(_gross),
-              pieces: double.parse(_pieces),
             );
           } else if (_gross.isNotEmpty && _pieces.isEmpty && _birdCount != 0) {
             await Provider.of<Cart>(context, listen: false).addToCart(
@@ -277,7 +299,7 @@ class _ListItemState extends State<ListItem> {
                             topLeft: Radius.circular(5.0),
                           ),
                           child: ExtendedImage.network(
-                            'https://meatforte.s3.ap-south-1.amazonaws.com/products/test.jpg',
+                            widget.product.imageUrl,
                             fit: BoxFit.cover,
                             cache: true,
                             borderRadius: BorderRadius.all(
@@ -359,7 +381,9 @@ class _ListItemState extends State<ListItem> {
                   widget.product.name,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: MediaQuery.of(context).size.width <= 320.0 ? 14.0 : 16.0,
+                    fontSize: MediaQuery.of(context).size.width <= 320.0
+                        ? 14.0
+                        : 16.0,
                   ),
                 ),
                 SizedBox(height: 4.0),
@@ -381,12 +405,17 @@ class _ListItemState extends State<ListItem> {
                             children: [
                               FaIcon(
                                 FontAwesomeIcons.rupeeSign,
-                                size: MediaQuery.of(context).size.width <= 320.0 ? 12.0 : 15.0,
+                                size: MediaQuery.of(context).size.width <= 320.0
+                                    ? 12.0
+                                    : 15.0,
                               ),
                               Text(
                                 widget.product.price.toString(),
                                 style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width <= 320.0 ? 15.0 : 18.0,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width <= 320.0
+                                          ? 15.0
+                                          : 18.0,
                                 ),
                               ),
                             ],
@@ -399,6 +428,7 @@ class _ListItemState extends State<ListItem> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.22,
                               child: TextField(
+                                cursorColor: Theme.of(context).primaryColor,
                                 enabled: widget.textFieldEnabled,
                                 controller: _piecesController,
                                 keyboardType: TextInputType.number,

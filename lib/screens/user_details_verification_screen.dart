@@ -40,7 +40,15 @@ class _UserDetailsVerificationScreenState
   Widget build(BuildContext context) {
     String userId = Provider.of<Auth>(context, listen: false).userId;
 
-    File _image;
+    print(Provider.of<User>(context, listen: false)
+                .userPersonalVerificationImageUrl !=
+            null &&
+        Provider.of<User>(context, listen: false)
+                .userPersonalVerificationImageUrl
+                .length !=
+            0);
+
+    File _image;  
     final picker = ImagePicker();
 
     Future<void> getImage(int index) async {
@@ -217,8 +225,13 @@ class _UserDetailsVerificationScreenState
                               SizedBox(height: 10.0),
                               widget.documentType == 'personal'
                                   ? Provider.of<User>(context, listen: false)
-                                              .userPersonalVerificationImageUrl !=
-                                          null
+                                                  .userPersonalVerificationImageUrl !=
+                                              null &&
+                                          Provider.of<User>(context,
+                                                      listen: false)
+                                                  .userPersonalVerificationImageUrl
+                                                  .length !=
+                                              0
                                       ? Container(
                                           width: 60.0,
                                           height: 60.0,
@@ -235,8 +248,13 @@ class _UserDetailsVerificationScreenState
                                         )
                                       : SizedBox.shrink()
                                   : Provider.of<User>(context, listen: false)
-                                              .userBusinessVerificationImageUrl !=
-                                          null
+                                                  .userBusinessVerificationImageUrl !=
+                                              null &&
+                                          Provider.of<User>(context,
+                                                      listen: false)
+                                                  .userBusinessVerificationImageUrl
+                                                  .length !=
+                                              0
                                       ? Container(
                                           width: 60.0,
                                           height: 60.0,

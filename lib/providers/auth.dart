@@ -5,18 +5,20 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:meatforte/models/http_excpetion.dart';
+import 'package:meatforte/providers/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const BASE_URL = 'http://192.168.0.9:3000';
+const BASE_URL = 'https://meatstack.herokuapp.com';
 
 class Auth extends ChangeNotifier {
   String _userId;
   String _token;
   String errorMessage = '';
   bool _location;
+  bool _isProfileCompleted = false;
 
   bool get isAuth {
-    return _token != null;
+    return _token != null && _isProfileCompleted;
   }
 
   String get token {
@@ -34,12 +36,14 @@ class Auth extends ChangeNotifier {
   Future<void> login(
     String emailPhoneNumber,
     String password,
-    String identifier,
+    String identifier
   ) async {
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/login'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: json.encode(
           {
             'emailPhoneNumber': emailPhoneNumber,
@@ -53,7 +57,13 @@ class Auth extends ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (responseData['statusCode'] != 200) {
-        if (responseData['error']
+        if (responseData['error'].toString().startsWith(
+            'Your profile is not completed. Complete it to continue.')) {
+          _userId = responseData['data']['userId'];
+          _token = responseData['data']['token'];
+          _isProfileCompleted = false;
+          throw HttpException(responseData['error']);
+        } else if (responseData['error']
             .toString()
             .startsWith('Your profile was rejected')) {
           _userId = responseData['data'];
@@ -65,10 +75,12 @@ class Auth extends ChangeNotifier {
 
       _userId = responseData['userId'];
       _token = responseData['token'];
+      _isProfileCompleted = true;
 
       final userData = json.encode({
         'userId': _userId,
         'token': _token,
+        'isProfileCompleted': _isProfileCompleted
       });
 
       SharedPreferences sharedPreferences =
@@ -103,8 +115,10 @@ class Auth extends ChangeNotifier {
 
       if (responseData['statusCode'] != 200) {
         if (responseData['error'].toString().startsWith(
-            'Your profile is incomplete. Complete it to continue')) {
-          _userId = responseData['data'];
+            'Your profile is incomplete. Complete it to continue.')) {
+          _userId = responseData['data']['userId'];
+          _token = responseData['data']['token'];
+          _isProfileCompleted = false;
           throw HttpException(responseData['error']);
         } else {
           throw HttpException(responseData['error']);
@@ -131,15 +145,22 @@ class Auth extends ChangeNotifier {
 
     _token = extractedData['token'];
     _userId = extractedData['userId'];
+    _isProfileCompleted = extractedData['isProfileCompleted'];
 
     notifyListeners();
 
     return true;
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     _userId = null;
     _token = null;
+    _isProfileCompleted = false;
+
+    // set the values to empty string when user logs out
+    User user = new User();
+    user.clearUserValues();
+
     notifyListeners();
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     sharedPrefs.remove('userData');

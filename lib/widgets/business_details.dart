@@ -85,14 +85,14 @@ class _BusinessDetailsState extends State<BusinessDetails> {
         });
       }
 
-      if (provider.userBusinessName != '' ||
-          provider.userBusinessName != null) {
-        _shopNameController.text = provider.userBusinessName;
-      }
-
       if (provider.userEstablishmentYear != '' ||
           provider.userEstablishmentYear != null) {
         _establishmentYearController.text = provider.userEstablishmentYear;
+      }
+
+      if (provider.userBusinessName != '' ||
+          provider.userBusinessName != null) {
+        _shopNameController.text = provider.userBusinessName;
       }
     }
 
