@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/widgets/activities_notification.dart';
 import 'package:meatforte/widgets/bottom_navigation.dart';
 import 'package:meatforte/widgets/custom_app_bar.dart';

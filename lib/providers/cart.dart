@@ -8,7 +8,8 @@ import 'package:meatforte/providers/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-const BASE_URL = 'https://meatstack.herokuapp.com';
+//const BASE_URL = 'https://meatstack.herokuapp.com';
+const BASE_URL = 'http://192.168.0.12:3000';
 
 class Cart with ChangeNotifier {
   List<Product> _cartItems = [];

@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:meatforte/providers/cart.dart';
+import 'package:meatforte/screens/cart_screen.dart';
 import 'package:meatforte/screens/manage_address_screen.dart';
 import 'package:provider/provider.dart';
 
 class BottomBar extends StatelessWidget {
   final double height;
+  final String route;
 
   const BottomBar({
     Key key,
     this.height = 50.0,
+    @required this.route
   }) : super(key: key);
 
   @override
@@ -109,10 +112,10 @@ class BottomBar extends StatelessWidget {
                                   ? null
                                   : Navigator.of(context).push(
                                       FadePageRoute(
-                                        childWidget: ManageAddressScreen(
+                                        childWidget: route == 'Checkout' ? ManageAddressScreen(
                                           type: 'SELECT',
                                           title: 'Select Address',
-                                        ),
+                                        ) :  CartScreen(isAllOrders: false),
                                       ),
                                     ),
                       child: Container(
@@ -123,7 +126,7 @@ class BottomBar extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            'Checkout',
+                            route,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 14.0,

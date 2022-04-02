@@ -6,7 +6,8 @@ import 'package:meatforte/providers/product.dart';
 
 import 'package:http/http.dart' as http;
 
-const BASE_URL = 'https://meatstack.herokuapp.com';
+//const BASE_URL = 'https://meatstack.herokuapp.com';
+const BASE_URL = 'http://192.168.0.12:3000';
 
 class Search with ChangeNotifier {
   String searchInput = '';
@@ -35,7 +36,7 @@ class Search with ChangeNotifier {
           id: responseData['products'][i]['_id'],
           name: responseData['products'][i]['name'],
           price: responseData['products'][i]['price'].toDouble(),
-          imageUrl: responseData['products'][i]['image_url'],
+          imageUrl: responseData['products'][i]['imageUrl'],
           layout: responseData['products'][i]['layout'],
           productType: responseData['products'][i]['product_type'],
           isInStock: responseData['products'][i]['is_in_stock'],

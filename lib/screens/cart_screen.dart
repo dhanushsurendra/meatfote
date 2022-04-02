@@ -171,7 +171,7 @@ class _CartScreenState extends State<CartScreen> {
                 bottom: !widget.isAllOrders ? 10.0 : 0.0,
                 left: !widget.isAllOrders ? 16.0 : 0.0,
                 right: !widget.isAllOrders ? 16.0 : 0.0,
-                child: BottomBar(),
+                child: BottomBar(route: 'Checkout'),
               ),
             ],
           ),

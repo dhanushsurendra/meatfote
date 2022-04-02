@@ -277,7 +277,7 @@ class _SearchItemsScreenState extends State<SearchItemsScreen> {
         ),
         floatingActionButton: const SizedBox(height: 1),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        bottomSheet: BottomBar(height: 60.0),
+        bottomSheet: BottomBar(height: 60.0, route: 'Cart'),
       ),
     );
   }
