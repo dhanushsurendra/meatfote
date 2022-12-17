@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:meatforte/screens/intro_screen.dart';
 import 'package:meatforte/animations/fade_page_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geocoding/geocoding.dart';
 
 class DetectLocationScreen extends StatefulWidget {
   const DetectLocationScreen({Key key}) : super(key: key);
@@ -74,11 +75,11 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
 
-    final coordinates = new Coordinates(position.latitude, position.longitude);
-    var address =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    //final coordinates = new Coordinates(position.latitude, position.longitude);
 
-    if (!address[0].addressLine.contains('Bengaluru')) {
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    if (placemarks[0].locality != "Bengaluru") {
       setState(() {
         _isLoading = false;
       });
@@ -107,6 +108,8 @@ class _DetectLocationScreenState extends State<DetectLocationScreen> {
       );
     }
   }
+
+  // 10 - .3 20 - .6 50 -  34 65 78
 
   @override
   Widget build(BuildContext context) {

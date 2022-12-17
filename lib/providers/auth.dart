@@ -8,8 +8,8 @@ import 'package:meatforte/models/http_excpetion.dart';
 import 'package:meatforte/providers/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//const BASE_URL = 'https://meatstack.herokuapp.com';
-const BASE_URL = 'http://192.168.0.12:3000';
+const BASE_URL = 'https://meatstack.herokuapp.com';
+//const BASE_URL = 'http://192.168.0.12:5000';
 
 class Auth extends ChangeNotifier {
   String _userId;
